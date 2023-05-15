@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--    카메라 권한 테스트-->
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/ic_logo_test"
+        android:label=""
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PillGood"
+        tools:targetApi="31" >
+
+    <activity
+        android:name=".ui.activity.StartActivity"
+        android:exported="true"
+        android:theme="@style/Theme.Design.Light.NoActionBar">
+
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".ui.activity.LoginActivity"
+        android:exported="false"
+        android:theme="@style/Theme.Design.Light.NoActionBar"/>
+    <activity
+        android:name=".ui.activity.MainActivity"
+        android:exported="true"></activity>
+    <activity android:name=".ui.activity.SettingActivity"/>
+    <activity android:name=".ui.activity.CustomActionBarActivity"/>
+    <activity android:name=".ui.activity.NotificationActivity"/>
+    <activity android:name=".ui.activity.GroupActivity"
+        android:theme="@style/GroupMemberTheme"/>
+    <activity android:name=".ui.activity.SearchPillActivity"/>
+    <activity android:name=".ui.activity.SearchPillResultActivity"/>
+    <activity android:name=".ui.activity.GroupMemberEditActivity"
+        android:theme="@style/GroupMemberEditTheme">
+    </activity>
+    <activity android:name=".ui.activity.GroupMemberAddActivity"
+        android:theme="@style/GroupMemberEditTheme">
+    </activity>
+</application>
+
+</manifest>
