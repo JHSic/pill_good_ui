@@ -4,10 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
-import android.widget.SlidingDrawer
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import com.example.pill_good.R
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -32,9 +29,17 @@ class MainActivity : CustomActionBarActivity() {
             }
         })
 
-        //drawerlayout으로 변경해야할듯..
-//        var slidingView = findViewById<SlidingDrawer>(R.id.SlidingView)
+        // 각 버튼 클릭 시 해야하는 로직 구현 ->
+
+//        var allGroupMemberCalendarButton : Button = findViewById(R.id.calendar_all)
+//        var specificGroupMemberCalendarButton : Button = findViewById(R.id.calendar_group_member)
 //
-//        slidingView.
+//        allGroupMemberCalendarButton.setOnClickListener{
+//
+//        }
+//
+//        specificGroupMemberCalendarButton.setOnClickListener {
+//
+//        }
     }
 }

@@ -48,10 +48,10 @@ class NotificationActivity : CustomActionBarActivity() {
             // 그림자 최대치
             notificationCard.maxCardElevation = 12F
 
-            // Add LinearLayout to the CardView
+            // 카드뷰 내용 생성
             notificationCard.addView(generateCardView())
 
-            // Finally, add the CardView in root layout
+            // linearLayout에 카드뷰 추가
             linearLayout.addView(notificationCard)
         }
     }
