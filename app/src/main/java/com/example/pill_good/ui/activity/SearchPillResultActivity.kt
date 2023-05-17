@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
@@ -46,7 +47,7 @@ class SearchPillResultActivity : CustomActionBarActivity() {
             searchResultCard.radius = 40F
 
             // 패딩 설정
-            searchResultCard.setContentPadding(25,0,25,0)
+            searchResultCard.setContentPadding(25,3,25,3)
 
             // 배경색 설정
             searchResultCard.setCardBackgroundColor(Color.WHITE)
@@ -95,21 +96,20 @@ class SearchPillResultActivity : CustomActionBarActivity() {
         pillImage.setImageBitmap(bitmap)
         pillImage.layoutParams = LinearLayout.LayoutParams(300, 150)
 
-        val textLinearLayout = LinearLayout(this)
-        textLinearLayout.orientation = LinearLayout.VERTICAL
-
         val pillName = TextView(this)
         pillName.text = "엑스콜골드"
         pillName.gravity = Gravity.CENTER
         pillName.textSize = 15f
         pillName.fontFeatureSettings = "@font/pt_sans_bold"
         pillName.setTextColor(Color.BLACK)
+        pillName.setPadding(25, 40, 25, 40)
+        pillName.ellipsize = TextUtils.TruncateAt.END
+        pillName.maxLines = 1
 
-        textLinearLayout.addView(pillName)
 
         cardLinearLayout.addView(pillImage)
-        cardLinearLayout.addView(textLinearLayout)
-        
+        cardLinearLayout.addView(pillName)
+
         cardLinearLayout.setOnClickListener {
             val intent = Intent(this,pillInformationActivity::class.java)
             startActivity(intent)

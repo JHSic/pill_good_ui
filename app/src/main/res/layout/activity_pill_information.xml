@@ -10,14 +10,16 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="right">
+            android:gravity="right"
+            android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/pill_information_close_btn"
@@ -40,7 +42,7 @@
 
             <TextView
                 android:id="@+id/pill_information_name"
-                android:layout_width="362dp"
+                android:layout_width="match_parent"
                 android:layout_height="47dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
@@ -70,12 +72,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_marginStart="50dp"
-                android:fontFamily="@font/pt_sans_bold"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="50dp"
                 android:ellipsize="end"
+                android:fontFamily="@font/pt_sans_bold"
                 android:maxLines="50"
-                android:text="약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤 에이비씨디이에프쥐에이치아이제이케이엘엠앤오피큐알에스티유더블유엑스와이지 12345678910약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤오피큐알에스티유더블유엑스와이지 12345678910약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤오피큐알에스티유더블유엑스와이지 12345678910" />
+                android:text="약 효능에 대한 설명입니다.한 설명입니다. 줄바꿈" />
 
             <TextView
                 android:id="@+id/pill_information_precaution"
@@ -99,8 +101,8 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="50dp"
                 android:ellipsize="end"
-                android:maxLines="50"
                 android:fontFamily="@font/pt_sans_bold"
+                android:maxLines="50"
                 android:text="약 주의사항에 대한 설명입니다." />
 
             <View
@@ -111,6 +113,75 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:background="@android:color/black" />
+
+            <TextView
+                android:id="@+id/pill_information"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/pt_sans_bold"
+                android:text="약 정보"
+                android:textColor="@color/black"
+                android:layout_gravity="left"
+                android:textSize="20dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/pill_information_round_background"
+                    android:fontFamily="@font/pt_sans_bold"
+                    android:gravity="center"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="마름모형"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/pill_information_round_background"
+                    android:fontFamily="@font/pt_sans_bold"
+                    android:gravity="center"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="하양, 주황, 투명"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/pill_information_round_background"
+                    android:fontFamily="@font/pt_sans_bold"
+                    android:gravity="center"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="장용성필름코팅캡슐제"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
