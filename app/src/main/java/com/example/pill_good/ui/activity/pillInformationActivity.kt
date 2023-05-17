@@ -14,6 +14,7 @@ class pillInformationActivity : AppCompatActivity(){
 
         setContentView(R.layout.activity_pill_information)
 
+        // 스크롤뷰 변경 테스트
         val closeButton : ImageButton = findViewById(R.id.pill_information_close_btn) // 닫기 버튼
         val pillInformationName : TextView = findViewById(R.id.pill_information_name) // 약 정보 화면 약 이름
         val pillEffectInformation : TextView = findViewById(R.id.pill_information_effect_content) // 약 정보 화면 약 효능
