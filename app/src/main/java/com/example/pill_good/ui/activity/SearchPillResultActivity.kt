@@ -1,15 +1,18 @@
 package com.example.pill_good.ui.activity
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.view.marginTop
 import com.example.pill_good.R
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -43,7 +46,7 @@ class SearchPillResultActivity : CustomActionBarActivity() {
             searchResultCard.radius = 40F
 
             // 패딩 설정
-            searchResultCard.setContentPadding(25,25,25,25)
+            searchResultCard.setContentPadding(25,0,25,0)
 
             // 배경색 설정
             searchResultCard.setCardBackgroundColor(Color.WHITE)
@@ -90,15 +93,27 @@ class SearchPillResultActivity : CustomActionBarActivity() {
         val bitmap = BitmapFactory.decodeResource(resources, imagePath)
 
         pillImage.setImageBitmap(bitmap)
-        pillImage.layoutParams = LinearLayout.LayoutParams(300, 300)
+        pillImage.layoutParams = LinearLayout.LayoutParams(300, 150)
+
+        val textLinearLayout = LinearLayout(this)
+        textLinearLayout.orientation = LinearLayout.VERTICAL
 
         val pillName = TextView(this)
         pillName.text = "엑스콜골드"
-        pillName.textSize = 20f
+        pillName.gravity = Gravity.CENTER
+        pillName.textSize = 15f
+        pillName.fontFeatureSettings = "@font/pt_sans_bold"
         pillName.setTextColor(Color.BLACK)
 
+        textLinearLayout.addView(pillName)
+
         cardLinearLayout.addView(pillImage)
-        cardLinearLayout.addView(pillName)
+        cardLinearLayout.addView(textLinearLayout)
+        
+        cardLinearLayout.setOnClickListener {
+            val intent = Intent(this,pillInformationActivity::class.java)
+            startActivity(intent)
+        }
 
         return cardLinearLayout
     }

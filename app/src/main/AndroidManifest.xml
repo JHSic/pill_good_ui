@@ -47,6 +47,7 @@
     <activity android:name=".ui.activity.GroupMemberAddActivity"
         android:theme="@style/GroupMemberEditTheme">
     </activity>
+    <activity android:name=".ui.activity.pillInformationActivity"></activity>
 </application>
 
 </manifest>

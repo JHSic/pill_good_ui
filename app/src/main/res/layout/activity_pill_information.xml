@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/pill_information_precaution_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+
+        android:layout_marginTop="12dp"
+        android:ellipsize="marquee"
+        android:maxLines="3"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true"
+
+        android:paddingLeft="50dp"
+        android:paddingRight="30dp"
+        android:text="약 주의사항에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤오피큐알에스티유더블유엑스와이지 12345678910"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pill_information_precaution" />
+
+    <TextView
+        android:id="@+id/pill_information_precaution"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="160dp"
+        android:fontFamily="@font/pt_sans_bold"
+        android:text="주의사항"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.057"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pill_information_name" />
+
+    <ImageView
+        android:id="@+id/pill_information_image"
+        android:layout_width="371dp"
+        android:layout_height="199dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.129"
+        app:srcCompat="@drawable/a201412020003201" />
+
+    <ImageButton
+        android:id="@+id/pill_information_close_btn"
+        android:layout_width="39dp"
+        android:layout_height="38dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/pill_information_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.946"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.516"
+        app:srcCompat="@drawable/ic_close" />
+
+    <TextView
+        android:id="@+id/pill_information_name"
+        android:layout_width="362dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/pt_sans_bold"
+        android:maxLines="1"
+        android:text="약 이름(Pill_nameㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇ)"
+        android:textColor="@color/black"
+        android:textSize="35dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pill_information_image" />
+
+    <TextView
+        android:id="@+id/pill_information_effect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/pt_sans_bold"
+        android:text="효능"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.057"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pill_information_name" />
+
+    <TextView
+        android:id="@+id/pill_information_effect_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="12dp"
+
+        android:ellipsize="marquee"
+        android:maxLines="3"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+
+        android:paddingLeft="50dp"
+        android:paddingRight="30dp"
+        android:text="약 효능에 대한 설명입니다. 줄바꿈이 과연 될까요 저도 잘 모르겠어요 테스트를 해봅시다 가나다라마바사아자차카타파하 에이비씨디이에프쥐에이치아이제이케이엘엠앤오피큐알에스티유더블유엑스와이지 12345678910"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pill_information_effect" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:background="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pill_information_precaution_content" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
