@@ -128,7 +128,6 @@ open class CustomActionBarActivity : AppCompatActivity() {
     */
     protected fun addCustomView(layoutResID: Int) {
         val customContent = findViewById<FrameLayout>(R.id.custom_action_bar_container)
-        layoutInflater.context.resources.getDrawable(R.drawable.above_shadow, theme)
         val newView = layoutInflater.inflate(layoutResID, customContent, true)
 //        customContent.addView(newView)
     }

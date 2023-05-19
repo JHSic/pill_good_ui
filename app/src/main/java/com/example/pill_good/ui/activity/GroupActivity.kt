@@ -184,6 +184,11 @@ class GroupActivity : CustomActionBarActivity() {
         // cardLinearLayout에 buttonLayout을 추가
         cardLinearLayout.addView(buttonLayout)
 
+        cardLinearLayout.setOnClickListener {
+            val intent = Intent(this,PrescriptionActivity::class.java)
+            startActivity(intent)
+        }
+
         return cardLinearLayout
     }
 }

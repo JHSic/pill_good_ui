@@ -64,11 +64,12 @@
 
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/slide_layout"
         android:layout_marginTop="1dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         >
 
         <ImageButton
@@ -82,9 +83,73 @@
             app:iconSize="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="MissingConstraints" />
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/time_btn_group"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:singleSelection="true"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/time_wakeup_btn"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="기상 후"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_width="match_parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/time_breakfast_btn"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="아침"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_width="match_parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/time_lunch_btn"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="점심"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_width="match_parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/time_dinner_btn"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="저녁"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_width="match_parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/time_night_btn"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="취침 전"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_width="match_parent" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ScrollView>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 
 

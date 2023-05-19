@@ -50,6 +50,7 @@
         android:theme="@style/GroupMemberEditTheme">
     </activity>
     <activity android:name=".ui.activity.pillInformationActivity"></activity>
+    <activity android:name=".ui.activity.PrescriptionActivity"></activity>
 </application>
 
 </manifest>
