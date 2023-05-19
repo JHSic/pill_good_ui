@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
@@ -127,8 +128,9 @@ open class CustomActionBarActivity : AppCompatActivity() {
     */
     protected fun addCustomView(layoutResID: Int) {
         val customContent = findViewById<FrameLayout>(R.id.custom_action_bar_container)
-        val newView = layoutInflater.inflate(layoutResID, null)
-        customContent.addView(newView)
+        layoutInflater.context.resources.getDrawable(R.drawable.above_shadow, theme)
+        val newView = layoutInflater.inflate(layoutResID, customContent, true)
+//        customContent.addView(newView)
     }
 
 }

@@ -10,6 +10,7 @@
     tools:context=".ui.activity.MainActivity"
     android:gravity="bottom"
     app:umanoPanelHeight="40dp"
+    app:umanoShadowHeight="-1dp"
     app:umanoDragView="@id/slide_layout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,6 +66,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/slide_layout"
+        android:layout_marginTop="1dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
