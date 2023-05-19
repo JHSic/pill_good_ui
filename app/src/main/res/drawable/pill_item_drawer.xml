@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/gray" /> <!-- 카드뷰 배경 색상 -->
+    <corners android:radius="8dp" /> <!-- 카드뷰의 각 라운드 처리 -->
+</shape>
