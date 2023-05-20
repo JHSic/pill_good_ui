@@ -1,14 +1,9 @@
 package com.example.pill_good.ui.activity
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.*
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import com.example.pill_good.R
-import com.google.android.material.button.MaterialButton
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
@@ -52,26 +47,36 @@ class MainActivity : CustomActionBarActivity() {
                 diseaseLayoutParams.setMargins(32, 0, 32, 32) // 아래쪽에 16dp의 마진
                 groupMemberDiseaseContent.layoutParams = diseaseLayoutParams
 
-                val pillCheckDiseaseEatButton: MaterialButton = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_eat)
-                val pillCheckDiseaseNotEatButton: MaterialButton = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_not_eat)
+                val pillCheckButton : ToggleButton = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_btn)
 
-                pillCheckDiseaseEatButton.addOnCheckedChangeListener { _, isChecked ->
+                pillCheckButton.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
-                        pillCheckDiseaseEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_200))
-                        pillCheckDiseaseEatButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-                        pillCheckDiseaseNotEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-                        pillCheckDiseaseNotEatButton.setTextColor(ContextCompat.getColor(this, R.color.black))
+                        // The toggle is enabled
+                    } else {
+                        // The toggle is disabled
                     }
                 }
 
-                pillCheckDiseaseNotEatButton.addOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        pillCheckDiseaseNotEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_200))
-                        pillCheckDiseaseNotEatButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-                        pillCheckDiseaseEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-                        pillCheckDiseaseEatButton.setTextColor(ContextCompat.getColor(this, R.color.black))
-                    }
-                }
+//                val pillCheckDiseaseEatButton: MaterialButton = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_eat)
+//                val pillCheckDiseaseNotEatButton: MaterialButton = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_not_eat)
+
+//                pillCheckDiseaseEatButton.addOnCheckedChangeListener { _, isChecked ->
+//                    if (isChecked) {
+//                        pillCheckDiseaseEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_200))
+//                        pillCheckDiseaseEatButton.setTextColor(ContextCompat.getColor(this, R.color.white))
+//                        pillCheckDiseaseNotEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+//                        pillCheckDiseaseNotEatButton.setTextColor(ContextCompat.getColor(this, R.color.black))
+//                    }
+//                }
+//
+//                pillCheckDiseaseNotEatButton.addOnCheckedChangeListener { _, isChecked ->
+//                    if (isChecked) {
+//                        pillCheckDiseaseNotEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_200))
+//                        pillCheckDiseaseNotEatButton.setTextColor(ContextCompat.getColor(this, R.color.white))
+//                        pillCheckDiseaseEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+//                        pillCheckDiseaseEatButton.setTextColor(ContextCompat.getColor(this, R.color.black))
+//                    }
+//                }
 
                 val numPillContents = 3 // prescriptionPillContent 개수 - 각 질병의 약 개수
                 for (k in 1..numPillContents) {

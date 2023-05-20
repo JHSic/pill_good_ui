@@ -172,13 +172,26 @@ class GroupActivity : CustomActionBarActivity() {
         }
 
         // 메시지 버튼
-        val groupMemberMessageButton = ImageButton(this)
-        groupMemberMessageButton.setImageResource(R.drawable.group_member_message)
-        groupMemberMessageButton.setBackgroundColor(Color.WHITE)
-        buttonLayout.addView(groupMemberMessageButton)
-        groupMemberMessageButton.setOnClickListener {
-            // 메시지 아이콘 작대기 표시 및 메시지 전송 여부 변경
+        val imageButton = ImageButton(this)
+        imageButton.setImageResource(R.drawable.group_member_message) // 기본 아이콘 설정
+        imageButton.setBackgroundColor(Color.WHITE)
+
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        imageButton.layoutParams = layoutParams
+
+        // 토글 상태 변경 시 이벤트 처리
+        imageButton.setOnClickListener {
+            if (imageButton.isSelected) {
+                imageButton.setImageResource(R.drawable.group_member_message)
+            } else {
+                imageButton.setImageResource(R.drawable.group_member_no_message)
+            }
+            imageButton.isSelected = !imageButton.isSelected
         }
+        buttonLayout.addView(imageButton)
 
         buttonLayout.gravity = Gravity.CENTER_HORIZONTAL
         // cardLinearLayout에 buttonLayout을 추가
