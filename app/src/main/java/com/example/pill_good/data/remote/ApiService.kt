@@ -121,7 +121,7 @@ interface ApiService {
         @Query("dateEnd") dateEnd: LocalDate
     ): ApiResponse<List<TakePillAndTakePillCheckAndGroupMemberIndexDTO>>
 
-    @POST("")
+    @POST("/take-pill/search")
     suspend fun getTakePillsByGroupMemberIdListAndTargetDate(
         @Body groupMemberIndexList: List<Long>,
         @Query("targetDate") targetDate: LocalDate
