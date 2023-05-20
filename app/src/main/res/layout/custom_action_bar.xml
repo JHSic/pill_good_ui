@@ -77,6 +77,12 @@
             android:padding="12dp"
             android:src="@drawable/ic_action_camera" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:background="@color/black"
+            />
+
         <ImageButton
             android:id="@+id/calendar_button"
             android:layout_width="0dp"
@@ -85,6 +91,12 @@
             android:background="?attr/selectableItemBackground"
             android:padding="12dp"
             android:src="@drawable/ic_action_calendar" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:background="@color/black"
+            />
 
         <ImageButton
             android:id="@+id/group_button"
