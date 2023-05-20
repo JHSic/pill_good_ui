@@ -85,7 +85,7 @@ interface ApiService {
     suspend fun getPillByPillName(@Path("pill-name") pillName: String)
     : ApiResponse<PillDTO>
 
-    @GET("/pill/search/pills")
+    @POST("/pill/search/pills")
     suspend fun getPillBySearchingCondition(@Body searchingConditionDTO: SearchingConditionDTO)
     : ApiResponse<List<PillDTO>>
 
