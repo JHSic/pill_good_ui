@@ -60,7 +60,8 @@ class GroupActivity : CustomActionBarActivity() {
         card.layoutParams = layoutParams
         card.radius = 36F // 둥근 정도
         card.setContentPadding(25,25,25,25)
-        card.setCardBackgroundColor(Color.WHITE)
+//        card.setCardBackgroundColor(Color.WHITE)
+        card.setBackgroundResource(R.drawable.prescription_card_border)
         card.cardElevation = 12F  // 그림자
         card.maxCardElevation = 20F  // 눌렀을 때 그림자
         card.clipToPadding = false  // 패딩 영역 밖까지 그림자 표시

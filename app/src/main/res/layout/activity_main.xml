@@ -11,6 +11,7 @@
     android:gravity="bottom"
     app:umanoPanelHeight="40dp"
     app:umanoShadowHeight="-1dp"
+    android:layout_marginTop="1dp"
     app:umanoDragView="@id/slide_layout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,24 +29,38 @@
                 android:layout_height="88dp"
                 android:orientation="horizontal">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/calendar_all"
-                    android:layout_width="180dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/button_drawer"
                     android:drawableTop="@drawable/ic_action_calendar"
                     android:fontFamily="@font/pt_sans_bold"
                     android:text="전체 캘린더" />
 
-                <Button
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/calendar_group_member"
-                    android:layout_width="180dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_action_calendar"
+                    android:background="@drawable/button_drawer"
                     android:fontFamily="@font/pt_sans_bold"
                     android:text="그룹원 캘린더" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                />
 
             <FrameLayout
                 android:id="@+id/group_member_selector_container"
@@ -60,12 +75,7 @@
                 app:mcv_selectionColor="#BABCC1"
                 app:mcv_showOtherDates="all" />
 
-
-
         </LinearLayout>
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -89,6 +99,7 @@
             app:iconSize="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="MissingConstraints" />
+
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/time_btn_group"
             android:layout_width="match_parent"
