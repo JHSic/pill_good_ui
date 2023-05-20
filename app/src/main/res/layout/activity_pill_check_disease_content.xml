@@ -33,49 +33,27 @@
                     android:fontFamily="@font/pt_sans_bold"
                     android:textSize="15dp"
                     android:textColor="@color/black"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
                     android:text="질병 이름" />
 
-                <ImageButton
+                <ToggleButton
                     android:id="@+id/pill_check_disease_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
-                    android:background="@color/white"
                     android:fontFamily="@font/pt_sans_bold"
-                    android:textOff="미복용"
-                    android:textOn="복용" />
-
-                <!--                <com.google.android.material.button.MaterialButtonToggleGroup-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    app:singleSelection="true"-->
-<!--                    android:layout_margin="20dp"-->
-<!--                    android:background="@drawable/prescription_card_border"-->
-<!--                    android:orientation="horizontal">-->
-
-<!--                    <com.google.android.material.button.MaterialButton-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:id="@+id/pill_check_disease_eat"-->
-<!--                        android:text="복용"-->
-<!--                        android:textSize="15dp"-->
-<!--                        android:layout_marginRight="10dp"-->
-<!--                        android:fontFamily="@font/pt_sans_bold"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        >-->
-<!--                    </com.google.android.material.button.MaterialButton>-->
-<!--                    <com.google.android.material.button.MaterialButton-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:id="@+id/pill_check_disease_not_eat"-->
-<!--                        android:text="미복용"-->
-<!--                        android:textSize="15dp"-->
-<!--                        android:fontFamily="@font/pt_sans_bold"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        >-->
-<!--                    </com.google.android.material.button.MaterialButton>-->
-
-<!--                </com.google.android.material.button.MaterialButtonToggleGroup>-->
+                    android:background="@drawable/prescription_card_border"
+                    android:textSize="15dp"
+                    android:textOff="복용"
+                    android:textOn="복용"
+                    android:gravity="center"
+                    android:paddingRight="10dp"
+                    android:drawableRight="@drawable/pill_check_no_icon"
+                    android:shadowRadius="-1"
+                    />
             </LinearLayout>
         </LinearLayout>
 

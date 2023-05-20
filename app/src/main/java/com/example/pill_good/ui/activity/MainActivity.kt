@@ -36,7 +36,7 @@ class MainActivity : CustomActionBarActivity() {
         for (i in 1..numGroupMember) {
             val groupMemberContent: FrameLayout = inflater.inflate(R.layout.activity_pill_check, null) as FrameLayout
             val groupMemberDiseaseContainer: LinearLayout = groupMemberContent.findViewById(R.id.pill_check_disease_container)
-            layoutParams.setMargins(32, 0, 32, 32) // 아래쪽에 16dp의 마진
+            layoutParams.setMargins(32, 0, 32, 32)
             groupMemberContent.layoutParams = layoutParams
 
             val numDisease = 2 // 추가할 disease 개수 - 각 그룹원의 질병 개수
@@ -44,45 +44,25 @@ class MainActivity : CustomActionBarActivity() {
                 val groupMemberDiseaseContent: FrameLayout = inflater.inflate(R.layout.activity_pill_check_disease_content, null) as FrameLayout
                 val groupMemberDiseasePillFrame: LinearLayout = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_pill_container)
                 val diseaseLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                diseaseLayoutParams.setMargins(32, 0, 32, 32) // 아래쪽에 16dp의 마진
+                diseaseLayoutParams.setMargins(32, 0, 32, 32)
                 groupMemberDiseaseContent.layoutParams = diseaseLayoutParams
 
                 val pillCheckButton : ToggleButton = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_btn)
 
-                pillCheckButton.setOnCheckedChangeListener { _, isChecked ->
+                pillCheckButton.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked) {
-                        // The toggle is enabled
+                        // 토글 버튼이 선택된 상태인 경우
+                        pillCheckButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.pill_check_ok_icon, 0)
                     } else {
-                        // The toggle is disabled
+                        // 토글 버튼이 선택되지 않은 상태인 경우
+                        pillCheckButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.pill_check_no_icon, 0)
                     }
                 }
-
-//                val pillCheckDiseaseEatButton: MaterialButton = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_eat)
-//                val pillCheckDiseaseNotEatButton: MaterialButton = groupMemberDiseaseContent.findViewById(R.id.pill_check_disease_not_eat)
-
-//                pillCheckDiseaseEatButton.addOnCheckedChangeListener { _, isChecked ->
-//                    if (isChecked) {
-//                        pillCheckDiseaseEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_200))
-//                        pillCheckDiseaseEatButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-//                        pillCheckDiseaseNotEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-//                        pillCheckDiseaseNotEatButton.setTextColor(ContextCompat.getColor(this, R.color.black))
-//                    }
-//                }
-//
-//                pillCheckDiseaseNotEatButton.addOnCheckedChangeListener { _, isChecked ->
-//                    if (isChecked) {
-//                        pillCheckDiseaseNotEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.purple_200))
-//                        pillCheckDiseaseNotEatButton.setTextColor(ContextCompat.getColor(this, R.color.white))
-//                        pillCheckDiseaseEatButton.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-//                        pillCheckDiseaseEatButton.setTextColor(ContextCompat.getColor(this, R.color.black))
-//                    }
-//                }
-
                 val numPillContents = 3 // prescriptionPillContent 개수 - 각 질병의 약 개수
                 for (k in 1..numPillContents) {
                     val prescriptionPillContent: FrameLayout = inflater.inflate(R.layout.activity_pill_item, null) as FrameLayout
                     val pillLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                    pillLayoutParams.setMargins(32, 0, 32, 32) // 아래쪽에 32dp의 마진
+                    pillLayoutParams.setMargins(32, 0, 32, 32)
                     prescriptionPillContent.layoutParams = pillLayoutParams
                     groupMemberDiseasePillFrame.addView(prescriptionPillContent)
                 }
@@ -91,6 +71,7 @@ class MainActivity : CustomActionBarActivity() {
             }
 
             diseaseContainer.addView(groupMemberContent)
+
         }
 
 

@@ -47,6 +47,12 @@
                     android:text="그룹원 캘린더" />
             </LinearLayout>
 
+            <FrameLayout
+                android:id="@+id/group_member_selector_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/calendar"
                 android:layout_width="wrap_content"

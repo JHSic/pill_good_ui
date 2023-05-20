@@ -7,11 +7,9 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginTop
 import com.example.pill_good.R
@@ -25,45 +23,61 @@ class SearchPillResultActivity : CustomActionBarActivity() {
 
         addCustomView(R.layout.activity_search_pill_result)
 
+        val inflater = LayoutInflater.from(this)
+
         val linearLayout = findViewById<LinearLayout>(R.id.pill_search_result_linear)
 
-        // 알림 개수 만큼 생성되게 설정
-        for(i: Int in 1..5) {
-            // Initialize a new LayoutParams instance, CardView width and height
-            val layoutParams = RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, // CardView width
-                ViewGroup.LayoutParams.WRAP_CONTENT // CardView height
-            )
+        var pillNum = 5
+        for(i in 1..pillNum){
+            val pillContent: FrameLayout = inflater.inflate(R.layout.activity_pill_item, null) as FrameLayout
+            val pillLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            pillLayoutParams.setMargins(32, 0, 32, 32) // 아래쪽에 32dp의 마진
+            pillContent.layoutParams = pillLayoutParams
 
-            layoutParams.setMargins(64,24,64,28)
-
-            // 카드뷰 생성
-            val searchResultCard = CardView(this)
-
-            // layout params 설정
-            searchResultCard.layoutParams = layoutParams
-
-            // 둥근 정도 설정
-            searchResultCard.radius = 40F
-
-            // 패딩 설정
-            searchResultCard.setContentPadding(25,3,25,3)
-
-            // 배경색 설정
-            searchResultCard.setCardBackgroundColor(Color.WHITE)
-
-            // 그림자
-            searchResultCard.cardElevation = 8F
-
-            // 그림자 최대치
-            searchResultCard.maxCardElevation = 12F
-
-            // 카드뷰 내용 생성
-            searchResultCard.addView(generateCardView())
-
-            // linearLayout에 카드뷰 추가
-            linearLayout.addView(searchResultCard)
+            pillContent.setOnClickListener {
+                val intent = Intent(this,pillInformationActivity::class.java)
+                startActivity(intent)
+            }
+            linearLayout.addView(pillContent)
         }
+
+//        // 알림 개수 만큼 생성되게 설정
+//        for(i: Int in 1..5) {
+//            // Initialize a new LayoutParams instance, CardView width and height
+//            val layoutParams = RelativeLayout.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT, // CardView width
+//                ViewGroup.LayoutParams.WRAP_CONTENT // CardView height
+//            )
+//
+//            layoutParams.setMargins(64,24,64,28)
+//
+//            // 카드뷰 생성
+//            val searchResultCard = CardView(this)
+//
+//            // layout params 설정
+//            searchResultCard.layoutParams = layoutParams
+//
+//            // 둥근 정도 설정
+//            searchResultCard.radius = 40F
+//
+//            // 패딩 설정
+//            searchResultCard.setContentPadding(25,3,25,3)
+//
+//            // 배경색 설정
+//            searchResultCard.setCardBackgroundColor(Color.WHITE)
+//
+//            // 그림자
+//            searchResultCard.cardElevation = 8F
+//
+//            // 그림자 최대치
+//            searchResultCard.maxCardElevation = 12F
+//
+//            // 카드뷰 내용 생성
+//            searchResultCard.addView(generateCardView())
+//
+//            // linearLayout에 카드뷰 추가
+//            linearLayout.addView(searchResultCard)
+//        }
     }
 
     // Custom method to generate an image view
