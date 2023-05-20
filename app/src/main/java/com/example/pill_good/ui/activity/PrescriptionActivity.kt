@@ -26,15 +26,15 @@ class PrescriptionActivity : CustomActionBarActivity() {
 
         val numContents = 2 // 추가할 prescriptionContent 개수 - 처방전 개수
         for (i in 1..numContents) {
-            val prescriptionContent: FrameLayout = inflater.inflate(R.layout.activity_prescription_content, null) as FrameLayout
-            val prescriptionPillFrame: LinearLayout = prescriptionContent.findViewById(R.id.prescription_pill_data)
+            val prescriptionContent : FrameLayout = inflater.inflate(R.layout.activity_prescription_content, null) as FrameLayout
+            val prescriptionPillFrame : LinearLayout = prescriptionContent.findViewById(R.id.prescription_pill_data)
             layoutParams.setMargins(0, 0, 0, 16) // 아래쪽에 16dp의 마진
             prescriptionContent.layoutParams = layoutParams
 
 
             val numPillContents = 3 // prescriptionPillContent 개수 - 약 개수
             for (j in 1..numPillContents) {
-                val prescriptionPillContent: FrameLayout = inflater.inflate(R.layout.activity_prescription_pill_content, null) as FrameLayout
+                val prescriptionPillContent : FrameLayout = inflater.inflate(R.layout.activity_prescription_pill_content, null) as FrameLayout
                 prescriptionPillFrame.addView(prescriptionPillContent)
                 layoutParams.setMargins(0, 0, 0, 32) // 아래쪽에 16dp의 마진
                 prescriptionPillContent.layoutParams = layoutParams
