@@ -4,6 +4,7 @@ import com.example.pill_good.data.dto.AutoMessageDTO
 import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
 import com.example.pill_good.data.dto.GroupMemberDTO
 import com.example.pill_good.data.dto.InitialCalendarAndTakePillsInfoDTO
+import com.example.pill_good.data.dto.LoginDTO
 import com.example.pill_good.data.dto.MedicationInfoDTO
 import com.example.pill_good.data.dto.NotificationDTO
 import com.example.pill_good.data.dto.PillDTO
@@ -41,15 +42,22 @@ interface ApiService {
     /**
      * UserRepository
      */
-    @POST("/user")
-    suspend fun createUser(@Body userDTO: UserDTO): ApiResponse<UserDTO>
-
     @DELETE("/user/delete/{id}")
     suspend fun deleteUserById(@Path("id") userId: Long): ApiResponse<Unit>
 
+    @PUT("/user/update-token/{id}")
+    suspend fun updateUserToken(@Path("id") userId: Long, @Body userDTO: UserDTO): ApiResponse<UserDTO>
+
 
     /**
-     * GroupMemberRepository
+     * LoginRepository
+     */
+    @POST("/login")
+    suspend fun login(@Body loginDTO: LoginDTO): ApiResponse<UserDTO>
+
+
+    /**
+    * GroupMemberRepository
      */
     @GET("/group-member/search/group-members")
     suspend fun getGroupMembersByUserId(@Query("userIndex") userId: Long)
