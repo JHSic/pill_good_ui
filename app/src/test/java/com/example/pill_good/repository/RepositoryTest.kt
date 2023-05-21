@@ -1,6 +1,7 @@
 package com.example.pill_good.repository
 
 import com.example.pill_good.data.remote.ApiService
+import com.example.pill_good.di.NetworkModule.client
 import com.example.pill_good.di.NetworkModule.gson
 import com.example.pill_good.di.appModule
 import okhttp3.mockwebserver.MockWebServer
@@ -21,12 +22,21 @@ open class RepositoryTest {
     protected lateinit var mockWebServer: MockWebServer
     private lateinit var mockWebServerURL: String
 
+    private val SERVER_URL = "http://192.168.0.2:8080"
+    private val TEST_MODE = false    // true = MockWebServer, false = RealServer
+
     /**
      * TODO - MockWebServer 로 ApiService 의존성을 생성해 Koin 에 등록
      */
     @Before
     fun `setUp`() {
-        val apiService = getApiService()
+        var apiService: ApiService
+        if (TEST_MODE) {
+            apiService = getMockApiService()
+        } else {
+            mockWebServer = MockWebServer()
+            apiService = getApiService()
+        }
 
         startKoin {
             modules(module{ single { apiService } }, appModule)
@@ -61,13 +71,23 @@ open class RepositoryTest {
      *
      * @return Instance of ApiService
      */
-    private fun getApiService(): ApiService {
+    private fun getMockApiService(): ApiService {
         mockWebServer = MockWebServer()
         mockWebServer.start()
         mockWebServerURL = mockWebServer.url("").toString()
 
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(mockWebServerURL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        return retrofit.create(ApiService::class.java)
+    }
+
+    private fun getApiService(): ApiService {
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(SERVER_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
