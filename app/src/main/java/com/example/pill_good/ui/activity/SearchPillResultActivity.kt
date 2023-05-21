@@ -37,6 +37,7 @@ class SearchPillResultActivity : CustomActionBarActivity() {
             pillContent.setOnClickListener {
                 val intent = Intent(this,pillInformationActivity::class.java)
                 startActivity(intent)
+                overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
             }
             linearLayout.addView(pillContent)
         }
@@ -127,6 +128,7 @@ class SearchPillResultActivity : CustomActionBarActivity() {
         cardLinearLayout.setOnClickListener {
             val intent = Intent(this,pillInformationActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
         return cardLinearLayout

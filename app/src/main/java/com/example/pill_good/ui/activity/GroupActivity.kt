@@ -19,6 +19,12 @@ class GroupActivity : CustomActionBarActivity() {
         addCustomView(R.layout.activity_group)
         val linearLayout = findViewById<LinearLayout>(R.id.group_linear)
 
+        linearLayout.removeAllViews() // 기존의 모든 카드 뷰 제거
+
+        val groupButton: ImageButton = findViewById(R.id.group_button)
+        groupButton.alpha = 1f
+        groupButton.isEnabled = false
+
         var n = 9 // 그룹원 수
         val rows = (n + 2) / 2 // 카드를 출력할 줄 수
         var lastRowNumOfCards = n % 2 // 마지막 줄의 카드 수
@@ -60,7 +66,6 @@ class GroupActivity : CustomActionBarActivity() {
         card.layoutParams = layoutParams
         card.radius = 36F // 둥근 정도
         card.setContentPadding(25,25,25,25)
-//        card.setCardBackgroundColor(Color.WHITE)
         card.setBackgroundResource(R.drawable.prescription_card_border)
         card.cardElevation = 12F  // 그림자
         card.maxCardElevation = 20F  // 눌렀을 때 그림자
@@ -107,6 +112,7 @@ class GroupActivity : CustomActionBarActivity() {
             // 그룹원 추가 페이지로 이동
             val intent = Intent(this,GroupMemberAddActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
 
@@ -151,6 +157,7 @@ class GroupActivity : CustomActionBarActivity() {
             // 수정 페이지로 이동
             val intent = Intent(this,GroupMemberEditActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
         // 삭제 버튼
@@ -201,6 +208,7 @@ class GroupActivity : CustomActionBarActivity() {
         cardLinearLayout.setOnClickListener {
             val intent = Intent(this,PrescriptionActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
         return cardLinearLayout

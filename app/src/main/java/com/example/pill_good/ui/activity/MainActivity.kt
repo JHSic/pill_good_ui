@@ -20,6 +20,13 @@ class MainActivity : CustomActionBarActivity() {
 
         val inflater = LayoutInflater.from(this)
 
+        // 캘린더 버튼, 로그 미지정 설정 및 캘린더 버튼 alpha 변경
+        val calendarButton: ImageButton = findViewById(R.id.calendar_button)
+        val logoText: TextView = findViewById(R.id.logo)
+        calendarButton.alpha = 1f
+        calendarButton.isEnabled = false
+        logoText.isEnabled = false
+
         calendar = findViewById(R.id.calendar)
         calendar.setSelectedDate(CalendarDay.today())
         calendar.addDecorator(TodayDecorator())
@@ -82,7 +89,7 @@ class MainActivity : CustomActionBarActivity() {
     // 캘린더 선택 라디오 버튼 그룹 생성
     fun initializeCalendarRadioGroup(){
         val calendarRadioGroup : RadioGroup = findViewById(R.id.calendar_radio_group)
-        val onCheckedChangeListener = RadioGroup.OnCheckedChangeListener { radioGroup, btnId ->
+        calendarRadioGroup.setOnCheckedChangeListener{ radioGroup, btnId ->
             when(btnId){
                 // 전체 캘린더 선택 시 로직
                 R.id.calendar_all -> {
@@ -92,7 +99,7 @@ class MainActivity : CustomActionBarActivity() {
                    스피너를 캘린더 이전에 추가
                 */
                 R.id.calendar_group_member -> {
-
+                    groupMemberCalenderSelect()
                 }
             }
         }
@@ -100,6 +107,21 @@ class MainActivity : CustomActionBarActivity() {
 
     // 전체 캘린더 선택 시 로직
     fun allCalendarSelect(){
+        val groupMemberSelectorFrame : FrameLayout = findViewById(R.id.group_member_selector_container)
 
+        groupMemberSelectorFrame.removeAllViews();
+    }
+
+    fun groupMemberCalenderSelect(){
+        val groupMemberSelectorFrame : FrameLayout = findViewById(R.id.group_member_selector_container)
+
+        groupMemberSelectorFrame.removeAllViews();
+
+        val inflater = LayoutInflater.from(this)
+
+        val groupMemberSelectorContent: FrameLayout = inflater.inflate(R.layout.activity_group_member_selector, null) as FrameLayout
+        val groupMemberSelectorParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        groupMemberSelectorContent.layoutParams = groupMemberSelectorParams
+        groupMemberSelectorFrame.addView(groupMemberSelectorContent)
     }
 }

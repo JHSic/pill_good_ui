@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/custom_action_bar"
-        android:background="@color/gray"/>
+        android:background="@color/black"/>
 
     <FrameLayout
         android:id="@+id/custom_action_bar_container"
@@ -75,6 +75,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:padding="12dp"
+            android:alpha="0.5"
             android:src="@drawable/ic_action_camera" />
 
         <View
@@ -90,6 +91,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:padding="12dp"
+            android:alpha="0.5"
             android:src="@drawable/ic_action_calendar" />
 
         <View
@@ -105,6 +107,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:padding="12dp"
+            android:alpha="0.5"
             android:src="@drawable/ic_action_group" />
 
     </LinearLayout>
