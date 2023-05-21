@@ -1,6 +1,7 @@
 package com.example.pill_good.ui.activity
 
 import android.os.Bundle
+import android.provider.MediaStore.Audio.Radio
 import android.view.LayoutInflater
 import android.widget.*
 import com.example.pill_good.R
@@ -28,6 +29,14 @@ class MainActivity : CustomActionBarActivity() {
                 calendar.addDecorator(EventDecorator(Collections.singleton(date)))
             }
         })
+
+        val calendarRadioGroup : RadioGroup = findViewById(R.id.calendar_radio_group)
+        val onCheckedChangeListener = RadioGroup.OnCheckedChangeListener { radioGroup, btnId ->
+            val selectedBtn : RadioButton = findViewById(btnId)
+
+
+
+        }
 
         val diseaseContainer: LinearLayout = findViewById(R.id.group_member_disease_container)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -73,6 +82,8 @@ class MainActivity : CustomActionBarActivity() {
             diseaseContainer.addView(groupMemberContent)
 
         }
+
+
 
 
         // 각 버튼 클릭 시 해야하는 로직 구현 ->

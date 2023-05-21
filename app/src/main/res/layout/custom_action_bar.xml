@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/custom_action_bar"
-        android:background="@android:color/black"/>
+        android:background="@color/gray"/>
 
     <FrameLayout
         android:id="@+id/custom_action_bar_container"
@@ -80,7 +80,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="50dp"
-            android:background="@color/black"
+            android:background="@color/gray"
             />
 
         <ImageButton
@@ -95,7 +95,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="50dp"
-            android:background="@color/black"
+            android:background="@color/gray"
             />
 
         <ImageButton
