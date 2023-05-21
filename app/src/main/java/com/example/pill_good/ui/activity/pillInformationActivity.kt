@@ -23,6 +23,7 @@ class pillInformationActivity : AppCompatActivity(){
 
         closeButton.setOnClickListener {
             finish()
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
     }
 }

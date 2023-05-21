@@ -27,19 +27,26 @@ open class CustomActionBarActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.custom_action_bar)
         setSupportActionBar(toolbar)
 
+        val logoText: TextView = toolbar.findViewById(R.id.logo)
+        val menuButton: ImageButton = toolbar.findViewById(R.id.menu_button)
+        val notificationButton: ImageButton = toolbar.findViewById(R.id.notification_button)
+        val cameraButton: ImageButton = findViewById(R.id.camera_button)
+        val calendarButton: ImageButton = findViewById(R.id.calendar_button)
+        val groupButton: ImageButton = findViewById(R.id.group_button)
+
         /* 로고 클릭 설정
             클릭 시 메인 화면으로 이동
          */
-        val logoText: TextView = toolbar.findViewById(R.id.logo)
         logoText.setOnClickListener {
+            // 로고 클릭 시 동작하는 코드 작성 -> 사실상 메인
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
         /* 메뉴 버튼 설정
             클릭 시 메뉴 팝업 출력
          */
-        val menuButton: ImageButton = toolbar.findViewById(R.id.menu_button)
         menuButton.setOnClickListener {
             showMenu(menuButton)
         }
@@ -47,33 +54,31 @@ open class CustomActionBarActivity : AppCompatActivity() {
         /* 알림 버튼 설정
             클릭 시 알림 내역 화면으로 이동
          */
-        val notificationButton: ImageButton = toolbar.findViewById(R.id.notification_button)
         notificationButton.setOnClickListener {
             // 알림 버튼 클릭 시 동작하는 코드 작성
             val intent = Intent(this,NotificationActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
         // 카메라 버튼 설정
-        val cameraButton: ImageButton = findViewById(R.id.camera_button)
         cameraButton.setOnClickListener{
             // 카메라 버튼 클릭 시 동작하는 코드 작성 -> 그룹화면 재활용 해야함
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
-        // 캘린더 버튼 설정
-        val calendarButton: ImageButton = findViewById(R.id.calendar_button)
+        // 캘린더 버튼 설정 - 메인 액티비티
         calendarButton.setOnClickListener {
-            // 캘린더 버튼 클릭 시 동작하는 코드 작성 -> 사실상 메인
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
         // 그룹 버튼 설정
-        val groupButton: ImageButton = findViewById(R.id.group_button)
         groupButton.setOnClickListener {
-            // 그룹 버튼 클릭 시 동작하는 코드 작성
             val intent = Intent(this,GroupActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
     }
 
@@ -86,6 +91,7 @@ open class CustomActionBarActivity : AppCompatActivity() {
                 // 약 검색 메뉴 아이템 클릭 시 동작하는 코드 작성
                 val intent = Intent(this,SearchPillActivity::class.java)
                 startActivity(intent)
+                overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
                 return true
             }
             R.id.settings -> {
@@ -93,6 +99,7 @@ open class CustomActionBarActivity : AppCompatActivity() {
 //                toActivity("SettingActivity")
                 val intent = Intent(this,SettingActivity::class.java)
                 startActivity(intent)
+                overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -115,12 +122,6 @@ open class CustomActionBarActivity : AppCompatActivity() {
         }
     }
 
-    // 각 액티비티마다 만들지 고민중
-    fun toActivity(activityName : String) {
-        val intent = Intent(this,activityName::class.java)
-        startActivity(intent)
-    }
-
     /*
         현재 구조는 상단, 하단 액션바를 구현 후 나머지 클래스가 상속받아 사용하는 구조
         그렇기에 코드 간략화를 위해 하단 액션바를 상단 액션바와 같이 구현해서 상속 받아 사용
@@ -128,8 +129,7 @@ open class CustomActionBarActivity : AppCompatActivity() {
     */
     protected fun addCustomView(layoutResID: Int) {
         val customContent = findViewById<FrameLayout>(R.id.custom_action_bar_container)
-        val newView = layoutInflater.inflate(layoutResID, customContent, true)
-//        customContent.addView(newView)
+        layoutInflater.inflate(layoutResID, customContent, true)
     }
 
 }

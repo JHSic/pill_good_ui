@@ -17,6 +17,7 @@ class SearchPillActivity : CustomActionBarActivity() {
         searchButton.setOnClickListener {
             var searchPillResultIntent = Intent(this, SearchPillResultActivity::class.java)
             startActivity(searchPillResultIntent)
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
     }
 }
