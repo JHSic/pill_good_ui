@@ -1,9 +1,10 @@
 package com.example.pill_good.repository
 
 import com.example.pill_good.data.remote.ApiService
-import com.example.pill_good.di.NetworkModule.client
 import com.example.pill_good.di.NetworkModule.gson
 import com.example.pill_good.di.appModule
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
@@ -76,6 +77,7 @@ open class RepositoryTest {
         mockWebServer.start()
         mockWebServerURL = mockWebServer.url("").toString()
 
+
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(mockWebServerURL)
             .addConverterFactory(GsonConverterFactory.create(gson))
@@ -85,6 +87,12 @@ open class RepositoryTest {
     }
 
     private fun getApiService(): ApiService {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY // 로깅 레벨을 BODY로 설정하여 요청/응답 내용을 출력
+            })
+            .build()
+
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(SERVER_URL)
             .client(client)
