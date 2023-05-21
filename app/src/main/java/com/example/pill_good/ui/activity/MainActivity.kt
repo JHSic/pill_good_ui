@@ -30,13 +30,7 @@ class MainActivity : CustomActionBarActivity() {
             }
         })
 
-        val calendarRadioGroup : RadioGroup = findViewById(R.id.calendar_radio_group)
-        val onCheckedChangeListener = RadioGroup.OnCheckedChangeListener { radioGroup, btnId ->
-            val selectedBtn : RadioButton = findViewById(btnId)
-
-
-
-        }
+        initializeCalendarRadioGroup()
 
         val diseaseContainer: LinearLayout = findViewById(R.id.group_member_disease_container)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -83,20 +77,29 @@ class MainActivity : CustomActionBarActivity() {
 
         }
 
+    }
 
+    // 캘린더 선택 라디오 버튼 그룹 생성
+    fun initializeCalendarRadioGroup(){
+        val calendarRadioGroup : RadioGroup = findViewById(R.id.calendar_radio_group)
+        val onCheckedChangeListener = RadioGroup.OnCheckedChangeListener { radioGroup, btnId ->
+            when(btnId){
+                // 전체 캘린더 선택 시 로직
+                R.id.calendar_all -> {
+                    allCalendarSelect()
+                }
+                /* 그룹원 캘린더 선택 시 로직
+                   스피너를 캘린더 이전에 추가
+                */
+                R.id.calendar_group_member -> {
 
+                }
+            }
+        }
+    }
 
-        // 각 버튼 클릭 시 해야하는 로직 구현 ->
+    // 전체 캘린더 선택 시 로직
+    fun allCalendarSelect(){
 
-//        var allGroupMemberCalendarButton : Button = findViewById(R.id.calendar_all)
-//        var specificGroupMemberCalendarButton : Button = findViewById(R.id.calendar_group_member)
-//
-//        allGroupMemberCalendarButton.setOnClickListener{
-//
-//        }
-//
-//        specificGroupMemberCalendarButton.setOnClickListener {
-//
-//        }
     }
 }
