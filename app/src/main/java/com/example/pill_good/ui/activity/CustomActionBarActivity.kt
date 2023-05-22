@@ -58,6 +58,8 @@ open class CustomActionBarActivity : AppCompatActivity() {
         val cameraButton: ImageButton = findViewById(R.id.camera_button)
         cameraButton.setOnClickListener{
             // 카메라 버튼 클릭 시 동작하는 코드 작성 -> 그룹화면 재활용 해야함
+            val intent = Intent(this,CameraActivity::class.java)
+            startActivity(intent)
         }
 
         // 캘린더 버튼 설정
