@@ -24,6 +24,7 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
@@ -61,32 +62,69 @@ class CameraActivity : AppCompatActivity() {
         }
 
         // Set up the listeners for take photo and video capture buttons
-        viewBinding.imageCaptureButton.setOnClickListener { takePhoto() }
+        //viewBinding..setOnClickListener { takePhoto() }z
 
         val displayMetrics = resources.displayMetrics
         val aspectRatio = 1.41f // A4 문서의 폭 대 높이 비율
+        val leftMarginRatio = 2
+        val topMarginRatio = 5
         val deviceWidth = displayMetrics.widthPixels
         val deviceHeight = displayMetrics.heightPixels
         val rectangleWidth = (deviceWidth * 0.8f).toInt() // deviceWidth의 80%
         val rectangleHeight = (rectangleWidth * aspectRatio).toInt()
+        val rectangleMarginLeft = (deviceWidth - rectangleWidth) / leftMarginRatio
+        val rectangleMarginTop = (deviceHeight - rectangleHeight) / 5
+        val heightMarginGap = ((deviceHeight - rectangleHeight) / leftMarginRatio) - rectangleMarginTop
 
-        val layoutParams = viewBinding.rectangleView.layoutParams as FrameLayout.LayoutParams
-        layoutParams.width = rectangleWidth
-        layoutParams.height = rectangleHeight
-        layoutParams.leftMargin = (deviceWidth - rectangleWidth) / 2
-        layoutParams.topMargin = (deviceHeight - rectangleHeight) / 3
-        viewBinding.rectangleView.layoutParams = layoutParams
 
-        // 사각형의 크기와 위치를 설정합니다.
-        viewBinding.rectangleView.layoutParams.apply {
-            width = rectangleWidth  // 사각형의 너비
-            height = rectangleHeight // 사각형의 높이
-            Margins(
-                100,100,100,100
-            )
+        with(viewBinding) {
+            borderTop.layoutParams = FrameLayout.LayoutParams(
+                deviceWidth,
+                (deviceHeight - rectangleHeight) / leftMarginRatio - heightMarginGap
+            ).apply {
+                leftMargin = 0
+                topMargin = 0
+            }
+
+            borderLeft.layoutParams =
+                FrameLayout.LayoutParams((deviceWidth - rectangleWidth) / leftMarginRatio, rectangleHeight)
+                    .apply {
+                        leftMargin = 0
+                        topMargin = rectangleMarginTop
+                    }
+
+            rectangleView.layoutParams =
+                FrameLayout.LayoutParams(rectangleWidth, rectangleHeight).apply {
+                    leftMargin = rectangleMarginLeft
+                    topMargin = rectangleMarginTop
+                }
+
+            borderRight.layoutParams =
+                FrameLayout.LayoutParams((deviceWidth - rectangleWidth) / leftMarginRatio, rectangleHeight)
+                    .apply {
+                        leftMargin = rectangleMarginLeft + rectangleWidth
+                        topMargin = (deviceHeight - rectangleHeight) / topMarginRatio
+                    }
+
+            borderBottom.layoutParams = FrameLayout.LayoutParams(
+                deviceWidth,
+                (deviceHeight - rectangleHeight) / leftMarginRatio + heightMarginGap
+            ).apply {
+                leftMargin = 0
+                topMargin = rectangleMarginTop + rectangleHeight
+            }
+
+            takePhotoDescriptionView.layoutParams = FrameLayout.LayoutParams(
+                deviceWidth,
+                deviceHeight - (rectangleMarginTop * leftMarginRatio + rectangleHeight)
+            ).apply {
+                leftMargin = 0
+                topMargin = rectangleMarginTop * leftMarginRatio + rectangleHeight
+            }
+
+            rectangleView.background =
+                ContextCompat.getDrawable(this@CameraActivity, R.drawable.rectangle_border)
         }
-
-        viewBinding.rectangleView.background = ContextCompat.getDrawable(this, R.drawable.rectangle_border)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
