@@ -11,6 +11,10 @@ import java.time.LocalDate
 class GroupMemberRepositoryTest: RepositoryTest() {
     private val groupMemberRepositoryImpl: GroupMemberRepositoryImpl by inject(GroupMemberRepositoryImpl::class.java)
 
+    /**
+     * TODO - MockWebServer Test
+     * MockWebServer를 활용해 MockResponse를 받는 방식의 테스트
+     */
     @Test
     fun `group-member create test`() {
         // Create response
@@ -177,6 +181,27 @@ class GroupMemberRepositoryTest: RepositoryTest() {
             printMockWebServerInfo(mockWebServer)
 
             // No assertion required for this test
+        }
+    }
+
+    /**
+     * TODO - Repository TEST with Real server
+     * 실제 서버와 RESTApi 통신을 진행하여 데이터를 검증
+     * 꼭 RepositoryTest 클래스의 TEST_MODE 변수를 false 로 변경 후 테스트 진행.
+     */
+
+    @Test
+    fun `group-member readById with server test`() {
+        // Test Data
+        val groupMemberId = 1L
+
+        // Act
+        runBlocking {
+            // Send Request
+            val result = groupMemberRepositoryImpl.readById(groupMemberId)
+
+            // Assertion
+            println(result)
         }
     }
 }
