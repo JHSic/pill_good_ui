@@ -39,6 +39,8 @@ class MainActivity : CustomActionBarActivity() {
 
         initializeCalendarRadioGroup()
 
+
+        // 복약 시간 형식에 따라 라디오 그룹에 대한 함수화 예정
         val diseaseContainer: LinearLayout = findViewById(R.id.group_member_disease_container)
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
