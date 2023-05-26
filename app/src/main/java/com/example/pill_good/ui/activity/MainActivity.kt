@@ -1,5 +1,6 @@
 package com.example.pill_good.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore.Audio.Radio
 import android.view.LayoutInflater
@@ -20,7 +21,7 @@ class MainActivity : CustomActionBarActivity() {
 
         val inflater = LayoutInflater.from(this)
 
-        // 캘린더 버튼, 로그 미지정 설정 및 캘린더 버튼 alpha 변경
+        // 캘린더 버튼, 버튼 미지정 설정 및 캘린더 버튼 alpha 변경
         val calendarButton: ImageButton = findViewById(R.id.calendar_button)
         val logoText: TextView = findViewById(R.id.logo)
         calendarButton.alpha = 1f
@@ -76,6 +77,13 @@ class MainActivity : CustomActionBarActivity() {
                     val pillLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                     pillLayoutParams.setMargins(32, 0, 32, 32)
                     prescriptionPillContent.layoutParams = pillLayoutParams
+
+                    prescriptionPillContent.setOnClickListener{
+                        val intent = Intent(this,pillInformationActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+                    }
+
                     groupMemberDiseasePillFrame.addView(prescriptionPillContent)
                 }
 

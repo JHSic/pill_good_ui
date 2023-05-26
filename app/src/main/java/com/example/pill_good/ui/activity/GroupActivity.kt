@@ -20,6 +20,11 @@ class GroupActivity : CustomActionBarActivity() {
         addCustomView(R.layout.activity_group)
         val linearLayout = findViewById<LinearLayout>(R.id.group_linear)
 
+        // 캘린더 버튼, 버튼 미지정 설정 및 캘린더 버튼 alpha 변경
+        val groupButton: ImageButton = findViewById(R.id.group_button)
+        groupButton.alpha = 1f
+        groupButton.isEnabled = false
+
         var n = 10 // 그룹원 수
         val rows = (n + 2) / 2 // 카드를 출력할 줄 수
         var lastRowNumOfCards = n % 2 // 마지막 줄의 카드 수
