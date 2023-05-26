@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.*
+import android.widget.LinearLayout.LayoutParams
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -19,13 +20,7 @@ class GroupActivity : CustomActionBarActivity() {
         addCustomView(R.layout.activity_group)
         val linearLayout = findViewById<LinearLayout>(R.id.group_linear)
 
-        linearLayout.removeAllViews() // 기존의 모든 카드 뷰 제거
-
-        val groupButton: ImageButton = findViewById(R.id.group_button)
-        groupButton.alpha = 1f
-        groupButton.isEnabled = false
-
-        var n = 9 // 그룹원 수
+        var n = 10 // 그룹원 수
         val rows = (n + 2) / 2 // 카드를 출력할 줄 수
         var lastRowNumOfCards = n % 2 // 마지막 줄의 카드 수
         if (lastRowNumOfCards == 0 && n > 0) { // 그룹원 수가 짝수인 경우
@@ -50,22 +45,23 @@ class GroupActivity : CustomActionBarActivity() {
             layoutParams2.marginEnd = 64
 
             // 왼쪽 카드
-            createCard(layoutParams1, cardRow, if (i * 2 - 1 <= n) 0 else 1)
+            createCard(layoutParams1, cardRow, i, if (i * 2 - 1 <= n) 0 else 1)
             // 오른쪽 카드
             if (i * 2 <= n) {
-                createCard(layoutParams2, cardRow, if (i * 2 == n && lastRowNumOfCards == 1) 1 else 0)
+                createCard(layoutParams2, cardRow, i, if (i * 2 == n && lastRowNumOfCards == 1) 1 else 0)
             } else if (lastRowNumOfCards == 1) { // 마지막 줄이 1개 카드인 경우
-                createCard(layoutParams2, cardRow, 1) // 그룹원 추가 버튼 생성
+                createCard(layoutParams2, cardRow, i, 1) // 그룹원 추가 버튼 생성
             }
             linearLayout.addView(cardRow)
         }
     }
 
-    private fun createCard(layoutParams : LinearLayout.LayoutParams, cardRow : LinearLayout, createType : Int){
+    private fun createCard(layoutParams : LinearLayout.LayoutParams, cardRow : LinearLayout, cardNum : Int, createType : Int){
         val card = CardView(this)
         card.layoutParams = layoutParams
         card.radius = 36F // 둥근 정도
         card.setContentPadding(25,25,25,25)
+//        card.setCardBackgroundColor(Color.WHITE)
         card.setBackgroundResource(R.drawable.prescription_card_border)
         card.cardElevation = 12F  // 그림자
         card.maxCardElevation = 20F  // 눌렀을 때 그림자
@@ -74,9 +70,12 @@ class GroupActivity : CustomActionBarActivity() {
             // 그룹원 클릭 시 개인 처방전 목록 화면이동 구현
         }
         if(createType == 0){
-            card.addView(generateCardView()) // 그룹원 이름을 주는 메소드로 변경
+            card.addView(generateCardView(cardNum, layoutParams)) // 그룹원 이름을 주는 메소드로 변경
         }
         else if(createType == 1){
+            if(layoutParams.rightMargin == 32){
+                layoutParams.marginEnd = 64
+            }
             card.addView(generateAddCardView()) // 그룹원 추가 카드뷰 생성
         }
         cardRow.addView(card)
@@ -112,7 +111,6 @@ class GroupActivity : CustomActionBarActivity() {
             // 그룹원 추가 페이지로 이동
             val intent = Intent(this,GroupMemberAddActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
 
@@ -120,7 +118,7 @@ class GroupActivity : CustomActionBarActivity() {
     }
 
     // 카드뷰 내용 생성하는 메소드
-    private fun generateCardView(): LinearLayout {
+    private fun generateCardView(cardNum: Int, layoutParams: LayoutParams): LinearLayout {
         val font = ResourcesCompat.getFont(this, R.font.pt_sans_regular) // 폰트를 가져옴
         val cardLinearLayout = LinearLayout(this)
         cardLinearLayout.orientation = LinearLayout.VERTICAL
@@ -134,6 +132,7 @@ class GroupActivity : CustomActionBarActivity() {
         iconLayoutParams.gravity = Gravity.CENTER_HORIZONTAL
 
 
+
         val groupMemberName = TextView(this)
         groupMemberName.text = "그룹원"
         groupMemberName.textSize = 17f
@@ -144,6 +143,15 @@ class GroupActivity : CustomActionBarActivity() {
 
         cardLinearLayout.addView(groupMemberIcon, iconLayoutParams)
         cardLinearLayout.addView(groupMemberName)
+
+        if(cardNum == 1 && layoutParams.leftMargin == 64){
+            cardLinearLayout.setOnClickListener {
+                val intent = Intent(this,PrescriptionActivity::class.java)
+                startActivity(intent)
+            }
+
+            return cardLinearLayout
+        }
 
         val buttonLayout = LinearLayout(this)
         buttonLayout.orientation = LinearLayout.HORIZONTAL
@@ -157,7 +165,6 @@ class GroupActivity : CustomActionBarActivity() {
             // 수정 페이지로 이동
             val intent = Intent(this,GroupMemberEditActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
         // 삭제 버튼
@@ -208,7 +215,6 @@ class GroupActivity : CustomActionBarActivity() {
         cardLinearLayout.setOnClickListener {
             val intent = Intent(this,PrescriptionActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
 
         return cardLinearLayout
