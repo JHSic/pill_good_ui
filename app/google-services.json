@@ -7,14 +7,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:244376760539:android:4a21a338aa94f802311cfe",
+        "mobilesdk_app_id": "1:244376760539:android:49caadbd49f17c22311cfe",
         "android_client_info": {
           "package_name": "com.example.pill_good"
         }
       },
       "oauth_client": [
         {
-          "client_id": "244376760539-hj2llb6ktpatov1f5eka78mp12rb8vm1.apps.googleusercontent.com",
+          "client_id": "244376760539-pgj3podph9e3so9ffqt51djk13qilhmm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.pill_good",
@@ -22,7 +22,44 @@
           }
         },
         {
-          "client_id": "244376760539-2gce9caekcp0tu5tcmie076h4aqru8tt.apps.googleusercontent.com",
+          "client_id": "244376760539-fp9cv15jf4nkfs06u0p31hed8edppj8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZDmk5mrBCnBqwUKGwr8Y4TUdhs2Ohh3Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "244376760539-2gce9caekcp0tu5tcmie076h4aqru8tt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244376760539:android:4a21a338aa94f802311cfe",
+        "android_client_info": {
+          "package_name": "com.example.pillgood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244376760539-hj2llb6ktpatov1f5eka78mp12rb8vm1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pillgood",
+            "certificate_hash": "cd1fa21eb23bbf89d7c946e729067121d05975a7"
+          }
+        },
+        {
+          "client_id": "244376760539-fp9cv15jf4nkfs06u0p31hed8edppj8b.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

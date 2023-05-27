@@ -59,13 +59,15 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // onStart. 유저가 앱에 이미 구글 로그인을 했는지 확인
-    public override fun onStart() {
+    override fun onStart() {
         super.onStart()
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        if(account!==null){ // 이미 로그인 되어있을시 바로 메인 액티비티로 이동
-            toMainActivity(firebaseAuth.currentUser)
+        val currentUser = firebaseAuth.currentUser
+        if (currentUser != null) {
+            // 이미 로그인 되어있을시 바로 메인 액티비티로 이동
+            toMainActivity(currentUser)
         }
-    } //onStart End
+    } // onStart End
+
 
     // onActivityResult
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -81,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
 
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-                Log.w("LoginActivity", "Google sign in failed", e)
+                Log.e("LoginActivity", "Google sign in failed: ${e.statusCode}", e)
             }
         }
     } // onActivityResult End
@@ -109,6 +111,7 @@ class LoginActivity : AppCompatActivity() {
         if(user !=null) { // MainActivity 로 이동
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
     } // toMainActivity End
 
@@ -119,6 +122,8 @@ class LoginActivity : AppCompatActivity() {
     }
     // signIn End
 
-
-
+    override fun onBackPressed() {
+        // 뒤로가기 버튼을 눌렀을 때 동작할 내용을 정의합니다.
+        // 로그아웃 화면에서는 아무 동작도 수행하지 않도록 합니다.
+    }
 }

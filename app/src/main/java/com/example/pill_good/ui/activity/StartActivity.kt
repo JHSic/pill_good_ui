@@ -18,7 +18,7 @@ class StartActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
 
             //일정 시간 지연 후 MainActivity로 이동
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this,LoginActivity::class.java)
             startActivity(intent)
 
             //이전 키, 즉 취소 키를 눌렀을 때 activity_start 즉, 스플래시 스크린으로 이동 방지

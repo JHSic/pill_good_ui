@@ -83,17 +83,12 @@ class MainActivity : CustomActionBarActivity() {
                         startActivity(intent)
                         overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
                     }
-
                     groupMemberDiseasePillFrame.addView(prescriptionPillContent)
                 }
-
                 groupMemberDiseaseContainer.addView(groupMemberDiseaseContent)
             }
-
             diseaseContainer.addView(groupMemberContent)
-
         }
-
     }
 
     // 캘린더 선택 라디오 버튼 그룹 생성

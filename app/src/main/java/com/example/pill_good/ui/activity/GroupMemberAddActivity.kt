@@ -56,8 +56,6 @@ class GroupMemberAddActivity : CustomActionBarActivity() {
         addCalenderButton.setOnClickListener() {
             //calendar Constraint Builder 선택할수있는 날짜 구간설정
             val calendarConstraintBuilder = CalendarConstraints.Builder()
-            //오늘 이후만 선택가능하게 하는 코드
-//            calendarConstraintBuilder.setValidator(DateValidatorPointForward.now())
             //오늘 이전만 선택가능하게 하는 코드
             calendarConstraintBuilder.setValidator(DateValidatorPointBackward.now())
 
@@ -65,7 +63,6 @@ class GroupMemberAddActivity : CustomActionBarActivity() {
             val builder = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Calendar")
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-
                 //위에서 만든 calendarConstraint을 builder에 설정.
                 .setCalendarConstraints(calendarConstraintBuilder.build());
 

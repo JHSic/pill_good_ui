@@ -86,6 +86,7 @@ class GroupActivity : CustomActionBarActivity() {
         cardRow.addView(card)
     }
 
+    // 카드뷰 생성을 위한 줄 생성 - LinearLayout을 수평으로 생성하여 2개의 카드뷰 배치
     private fun createCardRow() : LinearLayout{
         val cardRow = LinearLayout(this)
         cardRow.orientation = LinearLayout.HORIZONTAL
@@ -98,6 +99,9 @@ class GroupActivity : CustomActionBarActivity() {
         return cardRow
     }
 
+    // 그룹원을 추가하는 카드뷰 레이아웃 생성.
+    // 홀수인 경우에는 그룹원 카드뷰와 같은 크기의 뷰 생성
+    // 짝수인 경우에는 그룹원 카드뷰 밑 한 줄을 가득 채우는 카드뷰 생성
     private fun generateAddCardView() : LinearLayout{
         val cardLinearLayout = LinearLayout(this)
 //        cardLinearLayout.orientation = LinearLayout.VERTICAL
@@ -136,8 +140,6 @@ class GroupActivity : CustomActionBarActivity() {
         )
         iconLayoutParams.gravity = Gravity.CENTER_HORIZONTAL
 
-
-
         val groupMemberName = TextView(this)
         groupMemberName.text = "그룹원"
         groupMemberName.textSize = 17f
@@ -145,16 +147,15 @@ class GroupActivity : CustomActionBarActivity() {
         groupMemberName.gravity = Gravity.CENTER_HORIZONTAL
         groupMemberName.setTextColor(Color.BLACK)
 
-
         cardLinearLayout.addView(groupMemberIcon, iconLayoutParams)
         cardLinearLayout.addView(groupMemberName)
 
+        // 첫번째 그룹원은 유저이므로 수정, 삭제, 메시지 버튼 미생성
         if(cardNum == 1 && layoutParams.leftMargin == 64){
             cardLinearLayout.setOnClickListener {
                 val intent = Intent(this,PrescriptionActivity::class.java)
                 startActivity(intent)
             }
-
             return cardLinearLayout
         }
 

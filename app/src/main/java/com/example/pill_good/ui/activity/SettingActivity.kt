@@ -22,27 +22,24 @@ class SettingActivity : CustomActionBarActivity() {
         logoutButton.setOnClickListener{
            signOut()
             var logoutIntent = Intent (this, LoginActivity::class.java)
+            logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(logoutIntent)
+            finish() // Activity 종료
         }
     }
 
     private fun signOut() { // 로그아웃
+        FirebaseAuth.getInstance().signOut()
+
         var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.client_ID))
             .requestEmail()
             .build()
-        var googleSignInClient : GoogleSignInClient?= null
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-
-        var firebaseAuth = FirebaseAuth.getInstance()
         // Firebase sign out
-        firebaseAuth.signOut()
-
-        // Google sign out
-        googleSignInClient.signOut().addOnCompleteListener(this) {
-            //updateUI(null)
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+        googleSignInClient.signOut().addOnCompleteListener {
+            googleSignInClient.revokeAccess()
         }
     }
 }
