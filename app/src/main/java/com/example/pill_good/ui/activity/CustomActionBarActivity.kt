@@ -27,13 +27,6 @@ open class CustomActionBarActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.custom_action_bar)
         setSupportActionBar(toolbar)
 
-        val logoText: TextView = toolbar.findViewById(R.id.logo)
-        val menuButton: ImageButton = toolbar.findViewById(R.id.menu_button)
-        val notificationButton: ImageButton = toolbar.findViewById(R.id.notification_button)
-        val cameraButton: ImageButton = findViewById(R.id.camera_button)
-        val calendarButton: ImageButton = findViewById(R.id.calendar_button)
-        val groupButton: ImageButton = findViewById(R.id.group_button)
-
         /* 로고 클릭 설정
             클릭 시 메인 화면으로 이동
          */
@@ -64,7 +57,8 @@ open class CustomActionBarActivity : AppCompatActivity() {
         // 카메라 버튼 설정
         cameraButton.setOnClickListener{
             // 카메라 버튼 클릭 시 동작하는 코드 작성 -> 그룹화면 재활용 해야함
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+            val intent = Intent(this,CameraActivity::class.java)
+            startActivity(intent)
         }
 
         // 캘린더 버튼 설정 - 메인 액티비티
