@@ -27,6 +27,13 @@ open class CustomActionBarActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.custom_action_bar)
         setSupportActionBar(toolbar)
 
+        val logoText: TextView = toolbar.findViewById(R.id.logo)
+        val menuButton: ImageButton = toolbar.findViewById(R.id.menu_button)
+        val notificationButton: ImageButton = toolbar.findViewById(R.id.notification_button)
+        val cameraButton: ImageButton = findViewById(R.id.camera_button)
+        val calendarButton: ImageButton = findViewById(R.id.calendar_button)
+        val groupButton: ImageButton = findViewById(R.id.group_button)
+
         /* 로고 클릭 설정
             클릭 시 메인 화면으로 이동
          */
