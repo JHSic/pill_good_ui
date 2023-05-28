@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="#00ffffff"/>
     <stroke
-        android:color="#FF0000"
+        android:color="#80FF0000"
         android:width="3dp" /> <!-- 경계의 색상 및 두께를 설정합니다. -->
     <corners
         android:radius="0dp" /> <!-- 사각형의 꼭지점을 라운드 처리하지 않음 -->

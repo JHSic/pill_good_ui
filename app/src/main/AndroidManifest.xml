@@ -11,6 +11,9 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:name=".App"
@@ -58,6 +61,6 @@
         <activity android:name=".ui.activity.pillInformationActivity"></activity>
         <activity android:name=".ui.activity.PrescriptionActivity"></activity>
         <activity android:name=".ui.activity.CameraActivity"></activity>
+        <activity android:name=".ui.activity.CameraResultActivity"></activity>
     </application>
-
 </manifest>

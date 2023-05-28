@@ -21,39 +21,44 @@
             android:id="@+id/border_left"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#80000000" />
+            android:background="#90000000" />
 
         <View
             android:id="@+id/border_right"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#80000000" />
+            android:background="#90000000" />
 
         <View
             android:id="@+id/border_top"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#80000000" />
+            android:background="#90000000" />
 
         <View
             android:id="@+id/border_bottom"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#80000000" />
+            android:background="#90000000" />
 
         <LinearLayout
             android:id="@+id/take_photo_description_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#000000"
+            android:gravity="center"
+            android:background="#00000000"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sample Text"
-                android:textColor="#ffffff" />
+            <Button
+                android:id="@+id/take_photo_button"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:backgroundTint="#90ffffff"
+                android:gravity="center"
+                android:text="Photo"
+                android:textSize="8pt"
+                android:shape="oval"
+                android:textColor="#000000"/>
 
         </LinearLayout>
 

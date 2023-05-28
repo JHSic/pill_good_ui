@@ -4,11 +4,11 @@ import com.example.pill_good.databinding.ActivityCameraBinding
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
+
 import android.os.Build
 import android.os.Bundle
-import android.print.PrintAttributes.Margins
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
@@ -21,20 +21,12 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.core.Preview
 import androidx.camera.core.CameraSelector
 import android.util.Log
-import android.view.View
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
-import androidx.appcompat.widget.Toolbar
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
-import androidx.camera.view.PreviewView
 import com.example.pill_good.R
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-typealias LumaListener = (luma: Double) -> Unit
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityCameraBinding
@@ -62,7 +54,7 @@ class CameraActivity : AppCompatActivity() {
         }
 
         // Set up the listeners for take photo and video capture buttons
-        //viewBinding..setOnClickListener { takePhoto() }z
+        viewBinding.takePhotoButton.setOnClickListener { takePhoto() }
 
         val displayMetrics = resources.displayMetrics
         val aspectRatio = 1.41f // A4 문서의 폭 대 높이 비율
@@ -73,14 +65,14 @@ class CameraActivity : AppCompatActivity() {
         val rectangleWidth = (deviceWidth * 0.8f).toInt() // deviceWidth의 80%
         val rectangleHeight = (rectangleWidth * aspectRatio).toInt()
         val rectangleMarginLeft = (deviceWidth - rectangleWidth) / leftMarginRatio
-        val rectangleMarginTop = (deviceHeight - rectangleHeight) / 5
-        val heightMarginGap = ((deviceHeight - rectangleHeight) / leftMarginRatio) - rectangleMarginTop
+        val rectangleMarginTop = (deviceHeight - rectangleHeight) / topMarginRatio
+        //val heightMarginGap = ((deviceHeight - rectangleHeight) / leftMarginRatio) - rectangleMarginTop
 
 
         with(viewBinding) {
             borderTop.layoutParams = FrameLayout.LayoutParams(
                 deviceWidth,
-                (deviceHeight - rectangleHeight) / leftMarginRatio - heightMarginGap
+                (deviceHeight - rectangleHeight) / topMarginRatio
             ).apply {
                 leftMargin = 0
                 topMargin = 0
@@ -108,7 +100,8 @@ class CameraActivity : AppCompatActivity() {
 
             borderBottom.layoutParams = FrameLayout.LayoutParams(
                 deviceWidth,
-                (deviceHeight - rectangleHeight) / leftMarginRatio + heightMarginGap
+//                (deviceHeight - rectangleHeight) / topMarginRatio
+                deviceHeight - rectangleHeight
             ).apply {
                 leftMargin = 0
                 topMargin = rectangleMarginTop + rectangleHeight
@@ -116,10 +109,10 @@ class CameraActivity : AppCompatActivity() {
 
             takePhotoDescriptionView.layoutParams = FrameLayout.LayoutParams(
                 deviceWidth,
-                deviceHeight - (rectangleMarginTop * leftMarginRatio + rectangleHeight)
+                deviceHeight - (rectangleHeight + (((deviceHeight - rectangleHeight) / topMarginRatio) * 2))
             ).apply {
                 leftMargin = 0
-                topMargin = rectangleMarginTop * leftMarginRatio + rectangleHeight
+                topMargin = rectangleMarginTop + rectangleHeight
             }
 
             rectangleView.background =
@@ -158,18 +151,16 @@ class CameraActivity : AppCompatActivity() {
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/PillGood-Image")
             }
         }
 
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(
-                contentResolver,
+            .Builder(contentResolver,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues
-            )
+                contentValues)
             .build()
 
         // Set up image capture listener, which is triggered after photo has
@@ -182,11 +173,20 @@ class CameraActivity : AppCompatActivity() {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun
-                        onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                override fun onImageSaved(output: ImageCapture.OutputFileResults){
+                    val msg = "이미지 저장에 성공했습니다! 경로: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+
+                    val intent = Intent(this@CameraActivity, CameraResultActivity::class.java)
+                    intent.putExtra("savedUri", output.savedUri.toString())
+                    intent.putExtra("rectangleLeft", viewBinding.rectangleView.left)
+                    intent.putExtra("rectangleTop", viewBinding.rectangleView.top)
+                    intent.putExtra("rectangleRight", viewBinding.rectangleView.right)
+                    intent.putExtra("rectangleBottom", viewBinding.rectangleView.bottom)
+                    intent.putExtra("frameWidth", viewBinding.frameLayout.width)
+                    intent.putExtra("frameHeight", viewBinding.frameLayout.height)
+                    startActivity(intent)
                 }
             }
         )
@@ -206,9 +206,7 @@ class CameraActivity : AppCompatActivity() {
                     it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
                 }
 
-            imageCapture =
-                ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                    .build()
+            imageCapture = ImageCapture.Builder().build()
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
