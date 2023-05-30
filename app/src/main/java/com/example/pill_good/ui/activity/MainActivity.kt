@@ -32,6 +32,11 @@ class MainActivity : CustomActionBarActivity() {
         // Load InitialData
         mainViewModel.loadInitialCalendarData(true)
 
+        // LiveData 구독
+        mainViewModel.totalCalendar.observe(this) {
+            setDecorators(currentMonth, true)
+        }
+
         // 캘린더 버튼, 버튼 미지정 설정 및 캘린더 버튼 alpha 변경
         val calendarButton: ImageButton = findViewById(R.id.calendar_button)
         val logoText: TextView = findViewById(R.id.logo)
