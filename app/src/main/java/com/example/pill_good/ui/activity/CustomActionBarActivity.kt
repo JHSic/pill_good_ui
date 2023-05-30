@@ -2,6 +2,7 @@ package com.example.pill_good.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.Image
 import android.os.Bundle
 import android.view.*
@@ -39,9 +40,9 @@ open class CustomActionBarActivity : AppCompatActivity() {
          */
         logoText.setOnClickListener {
             // 로고 클릭 시 동작하는 코드 작성 -> 사실상 메인
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+            overridePendingTransition(0, 0)
         }
 
         /* 메뉴 버튼 설정
@@ -55,32 +56,45 @@ open class CustomActionBarActivity : AppCompatActivity() {
             클릭 시 알림 내역 화면으로 이동
          */
         notificationButton.setOnClickListener {
-            // 알림 버튼 클릭 시 동작하는 코드 작성
-            val intent = Intent(this,NotificationActivity::class.java)
+            val intent = Intent(this, NotificationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+            overridePendingTransition(0, 0);
         }
 
         // 카메라 버튼 설정
-        cameraButton.setOnClickListener{
-            // 카메라 버튼 클릭 시 동작하는 코드 작성 -> 그룹화면 재활용 해야함
-            val intent = Intent(this,CameraActivity::class.java)
+        cameraButton.setOnClickListener {
+            val intent = Intent(this, CameraActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
+            overridePendingTransition(0, 0);
         }
 
         // 캘린더 버튼 설정 - 메인 액티비티
         calendarButton.setOnClickListener {
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+            overridePendingTransition(0, 0);
         }
 
         // 그룹 버튼 설정
         groupButton.setOnClickListener {
-            val intent = Intent(this,GroupActivity::class.java)
+            val intent = Intent(this, GroupActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+            overridePendingTransition(0, 0);
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        overridePendingTransition(0, 0);
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0, 0);
     }
 
     /*
@@ -90,19 +104,21 @@ open class CustomActionBarActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.pill_search -> {
                 // 약 검색 메뉴 아이템 클릭 시 동작하는 코드 작성
-                val intent = Intent(this,SearchPillActivity::class.java)
+                val intent = Intent(this, SearchPillActivity::class.java)
                 startActivity(intent)
-                overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+                overridePendingTransition(0, 0)
                 return true
             }
+
             R.id.settings -> {
                 // 설정 메뉴 아이템 클릭 시 동작하는 코드 작성
 //                toActivity("SettingActivity")
-                val intent = Intent(this,SettingActivity::class.java)
+                val intent = Intent(this, SettingActivity::class.java)
                 startActivity(intent)
-                overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+                overridePendingTransition(0, 0)
                 return true
             }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }
