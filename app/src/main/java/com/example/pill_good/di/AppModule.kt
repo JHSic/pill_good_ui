@@ -8,6 +8,7 @@ import com.example.pill_good.repository.PrescriptionRepositoryImpl
 import com.example.pill_good.repository.SendAutoMessageRepositoryImpl
 import com.example.pill_good.repository.TakePillRepositoryImpl
 import com.example.pill_good.repository.UserRepositoryImpl
+import com.example.pill_good.ui.viewModel.GroupViewModel
 import com.example.pill_good.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -30,5 +31,6 @@ val appModule = module {
      * ViewModel
      */
     viewModel { MainViewModel(get(), get()) }
+    viewModel { GroupViewModel(get()) }
 }
 
