@@ -141,6 +141,46 @@ class MainViewModel(
         }
     }
 
+    fun testAddCalendarData() {
+        val calendarDataList = mutableListOf<CalendarData>()
+
+        val currentDate = LocalDate.now().plusMonths(2).withDayOfMonth(15)
+
+        // 새로운 CalendarData 객체를 생성하고 필요한 데이터를 설정합니다
+        val newCalendarData = CalendarData(
+            groupMemberId = 1L,
+            takePillIndex = 2L,
+            prescriptionIndex = 3L,
+            pillIndex = 4L,
+            takeDay = 5,
+            takeCount = 2,
+            takePillCheckIndex = 6L,
+            takeDate = currentDate,
+            takePillTime = 10,
+            takeCheck = true
+        )
+
+        if (_totalCalendar.value == null) {
+            _totalCalendar.value = mutableMapOf()
+        }
+
+        // _totalCalendar의 값을 가져와서 업데이트합니다
+        val totalCalendarValue = _totalCalendar.value ?: mutableMapOf()
+
+        if (totalCalendarValue.containsKey(currentDate)) {
+            // 이미 해당 날짜에 데이터가 있는 경우에는 기존 리스트에 추가합니다
+            val dataList = totalCalendarValue[currentDate]
+            dataList?.add(newCalendarData)
+        } else {
+            // 해당 날짜에 데이터가 없는 경우에는 새로운 리스트를 생성하여 데이터를 추가합니다
+            val dataList = mutableListOf(newCalendarData)
+            totalCalendarValue[currentDate] = dataList
+        }
+
+        // _totalCalendar 값을 업데이트합니다
+        _totalCalendar.value = totalCalendarValue
+    }
+
     /**
      * ====================== Below is for the TEST case ======================
      */
@@ -212,7 +252,7 @@ class MainViewModel(
             val groupMemberData = GroupMemberAndUserIndexDTO(
                 groupMemberIndex = groupMemberId,
                 userIndex = userId, // 사용자 인덱스를 설정하세요.
-                groupMemberName = "Group Member $groupMemberId", // 그룹 멤버 이름을 설정하세요.
+                groupMemberName = "GMember $groupMemberId", // 그룹 멤버 이름을 설정하세요.
                 groupMemberBirth = LocalDate.of(randomBirthYear, randomBirthMonth, randomBirthDay), // 그룹 멤버 생년월일을 설정하세요.
                 groupMemberPhone = generateRandomPhoneNumber(), // 그룹 멤버 전화번호를 설정하세요. (랜덤 함수 호출)
                 messageCheck = kotlin.random.Random.nextBoolean() // 메시지 체크 여부를 설정하세요. (랜덤 함수 호출)
