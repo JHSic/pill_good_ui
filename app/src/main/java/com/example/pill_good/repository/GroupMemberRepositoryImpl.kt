@@ -14,7 +14,7 @@ class GroupMemberRepositoryImpl(private val apiService: ApiService) {
         }
     }
 
-    suspend fun readListByUserId(userId: Long): List<GroupMemberDTO>? {
+    suspend fun readListByUserId(userId: Long): List<GroupMemberAndUserIndexDTO>? {
         val response = apiService.getGroupMembersByUserId(userId)
         if (response.statusCode == 200) {
             return response.data
@@ -23,7 +23,7 @@ class GroupMemberRepositoryImpl(private val apiService: ApiService) {
         }
     }
 
-    suspend fun readById(id: Long): GroupMemberDTO? {
+    suspend fun readById(id: Long): GroupMemberAndUserIndexDTO? {
         val response = apiService.getGroupMemberById(id)
         if (response.statusCode == 200) {
             return response.data

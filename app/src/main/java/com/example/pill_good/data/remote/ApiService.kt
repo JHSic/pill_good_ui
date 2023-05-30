@@ -61,11 +61,11 @@ interface ApiService {
      */
     @GET("/group-member/search/group-members")
     suspend fun getGroupMembersByUserId(@Query("userIndex") userId: Long)
-    : ApiResponse<List<GroupMemberDTO>>
+    : ApiResponse<List<GroupMemberAndUserIndexDTO>>
 
     @GET("/group-member/search/{id}")
     suspend fun getGroupMemberById(@Path("id") groupMemberId: Long)
-    : ApiResponse<GroupMemberDTO>
+    : ApiResponse<GroupMemberAndUserIndexDTO>
 
     @POST("/group-member/create")
     suspend fun createGroupMember(@Body groupMemberAndUserIndexDTO: GroupMemberAndUserIndexDTO)
