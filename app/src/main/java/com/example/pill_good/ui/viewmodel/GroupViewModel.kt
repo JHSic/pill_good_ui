@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
-import com.example.pill_good.data.dto.GroupMemberDTO
 import com.example.pill_good.repository.GroupMemberRepositoryImpl
 import kotlinx.coroutines.launch
 
 class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryImpl) : ViewModel(){
 
     private val _groupData = MutableLiveData<List<GroupMemberAndUserIndexDTO>>()
-    val groupData : LiveData<List<GroupMemberAndUserIndexDTO>> get() = _groupData
-
+    val groupData : LiveData<List<GroupMemberAndUserIndexDTO>>
+        get() = _groupData
     fun loadGroupMembers() {
         viewModelScope.launch {
             try {
@@ -22,6 +21,12 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
             } catch (e: Exception) {
                 // 에러 처리
             }
+        }
+    }
+
+    fun setGroupDataByMainData(groupMemberList : ArrayList<GroupMemberAndUserIndexDTO>){
+        viewModelScope.launch {
+            _groupData.value = groupMemberList
         }
     }
 
@@ -43,17 +48,19 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
     fun editGroupMember(groupMember: GroupMemberAndUserIndexDTO) {
         viewModelScope.launch {
             try {
-                val updatedGroupMember = groupMemberRepository.updateById(groupMember.groupMemberIndex!!, groupMember)
-                // 응답이 성공적으로 받아왔을 경우
-                updatedGroupMember?.let {
+//                val updatedGroupMember = groupMemberRepository.updateById(groupMember.groupMemberIndex!!, groupMember)
+//                // 응답이 성공적으로 받아왔을 경우
+//                updatedGroupMember?.let {
+                println("1왜 안될까?????????" + groupMember.groupMemberName)
                     // 대치 작업 수행
-                    val currentList = _groupData.value?.toMutableList()
+                    val currentList = groupData.value?.toMutableList()
+
                     val index = currentList?.indexOfFirst { it.groupMemberIndex == groupMember.groupMemberIndex }
                     if (index != null && index != -1) {
-                        currentList[index] = updatedGroupMember
+                        currentList[index] = groupMember // updateGroupMember로 변경해야함
+                        println("왜 안될까?????????" + groupMember.groupMemberName)
                         _groupData.value = currentList!!
                     }
-                }
             } catch (e: Exception) {
                 // 에러 처리
             }
@@ -79,8 +86,4 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
         }
     }
 
-
-    fun setGroupData(groupData : List<GroupMemberAndUserIndexDTO>){
-//        this._groupData.value = groupData
-    }
 }

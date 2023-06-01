@@ -19,76 +19,40 @@ import com.example.pill_good.ui.viewModel.GroupViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GroupActivity : CustomActionBarActivity() {
-
-    //    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        addCustomView(R.layout.activity_group)
-//        val linearLayout = findViewById<LinearLayout>(R.id.group_linear)
-//
-//        // 캘린더 버튼, 버튼 미지정 설정 및 캘린더 버튼 alpha 변경
-//        val groupButton: ImageButton = findViewById(R.id.group_button)
-//        groupButton.alpha = 1f
-//        groupButton.isEnabled = false
-//
-//        var n = 10 // 그룹원 수
-//        val rows = (n + 2) / 2 // 카드를 출력할 줄 수
-//        var lastRowNumOfCards = n % 2 // 마지막 줄의 카드 수
-//        if (lastRowNumOfCards == 0 && n > 0) { // 그룹원 수가 짝수인 경우
-//            lastRowNumOfCards = 2
-//        }
-//        for (i: Int in 1..rows) {
-//            var cardRow = createCardRow()
-//
-//            val layoutParams1 = LinearLayout.LayoutParams(
-//                0,
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                1F
-//            )
-//            layoutParams1.marginStart = 64 // 오른쪽 마진
-//            layoutParams1.marginEnd = 32 // 왼쪽 마진
-//            val layoutParams2 = LinearLayout.LayoutParams(
-//                0,
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                1F
-//            )
-//            layoutParams2.marginStart = 32
-//            layoutParams2.marginEnd = 64
-//
-//            // 왼쪽 카드
-//            createCard(layoutParams1, cardRow, i, if (i * 2 - 1 <= n) 0 else 1)
-//            // 오른쪽 카드
-//            if (i * 2 <= n) {
-//                createCard(layoutParams2, cardRow, i, if (i * 2 == n && lastRowNumOfCards == 1) 1 else 0)
-//            } else if (lastRowNumOfCards == 1) { // 마지막 줄이 1개 카드인 경우
-//                createCard(layoutParams2, cardRow, i, 1) // 그룹원 추가 버튼 생성
-//            }
-//            linearLayout.addView(cardRow)
-//        }
-//    }
-//
-
-    private val groupViewModel : GroupViewModel by viewModel()
+    private val groupViewModel: GroupViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addCustomView(R.layout.activity_group)
-        val linearLayout = findViewById<LinearLayout>(R.id.group_linear)
 
-        // 캘린더 버튼, 버튼 미지정 설정 및 캘린더 버튼 alpha 변경
+        val groupMemberList = intent.getSerializableExtra("groupMemberList") as? ArrayList<GroupMemberAndUserIndexDTO>
+        groupViewModel.setGroupDataByMainData(groupMemberList!!)
         val groupButton: ImageButton = findViewById(R.id.group_button)
         groupButton.alpha = 1f
         groupButton.isEnabled = false
 
         groupViewModel.groupData.observe(this) { _groupData ->
             if (_groupData != null) {
-                populateViews(_groupData, linearLayout)
+                populateViews(_groupData)
             }
         }
     }
-    private fun populateViews(groupData : List<GroupMemberAndUserIndexDTO>, linearLayout : LinearLayout) {
+
+//    override fun onResume() {
+//        super.onResume()
+//        groupViewModel.groupData.observe(this) { _groupData ->
+//            if (_groupData != null) {
+//                populateViews(_groupData)
+//            }
+//        }
+//    }
+
+
+    private fun populateViews(groupData : List<GroupMemberAndUserIndexDTO>) {
+        val linearLayout = findViewById<LinearLayout>(R.id.group_linear)
         linearLayout.removeAllViews()
 
-        var n = groupData.size
+        var n = groupViewModel.groupData.value!!.size
         val rows = (n + 2) / 2 // 카드를 출력할 줄 수
         var lastRowNumOfCards = n % 2 // 마지막 줄의 카드 수
         if (lastRowNumOfCards == 0 && n > 0) { // 그룹원 수가 짝수인 경우
@@ -122,12 +86,7 @@ class GroupActivity : CustomActionBarActivity() {
 
             // 오른쪽 카드
             if (i * 2 <= n) {
-                if(i * 2 == n && lastRowNumOfCards == 1){
-                    createCard(layoutParams2, cardRow, i, 1, groupData.get(i * 2 - 1))
-                }
-                else{
-                    createCard(layoutParams2, cardRow, i, 1, null) // 그룹원 추가 버튼 생성
-                }
+                createCard(layoutParams2, cardRow, i, 0, groupData.get(i * 2 - 1))
             } else if (lastRowNumOfCards == 1) { // 마지막 줄이 1개 카드인 경우
                 createCard(layoutParams2, cardRow, i, 1, null) // 그룹원 추가 버튼 생성
             }
@@ -158,7 +117,7 @@ class GroupActivity : CustomActionBarActivity() {
         cardRow.addView(card)
     }
 
-    //     카드뷰 생성을 위한 줄 생성 - LinearLayout을 수평으로 생성하여 2개의 카드뷰 배치
+    // 카드뷰 생성을 위한 줄 생성 - LinearLayout을 수평으로 생성하여 2개의 카드뷰 배치
     private fun createCardRow() : LinearLayout{
         val cardRow = LinearLayout(this)
         cardRow.orientation = LinearLayout.HORIZONTAL
@@ -244,6 +203,7 @@ class GroupActivity : CustomActionBarActivity() {
         groupMemberEditButton.setOnClickListener {
             // 수정 페이지로 이동
             val intent = Intent(this,GroupMemberEditActivity::class.java)
+            intent.putExtra("groupMemberInformation", groupMemberData)
             startActivity(intent)
         }
 
@@ -272,20 +232,40 @@ class GroupActivity : CustomActionBarActivity() {
         imageButton.setImageResource(R.drawable.group_member_message) // 기본 아이콘 설정
         imageButton.setBackgroundColor(Color.WHITE)
 
+        // 생성 시 메시지 전송여부 설정
+        if(groupMemberData.messageCheck == true){
+            imageButton.setImageResource(R.drawable.group_member_message)
+        }
+        else{
+            imageButton.setImageResource(R.drawable.group_member_no_message)
+        }
+
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         imageButton.layoutParams = layoutParams
 
-        // 토글 상태 변경 시 이벤트 처리
+        // 토글 상태 변경 시 메시지 전송여부 변경
         imageButton.setOnClickListener {
-            if (imageButton.isSelected) {
+            if (groupMemberData.messageCheck == false) {
                 imageButton.setImageResource(R.drawable.group_member_message)
-            } else {
+                val updateGroupMember = groupMemberData.copy(
+                    messageCheck = true
+                )
+                println(groupMemberData.groupMemberName + "의 메시지 전송여부 변경 기존 : " + groupMemberData.messageCheck + "변경" + updateGroupMember.messageCheck )
+                groupViewModel.editGroupMember(updateGroupMember)
+            } else if(groupMemberData.messageCheck == true) {
                 imageButton.setImageResource(R.drawable.group_member_no_message)
+                val updateGroupMember = groupMemberData.copy(
+                    messageCheck = false
+                )
+                groupViewModel.editGroupMember(updateGroupMember)
+                println(groupMemberData.groupMemberName + "의 메시지 전송여부 변경 기존 : " + groupMemberData.messageCheck + "변경" + updateGroupMember.messageCheck )
             }
+
             imageButton.isSelected = !imageButton.isSelected
+
         }
         buttonLayout.addView(imageButton)
 

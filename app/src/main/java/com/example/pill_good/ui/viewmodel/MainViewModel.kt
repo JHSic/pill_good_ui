@@ -54,7 +54,7 @@ class MainViewModel(
             // 캘린더를 위한 최초 데이터 로딩
             val initialCalendarData: MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> =
                 if (isTest)
-                    createMockData(1L, 3, 14)
+                    createMockData(1L, 10, 14)
                 else
                     takePillRepositoryImpl.readCalendarDataByUserIdBetweenDate(
                         userId,
@@ -206,8 +206,8 @@ class MainViewModel(
 
         for (groupMemberId in groupMemberIdList) {
             val randomBirthYear = kotlin.random.Random.nextInt(1970, 2000) // 1970부터 2000 사이의 임의의 연도
-            val randomBirthMonth = kotlin.random.Random.nextInt(1, 13) // 1부터 12 사이의 임의의 월
-            val randomBirthDay = kotlin.random.Random.nextInt(1, 29) // 1부터 28 사이의 임의의 일자
+            val randomBirthMonth = kotlin.random.Random.nextInt(10, 13) // 1부터 12 사이의 임의의 월
+            val randomBirthDay = kotlin.random.Random.nextInt(10, 29) // 1부터 28 사이의 임의의 일자
 
             val groupMemberData = GroupMemberAndUserIndexDTO(
                 groupMemberIndex = groupMemberId,
