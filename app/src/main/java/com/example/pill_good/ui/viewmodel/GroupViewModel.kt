@@ -25,9 +25,7 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
     }
 
     fun setGroupDataByMainData(groupMemberList : ArrayList<GroupMemberAndUserIndexDTO>){
-        viewModelScope.launch {
-            _groupData.value = groupMemberList
-        }
+        _groupData.value = groupMemberList
     }
 
     // groupMemberDTO가 아닌 유저 이름, 생년월일, 전화번호 정보만 받는걸로 수정 -> 이게 모델 만드는건강

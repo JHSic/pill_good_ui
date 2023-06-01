@@ -30,7 +30,7 @@ val appModule = module {
     /**
      * ViewModel
      */
-    viewModel { MainViewModel(get(), get()) }
-    viewModel { GroupViewModel(get()) }
+    single { MainViewModel(get(), get()) }
+    single { GroupViewModel(get()) }
 }
 
