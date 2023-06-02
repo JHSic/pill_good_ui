@@ -16,8 +16,12 @@ class PillViewModel(private val pillRepository : PillRepositoryImpl) : ViewModel
 
     fun loadPillData(searchPillDTO : SearchingConditionDTO){
         viewModelScope.launch {
+            try{
 //            _pillData.value = pillRepository.readBySearchingCondition(searchPillDTO)
-            test()
+                test()
+            } catch (e : Exception) {
+                // 예외 처리
+            }
         }
     }
 
