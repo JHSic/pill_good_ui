@@ -1,5 +1,6 @@
 package com.example.pill_good.ui.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,18 +12,17 @@ import kotlinx.coroutines.launch
 class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryImpl) : ViewModel(){
 
     private val _groupData = MutableLiveData<List<GroupMemberAndUserIndexDTO>>()
-    val groupData : LiveData<List<GroupMemberAndUserIndexDTO>>
-        get() = _groupData
-    fun loadGroupMembers() {
-        viewModelScope.launch {
-            try {
+    val groupData : LiveData<List<GroupMemberAndUserIndexDTO>> get() = _groupData
+//    fun loadGroupMembers() {
+//        viewModelScope.launch {
+//            try {
 //                val groupMemberList = groupMemberRepository.readListByUserId() // user_index 줘야함
 //                _groupData.value = groupMemberList!!
-            } catch (e: Exception) {
-                // 에러 처리
-            }
-        }
-    }
+//            } catch (e: Exception) {
+//                // 에러 처리
+//            }
+//        }
+//    }
 
     fun setGroupDataByMainData(groupMemberList : ArrayList<GroupMemberAndUserIndexDTO>){
         _groupData.value = groupMemberList
@@ -32,14 +32,15 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
     fun addGroupMember(groupMember : GroupMemberAndUserIndexDTO) {
         viewModelScope.launch {
             try{
-                val addGroupMember = groupMemberRepository.create(groupMember)
-
+//                val addGroupMember = groupMemberRepository.create(groupMember)
+                val currentList = groupData.value?.toMutableList()
+                currentList!!.add(groupMember)
+                println(currentList.size)
+                _groupData.value = currentList!!
             } catch (e : Exception){
                 // 에러 처리
             }
-//            groupMemberRepository.create() //groupMemberAndUserIndexDTO를 받도록 구성되어있는데 동희형한테 물어봐야함
         }
-        // 그 다음 그룹원 리스트에 추가해야하는데 해당 값이 groupViewModel에 있으므로 합쳐서 쓸지 고민
     }
 
     // 그룹원 수정
@@ -49,14 +50,12 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
 //                val updatedGroupMember = groupMemberRepository.updateById(groupMember.groupMemberIndex!!, groupMember)
 //                // 응답이 성공적으로 받아왔을 경우
 //                updatedGroupMember?.let {
-                println("1왜 안될까?????????" + groupMember.groupMemberName)
                     // 대치 작업 수행
                     val currentList = groupData.value?.toMutableList()
 
                     val index = currentList?.indexOfFirst { it.groupMemberIndex == groupMember.groupMemberIndex }
                     if (index != null && index != -1) {
                         currentList[index] = groupMember // updateGroupMember로 변경해야함
-                        println("왜 안될까?????????" + groupMember.groupMemberName)
                         _groupData.value = currentList!!
                     }
             } catch (e: Exception) {
@@ -71,12 +70,12 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
         viewModelScope.launch {
             try {
                 if (groupMember.groupMemberIndex != null) {
-                    val deletedData = groupMemberRepository.deleteById(groupMember.groupMemberIndex)
-                    if (deletedData == null) {
+//                    val deletedData = groupMemberRepository.deleteById(groupMember.groupMemberIndex)
+//                    if (deletedData == null) {
                         val currentList = _groupData.value?.toMutableList()
                         currentList?.remove(groupMember)
                         _groupData.value = currentList!!
-                    }
+//                    }
                 }
             } catch (e: Exception) {
                 // 에러 처리

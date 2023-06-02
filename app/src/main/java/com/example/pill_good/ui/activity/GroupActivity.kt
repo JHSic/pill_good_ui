@@ -20,6 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GroupActivity : CustomActionBarActivity() {
     private val groupViewModel: GroupViewModel by viewModel()
+    private var userId : Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,25 +28,26 @@ class GroupActivity : CustomActionBarActivity() {
 
         val groupMemberList = intent.getSerializableExtra("groupMemberList") as? ArrayList<GroupMemberAndUserIndexDTO>
         groupViewModel.setGroupDataByMainData(groupMemberList!!)
+        userId = groupMemberList.get(0).userIndex
         val groupButton: ImageButton = findViewById(R.id.group_button)
         groupButton.alpha = 1f
         groupButton.isEnabled = false
 
+//        groupViewModel.groupData.observe(this) { _groupData ->
+//            if (_groupData != null) {
+//                populateViews(_groupData)
+//            }
+//        }
+    }
+
+    override fun onResume() {
+        super.onResume()
         groupViewModel.groupData.observe(this) { _groupData ->
             if (_groupData != null) {
                 populateViews(_groupData)
             }
         }
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        groupViewModel.groupData.observe(this) { _groupData ->
-//            if (_groupData != null) {
-//                populateViews(_groupData)
-//            }
-//        }
-//    }
 
 
     private fun populateViews(groupData : List<GroupMemberAndUserIndexDTO>) {
@@ -150,6 +152,7 @@ class GroupActivity : CustomActionBarActivity() {
         groupMemberAddIcon.setOnClickListener{
             // 그룹원 추가 페이지로 이동
             val intent = Intent(this,GroupMemberAddActivity::class.java)
+            intent.putExtra("userId", userId)
             startActivity(intent)
         }
         return cardLinearLayout
@@ -275,6 +278,7 @@ class GroupActivity : CustomActionBarActivity() {
 
         cardLinearLayout.setOnClickListener {
             val intent = Intent(this,PrescriptionActivity::class.java)
+            intent.putExtra("groupMemberId", groupMemberData.groupMemberIndex)
             startActivity(intent)
         }
 

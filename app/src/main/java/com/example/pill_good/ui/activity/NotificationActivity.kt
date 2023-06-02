@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.res.ResourcesCompat
 import com.example.pill_good.R
 
 class NotificationActivity : CustomActionBarActivity() {
@@ -40,7 +41,8 @@ class NotificationActivity : CustomActionBarActivity() {
             notificationCard.setContentPadding(25,25,25,25)
 
             // 배경색 설정
-            notificationCard.setCardBackgroundColor(Color.WHITE)
+//            notificationCard.setCardBackgroundColor(Color.WHITE)
+            notificationCard.setBackgroundResource(R.drawable.prescription_card_border)
 
             // 그림자
             notificationCard.cardElevation = 8F
@@ -58,7 +60,7 @@ class NotificationActivity : CustomActionBarActivity() {
 
     // Custom method to generate an image view
     private fun generateCardView(): LinearLayout {
-
+        val font = ResourcesCompat.getFont(this, R.font.pt_sans_regular) // 폰트를 가져옴
         val cardLinearLayout = LinearLayout(this)
         cardLinearLayout.orientation = LinearLayout.VERTICAL
 
@@ -66,11 +68,13 @@ class NotificationActivity : CustomActionBarActivity() {
         notificationContent.text = "아침약 알림입니다."
         notificationContent.textSize = 20f
         notificationContent.setTextColor(Color.BLACK)
+        notificationContent.typeface = font
 
         val notificationTime = TextView(this)
         notificationTime.text = "20분전"
         notificationTime.textSize = 15f
         notificationTime.setTextColor(Color.BLACK)
+        notificationTime.typeface = font
 
         cardLinearLayout.addView(notificationContent)
         cardLinearLayout.addView(notificationTime)

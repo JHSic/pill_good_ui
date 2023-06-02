@@ -11,19 +11,21 @@ import com.example.pill_good.ui.viewModel.GroupViewModel
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 class GroupMemberEditActivity : CustomActionBarActivity() {
-    private val groupViewModel: GroupViewModel by viewModel()
+    private val groupViewModel: GroupViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         addCustomView(R.layout.activity_group_member_edit)
 
-        val groupMemberInformation = intent.getSerializableExtra("groupMemberInformation") as? GroupMemberAndUserIndexDTO
+        val groupMemberInformation = intent.getSerializableExtra("groupMemberInformation") as GroupMemberAndUserIndexDTO
 
         val editAliasText: EditText = findViewById(R.id.edittext_alias)
         val editPhoneText: EditText = findViewById(R.id.edittext_phone)
@@ -96,7 +98,6 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
                         groupMemberPhone = updatePhone,
                         groupMemberBirth = updateBirth
                     )
-                    println("그룹원 리스트 사이즈 " + groupViewModel.groupData.value?.size)
                     println("업데이트된 유저의 이름 " + updateAlias)
                     groupViewModel.editGroupMember(updatedGroupMember!!)
                     Toast.makeText(applicationContext, "수정이 완료되었습니다.", Toast.LENGTH_LONG).show();
@@ -108,7 +109,7 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
 
     fun convertToDate(birthdate: String): LocalDate {
         // 날짜 형식 지정
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-M-d")
         // birthdate 문자열을 LocalDate로 변환
         return LocalDate.parse(birthdate.trim(), formatter)
     }

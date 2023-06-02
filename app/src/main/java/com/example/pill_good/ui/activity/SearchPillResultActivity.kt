@@ -12,87 +12,84 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginTop
+import com.bumptech.glide.Glide
+import com.bumptech.glide.module.AppGlideModule
 import com.example.pill_good.R
+import com.example.pill_good.data.dto.PillDTO
+import com.example.pill_good.data.dto.SearchingConditionDTO
+import com.example.pill_good.ui.viewmodel.PillViewModel
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchPillResultActivity : CustomActionBarActivity() {
+    private val pillViewModel : PillViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         addCustomView(R.layout.activity_search_pill_result)
 
+        val searchPillData = intent.getSerializableExtra("pillData") as SearchingConditionDTO
+
+        pillViewModel.loadPillData(searchPillData)
+
+        pillViewModel.pillData.observe(this) { _pillData ->
+            if (_pillData != null) {
+                generatePillResult(_pillData)
+            }
+        }
+    }
+
+    fun generatePillResult(pillData : List<PillDTO>){
         val inflater = LayoutInflater.from(this)
 
         val linearLayout = findViewById<LinearLayout>(R.id.pill_search_result_linear)
 
-        var pillNum = 5
-        for(i in 1..pillNum){
+        val countPill : TextView = findViewById(R.id.search_pill_num)
+
+        countPill.text = "${pillData.size}건"
+
+        println("터지는 위치 1")
+        // Firebase 이미지 로드 초기 설정
+        val storageRef = FirebaseStorage.getInstance().reference
+        println("터지는 위치 2")
+        for(i in pillData.indices){
             val pillContent: FrameLayout = inflater.inflate(R.layout.activity_pill_item, null) as FrameLayout
             val pillLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+
+            val pillItemName : TextView = pillContent.findViewById(R.id.pill_item_name)
+            val pillItemFeatureShape : TextView = pillContent.findViewById(R.id.pill_item_feature_shape)
+            val pillItemFeatureColor : TextView = pillContent.findViewById(R.id.pill_item_feature_color)
+            val pillItemImage : ImageView = pillContent.findViewById(R.id.pill_item_image)
             pillLayoutParams.setMargins(32, 0, 32, 32) // 아래쪽에 32dp의 마진
             pillContent.layoutParams = pillLayoutParams
 
+            pillItemName.text = pillData[i].pillName
+            pillItemFeatureShape.text = pillData[i].pillShape
+            pillItemFeatureColor.text = pillData[i].pillColor
+
+            // 이미지 경로 지정
+            val imageRef = storageRef.child(pillData[i].pillNum + ".jpg")
+            // 이미지 다운로드 URL 가져오기
+            imageRef.downloadUrl.addOnSuccessListener { uri ->
+                // 다운로드 URL을 사용하여 이미지 설정
+                Glide.with(this)
+                    .load(uri)
+                    .into(pillItemImage)
+            }.addOnFailureListener { exception ->
+                // 다운로드 실패 시 처리할 작업
+                Log.e("TAG", "이미지 다운로드 실패: ${exception.message}")
+            }
+
             pillContent.setOnClickListener {
                 val intent = Intent(this,pillInformationActivity::class.java)
+                intent.putExtra("pillInformationData", pillData[i])
                 startActivity(intent)
                 overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
             }
+
             linearLayout.addView(pillContent)
         }
     }
-
-    // 기존에 작성했던 레이아웃을 통한 동적 생성이 아닌 코틀린을 통한 동적 생성
-    // 임시로 미삭제
-//    private fun generateCardView(): LinearLayout {
-//
-//        val pillImage = ImageView(this)
-//        // 테스트 코드 삭제해도 됨
-////        // 파이어베이스 스토리지 참조
-////        val storageReference = FirebaseStorage.getInstance().reference
-////
-////        // 이미지 다운로드 URL 가져오기
-////        val imageRef = storageReference.child("gs://pillgood-4128c.appspot.com/195900043.jpg")
-////        imageRef.downloadUrl.addOnSuccessListener { uri ->
-////            val imageURL = uri.toString()
-////
-////            // 이미지를 다운로드하여 ImageView에 설정
-////            Picasso.get().load(imageURL).into(pillImage)
-////        }.addOnFailureListener { exception ->
-////            // 다운로드 실패 처리
-////            Log.e("Firebase", "Failed to download image: $exception")
-////        }
-//
-//
-//        val cardLinearLayout = LinearLayout(this)
-//        cardLinearLayout.orientation = LinearLayout.HORIZONTAL
-//
-//        val imagePath = R.drawable.a201412020003201
-//        val bitmap = BitmapFactory.decodeResource(resources, imagePath)
-//
-//        pillImage.setImageBitmap(bitmap)
-//        pillImage.layoutParams = LinearLayout.LayoutParams(300, 150)
-//
-//        val pillName = TextView(this)
-//        pillName.text = "엑스콜골드"
-//        pillName.gravity = Gravity.CENTER
-//        pillName.textSize = 15f
-//        pillName.fontFeatureSettings = "@font/pt_sans_bold"
-//        pillName.setTextColor(Color.BLACK)
-//        pillName.setPadding(25, 40, 25, 40)
-//        pillName.ellipsize = TextUtils.TruncateAt.END
-//        pillName.maxLines = 1
-//
-//        cardLinearLayout.addView(pillImage)
-//        cardLinearLayout.addView(pillName)
-//
-//        cardLinearLayout.setOnClickListener {
-//            val intent = Intent(this,pillInformationActivity::class.java)
-//            startActivity(intent)
-//            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
-//        }
-//
-//        return cardLinearLayout
-//    }
 }
