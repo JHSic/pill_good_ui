@@ -22,25 +22,48 @@ import kotlin.properties.Delegates
 class MainActivity : CustomActionBarActivity() {
     private val mainViewModel: MainViewModel by viewModel()
 
-    private var currentMonth = LocalDate.now().monthValue - 1   // calendar에서 사용하는 month의 범위는 0 ~ 11
+    private var currentYear = LocalDate.now().year
+    private var currentMonth = LocalDate.now().month.value - 1
     private var buttonId by Delegates.notNull<Int>()
     private lateinit var calendar: MaterialCalendarView
     private lateinit var decorators: ArrayList<DayViewDecorator>
 
     private var selectedGroupMember: Long? = null   // 그룹원 캘린더에서 선택된 그룹 멤버의 Id 정보
     private var selectedSpinnerIndex: Int? = null
+    private var isTotalCalendarMode: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addCustomView(R.layout.activity_main)
         val inflater = LayoutInflater.from(this)
 
+        // Initializing userInfo
+        mainViewModel.setUserInfo(
+            intent.getLongExtra("userId", -1),
+            intent.getStringExtra("userEmail")!!,
+            intent.getStringExtra("userFcmToken")!!
+        )
+
         // Load InitialData
-        mainViewModel.loadInitialCalendarData(true)
+        mainViewModel.getInitialData()
 
         // LiveData 구독
-        mainViewModel.totalCalendar.observe(this) {
-            setDecorators(currentMonth, isReplaceDecorator = true)
+        mainViewModel.groupMemberCalendar.observe(this) {
+            val calendarRadioGroup : RadioGroup = findViewById(R.id.calendar_radio_group)
+
+            if(buttonId == calendarRadioGroup.getChildAt(0).id) {
+                setDecorators(currentMonth, isReplaceDecorator = true)
+            } else {
+                setDecorators(currentMonth, isReplaceDecorator = true, isGroupMemberDecorator = true)
+            }
+        }
+
+        mainViewModel.groupMemberList.observe(this) {
+
+        }
+
+        mainViewModel.takePillData.observe(this) {
+
         }
 
 
@@ -72,14 +95,28 @@ class MainActivity : CustomActionBarActivity() {
 
         // onMonthChangedListener 설정
         calendar.setOnMonthChangedListener { _, date ->
+            val currentYear = this.currentYear
+            val currentMonth = this.currentMonth
+            val selectedYear = date.year
+            val selectedMonth = date.month
+
+            if (selectedYear > currentYear || (selectedYear == currentYear && selectedMonth > currentMonth)) {
+                // 다음 달로 넘어갔을 때의 처리
+                this.currentMonth = selectedMonth
+                mainViewModel.getCalendarDataFromSelectedMonth(date.date, isAfterMonth = true)
+            } else if (selectedYear < currentYear || (selectedYear == currentYear && selectedMonth < currentMonth)) {
+                // 이전 달로 넘어갔을 때의 처리
+                this.currentMonth = selectedMonth
+                mainViewModel.getCalendarDataFromSelectedMonth(date.date, isAfterMonth = false)
+            } else {
+                // 현재 월일 때의 처리
+            }
+
             val calendarRadioGroup : RadioGroup = findViewById(R.id.calendar_radio_group)
             if(buttonId == calendarRadioGroup.getChildAt(0).id) {
-                currentMonth = date.month
-                setDecorators(currentMonth, isReplaceDecorator = true)
+                setDecorators(this.currentMonth, isReplaceDecorator = true)
             } else {
-                // TODO("Not Implementation: 그룹원 캘린더에 대한 onMonthChangedListener를 구현")
-                currentMonth = date.month
-                setDecorators(currentMonth, isReplaceDecorator = true, isGroupMemberDecorator = true)
+                setDecorators(this.currentMonth, isReplaceDecorator = true, isGroupMemberDecorator = true)
             }
         }
 
@@ -144,12 +181,14 @@ class MainActivity : CustomActionBarActivity() {
             when(buttonId){
                 // 전체 캘린더 선택 시 로직
                 R.id.calendar_all -> {
+                    isTotalCalendarMode = true
                     allCalendarSelect()
                 }
                 /* 그룹원 캘린더 선택 시 로직
                    스피너를 캘린더 이전에 추가
                 */
                 R.id.calendar_group_member -> {
+                    isTotalCalendarMode = false
                     groupMemberCalenderSelect()
                 }
             }
@@ -240,8 +279,12 @@ class MainActivity : CustomActionBarActivity() {
 
             // 기존 데코레이터 중 NotDayOfMonthDecorator를 제외한 데코레이터들을 새로운 리스트에 추가
             decorators.forEach { decorator ->
-                if (decorator !is NotDayOfMonthDecorator && decorator !is DotDecorator) {
-                    newDecorators.add(decorator)
+                if(isTotalCalendarMode) {
+                    if (decorator !is NotDayOfMonthDecorator)
+                        newDecorators.add(decorator)
+                } else {
+                    if (decorator !is NotDayOfMonthDecorator && decorator !is DotDecorator)
+                        newDecorators.add(decorator)
                 }
             }
 
@@ -249,16 +292,11 @@ class MainActivity : CustomActionBarActivity() {
             newDecorators.add(NotDayOfMonthDecorator(currentMonth))
 
             // 복약일정이 있는 날짜에 데코레이팅
-            if(!isGroupMemberDecorator) {
-                mainViewModel.totalCalendar.value?.forEach {
-                    newDecorators.add(DotDecorator(CalendarDay.from(convertLocalDateToDate(it.key))))
-                }
-            } else {
-                mainViewModel.groupMemberCalendar.value?.forEach {
-                    if(selectedGroupMember != null && it.key == selectedGroupMember) {
-                        it.value.forEach { it1 ->
-                            newDecorators.add(DotDecorator(CalendarDay.from(convertLocalDateToDate(it1.key))))
-                        }
+            // 그룹 멤버 데코레이터라면 전부 데코레이팅, 아니라면 선택된 그룹멤버만 데코레이팅
+            mainViewModel.groupMemberCalendar.value?.forEach {
+                if(!isGroupMemberDecorator || selectedGroupMember != null && it.key == selectedGroupMember) {   // NullCheck 필요없을수도
+                    it.value.forEach { it1 ->
+                        newDecorators.add(DotDecorator(CalendarDay.from(convertLocalDateToDate(it1.key))))
                     }
                 }
             }
@@ -275,8 +313,10 @@ class MainActivity : CustomActionBarActivity() {
             decorators.add(TodayDecorator())
 
             // 복약일정이 있는 날짜에 데코레이팅
-            mainViewModel.totalCalendar.value?.forEach {
-                decorators.add(DotDecorator(CalendarDay.from(convertLocalDateToDate(it.key))))
+            mainViewModel.groupMemberCalendar.value?.forEach {
+                it.value.forEach {it1 ->
+                    decorators.add(DotDecorator(CalendarDay.from(convertLocalDateToDate(it1.key))))
+                }
             }
 
             calendar.addDecorators(decorators)
