@@ -54,11 +54,11 @@ class PrescriptionActivity : CustomActionBarActivity() {
             layoutParams.setMargins(0, 0, 0, 16) // 아래쪽에 16dp의 마진
             prescriptionContent.layoutParams = layoutParams
 
-            prescriptionRegistrationDate.text = prescriptionData[i].prescriptionRegistrationDate.toString()
-            prescriptionRegistrationHospital.text = prescriptionData[i].hospitalName
-            prescriptionRegistrationHospitalPhone.text = prescriptionData[i].hospitalPhone
-            prescriptionRegistrationDisease.text = prescriptionData[i].diseaseName
-            prescriptionDate.text = prescriptionData.get(i).prescriptionDate.toString()
+            prescriptionRegistrationDate.text = "${prescriptionRegistrationDate.text} ${prescriptionData[i].prescriptionRegistrationDate.toString()}"
+            prescriptionRegistrationHospital.text = "${prescriptionRegistrationHospital.text} ${prescriptionData[i].hospitalName}"
+            prescriptionRegistrationHospitalPhone.text = "${prescriptionRegistrationHospitalPhone.text} ${prescriptionData[i].hospitalPhone}"
+            prescriptionRegistrationDisease.text = "${prescriptionRegistrationDisease.text} ${prescriptionData[i].diseaseName}"
+            prescriptionDate.text = "${prescriptionDate.text} ${prescriptionData.get(i).prescriptionDate.toString()}"
 
             //            prescriptionRegistrationName.text = prescriptionData.get(i).gr // 현재 그룹원 이름 필드가 없음
 //            prescriptionRegistrationBirth.text = prescriptionData.get(i).date // 생일 필드도 없음

@@ -33,16 +33,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun processMedicationNotification(title: String, content: String) {
-        // 복약 알림 처리 로직 구현
 
-        // 알림을 표시하거나 필요한 작업 수행
+        generateNotificationToDevice(title, content)
     }
 
     private fun processPrescriptionNotification(data: Map<String, String>, title: String, content: String) {
         // 처방전 수정 알림 처리 로직 구현
 
         val groupMemberName = data["그룹원 이름"] // "김현태"
-        val startDate = data["복용 시작 날짜"] // "2020-11-20"
         val hospitalName = data["병원 이름"] // "구미병원"
         val phoneNumber = data["병원 전화번호"] // "(054)-123-4567"
         val diseaseCode = data["질병 코드"] // "R05"
