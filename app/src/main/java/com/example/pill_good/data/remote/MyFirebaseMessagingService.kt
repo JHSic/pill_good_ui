@@ -6,6 +6,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.pill_good.R
+import com.example.pill_good.data.model.PillData
+import com.example.pill_good.data.model.PrescriptionData
+import com.example.pill_good.ui.activity.NotificationActivity
+import com.example.pill_good.ui.activity.PrescriptionEditActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.serialization.json.JsonNull.content
@@ -29,12 +33,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             // 데이터 페이로드가 없는 경우 처리 -> 일반적인 복약알림
             processMedicationNotification(title!!, body!!)
         }
-
     }
 
     private fun processMedicationNotification(title: String, content: String) {
-
-        generateNotificationToDevice(title, content)
+        var intent = Intent(this, NotificationActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(applicationContext, PendingIntent.FLAG_ONE_SHOT, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        generateNotificationToDevice(title, content, pendingIntent)
     }
 
     private fun processPrescriptionNotification(data: Map<String, String>, title: String, content: String) {
@@ -42,37 +46,47 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val groupMemberName = data["그룹원 이름"] // "김현태"
         val hospitalName = data["병원 이름"] // "구미병원"
-        val phoneNumber = data["병원 전화번호"] // "(054)-123-4567"
+        val hospitalPhone = data["병원 전화번호"] // "(054)-123-4567"
         val diseaseCode = data["질병 코드"] // "R05"
         val pillListJson = data["약 정보"]
         val pillList = JSONArray(pillListJson)
+
+        val pillDataList = ArrayList<PillData>()
 
         for (i in 0 until pillList.length()) {
             val pillObject = pillList.getJSONObject(i)
 
             val pillName = pillObject.getString("pillName")
             val takeCount = pillObject.getString("takeCount")
-            val takeDay = pillObject.getInt("takeDay")
+            val takeDay = pillObject.getString("takeDay")
             val takePillTimeList = pillObject.getJSONArray("takePillTimeList")
 
-            // 추출한 값 활용 예시
-            println("약 이름: $pillName")
-            println("복용 횟수: $takeCount")
-            println("복용 일수: $takeDay")
-
-            // 복용 시간 목록 추출
+            // JSONArray를 List<Int>로 변환
             val pillTimeList = mutableListOf<Int>()
             for (j in 0 until takePillTimeList.length()) {
                 pillTimeList.add(takePillTimeList.getInt(j))
             }
-            println("복용 시간 목록: $pillTimeList")
+
+            // PillData 객체 생성
+            val pillData = PillData(pillName, takeCount, takeDay, pillTimeList)
+
+            // PillData 객체를 리스트에 추가
+            pillDataList.add(pillData)
         }
 
         // prescriptionEditActivity
-        var intent = Intent(this, )
-
+        var intent = Intent(this, PrescriptionEditActivity::class.java)
+        val prescriptionData = PrescriptionData(
+            groupMemberName = groupMemberName,
+            hospitalName = hospitalName,
+            hospitalPhone = hospitalPhone,
+            diseaseCode = diseaseCode,
+            pillDataList = pillDataList
+        )
+        intent.putExtra("prescriptionData", prescriptionData)
+        val pendingIntent = PendingIntent.getActivity(applicationContext, PendingIntent.FLAG_ONE_SHOT, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         // 알림을 표시하거나 필요한 작업 수행
-        generateNotificationToDevice(title, content, )
+        generateNotificationToDevice(title, content, pendingIntent)
     }
 
     private fun generateNotificationToDevice(title : String, content : String, pendingIntent : PendingIntent){

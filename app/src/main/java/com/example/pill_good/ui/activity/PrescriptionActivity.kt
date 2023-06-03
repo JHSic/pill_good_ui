@@ -31,7 +31,7 @@ class PrescriptionActivity : CustomActionBarActivity() {
             }
         }
     }
-    fun generatePrescription(prescriptionData : List<PrescriptionAndDiseaseNameDTO>){
+    private fun generatePrescription(prescriptionData : List<PrescriptionAndDiseaseNameDTO>){
         val inflater = LayoutInflater.from(this)
 
         val prescriptionContainer: LinearLayout = findViewById(R.id.prescription_linear)

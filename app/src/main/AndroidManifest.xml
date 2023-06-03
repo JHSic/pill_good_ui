@@ -72,5 +72,6 @@
         <activity android:name=".ui.activity.PrescriptionActivity"></activity>
         <activity android:name=".ui.activity.CameraActivity"></activity>
         <activity android:name=".ui.activity.CameraResultActivity"></activity>
+        <activity android:name=".ui.activity.PrescriptionEditActivity"></activity>
     </application>
 </manifest>

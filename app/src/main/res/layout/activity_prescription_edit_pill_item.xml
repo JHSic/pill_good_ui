@@ -41,6 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="복용 횟수"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:fontFamily="@font/pt_sans_bold"
             android:textSize="10dp"
             android:gravity="center"

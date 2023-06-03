@@ -40,10 +40,9 @@ class SearchPillResultActivity : CustomActionBarActivity() {
 
         countPill.text = "${pillData.size}건"
 
-        println("터지는 위치 1")
         // Firebase 이미지 로드 초기 설정
         val storageRef = FirebaseStorage.getInstance().reference
-        println("터지는 위치 2")
+
         for(i in pillData.indices){
             val pillContent: FrameLayout = inflater.inflate(R.layout.activity_pill_item, null) as FrameLayout
             val pillLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
