@@ -62,8 +62,8 @@ class MainViewModel(
     val loadedDateList: LiveData<MutableList<LocalDate>> get() = _loadedDateList
 
     private val _takePillData =
-        MutableLiveData<MutableMap<LocalDate, MutableList<MedicationInfoDTO>>>()
-    val takePillData: LiveData<MutableMap<LocalDate, MutableList<MedicationInfoDTO>>> get() = _takePillData
+        MutableLiveData<MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>>>()
+    val takePillData: LiveData<MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>>> get() = _takePillData
 
     private val _groupMemberList = MutableLiveData<MutableList<GroupMemberAndUserIndexDTO>>()
     val groupMemberList: LiveData<MutableList<GroupMemberAndUserIndexDTO>> get() = _groupMemberList
@@ -76,8 +76,12 @@ class MainViewModel(
         private const val MONTH_OFFSET = 1L
 
         // For Test
-        private const val SIZE_OF_GROUP_MEMBER = 2
-        private const val SIZE_OF_TAKE_PILL_RANGE = 5
+        private const val SIZE_OF_GROUP_MEMBER = 3
+        private const val SIZE_OF_TAKE_PILL_RANGE = 14
+
+        private const val SIZE_OF_DISEASE = 5
+        private const val SIZE_OF_PILL = 10
+
         const val IS_TEST = true
     }
 
@@ -90,7 +94,7 @@ class MainViewModel(
         viewModelScope.launch {
             // 캘린더를 위한 최초 데이터 로딩
             val initialCalendarData: MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> =
-                if (IS_TEST) createMockData(
+                if (IS_TEST) createCalendarMockData(
                     MONTH_OFFSET,
                     SIZE_OF_GROUP_MEMBER,
                     SIZE_OF_TAKE_PILL_RANGE
@@ -119,19 +123,19 @@ class MainViewModel(
             // groupMemberIdList 생성
             val groupMemberIdList = groupMemberCalendar.value?.map { it.key } ?: emptyList()
 
-            // 오늘 날짜 복용 현황 정보를 위한 최초 데이터 로딩
-            val initialTakePillData: MutableMap<LocalDate, MutableList<MedicationInfoDTO>> =
-                if (IS_TEST) mutableMapOf()
-                else loadTakePillInfo(LocalDate.now())
-
-            // LiveData: takePillData 할당
-            _takePillData.value = initialTakePillData
-
             // LiveData: groupMemberList 할당
             _groupMemberList.value = if (IS_TEST) createMockGroupMemberList(
                 userInfo.value?.userIndex!!, groupMemberIdList
             ) as MutableList<GroupMemberAndUserIndexDTO>
             else groupMemberRepositoryImpl.readListByUserId(userInfo.value?.userIndex!!) as MutableList
+
+            // 오늘 날짜 복용 현황 정보를 위한 최초 데이터 로딩
+            val initialMedicationInfo: MutableMap<LocalDate, MutableList<MedicationInfoDTO>> =
+                if (IS_TEST) createTakePillMockData(SIZE_OF_DISEASE, SIZE_OF_PILL)
+                else loadTakePillInfo(LocalDate.now()) ?: mutableMapOf()
+
+            // LiveData: takePillData 할당
+            _takePillData.value = mappingMedicationInfoToTakePillInfo(initialMedicationInfo)
 
             // fot Tset: Log
             if (IS_TEST) getLog()
@@ -216,8 +220,21 @@ class MainViewModel(
         }
     }
 
-    fun getTakePillInfo(targetDate: LocalDate) {
-        // TODO("Not Yet Implemented")
+    fun getTakePillInfo(targetDate: Date) {
+        if (_takePillData.value?.containsKey(convertDateToLocalDate(targetDate)) == true)
+            return
+        else {
+            if (IS_TEST) {
+                return
+            } else {
+                val loadTakePill = loadTakePillInfo(convertDateToLocalDate(targetDate))
+                _takePillData.value?.putAll(
+                    mappingMedicationInfoToTakePillInfo(
+                        loadTakePill ?: mutableMapOf()
+                    )
+                )
+            }
+        }
     }
 
     fun setUserInfo(userId: Long, userEmail: String, userFcmToken: String) {
@@ -241,11 +258,11 @@ class MainViewModel(
 
         for (i in 0..gap) {
             val tempDate = startDate.plusMonths(i.toLong()).withDayOfMonth(1)
-            if (!isLoadedDate(tempDate)) newLoadedDateList?.add(tempDate)
+            if (!isLoadedDate(tempDate)) newLoadedDateList.add(tempDate)
 
         }
 
-        newLoadedDateList?.sortBy { it }
+        newLoadedDateList.sortBy { it }
 
         return newLoadedDateList
     }
@@ -311,9 +328,13 @@ class MainViewModel(
         return result
     }
 
-    private fun loadTakePillInfo(targetDate: LocalDate): MutableMap<LocalDate, MutableList<MedicationInfoDTO>> {
+    private fun loadTakePillInfo(targetDate: LocalDate): MutableMap<LocalDate, MutableList<MedicationInfoDTO>>? {
         var targetCalendarData: MutableList<MedicationInfoDTO> =
             emptyList<MedicationInfoDTO>().toMutableList()
+
+        // 이미 가져온 MedicationInfo 인지 확인
+        if (_takePillData.value?.containsKey(targetDate) == true)
+            return null
 
         viewModelScope.launch {
             groupMemberList.value?.map { it.groupMemberIndex }?.let { it1 ->
@@ -324,7 +345,7 @@ class MainViewModel(
             }
         }
 
-        return mutableMapOf(LocalDate.now() to targetCalendarData)
+        return mutableMapOf(targetDate to targetCalendarData)
     }
 
     private fun mappingCalendarDataToGroupMemberCalendar(data: MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO>): MutableMap<Long, MutableMap<LocalDate, MutableList<CalendarData>>> {
@@ -365,15 +386,41 @@ class MainViewModel(
         // LiveData: groupMemberCalendar 할당
         val result: MutableMap<Long, MutableMap<LocalDate, MutableList<CalendarData>>> =
             mutableMapOf()
-        groupMemberCalendarDataMap.forEach() {
+        groupMemberCalendarDataMap.forEach {
             val groupMemberId = it.key
-            it.value.forEach() { it1 ->
+            it.value.forEach { it1 ->
                 result.getOrPut(groupMemberId) { mutableMapOf() }
                     .getOrPut(it1.takeDate!!) { mutableListOf() }.add(it1)
             }
         }
 
         return result
+    }
+
+    private fun mappingMedicationInfoToTakePillInfo(medicationInfo: MutableMap<LocalDate, MutableList<MedicationInfoDTO>>): MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>> {
+        val takePillInfo: MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>> =
+            mutableMapOf()
+
+        for ((date, medicationList) in medicationInfo) {
+            val dateMap = takePillInfo[date] ?: mutableMapOf()
+
+            for (medication in medicationList) {
+                val groupMemberIndex = medication.groupMemberIndex ?: continue
+                val groupMemberName = medication.groupMemberName ?: continue
+                val diseaseIndex = medication.diseaseIndex ?: continue
+                val diseaseName = medication.diseaseName ?: continue
+                val pillIndex = medication.pillIndex ?: continue
+                val pillName = medication.pillName ?: continue
+
+                val groupMemberMap = dateMap.getOrPut(groupMemberName) { mutableMapOf() }
+                val diseaseMap = groupMemberMap.getOrPut(diseaseName) { mutableMapOf() }
+                var pillMap = diseaseMap.getOrPut(pillName) { medication }
+            }
+
+            takePillInfo[date] = dateMap
+        }
+
+        return takePillInfo
     }
 
     /*fun testAddCalendarData() {
@@ -424,8 +471,36 @@ class MainViewModel(
         var stringBuilder = StringBuilder()
         var logString: String
 
+        /**
+         * TEST PRESET
+         */
+        Logger.d(
+            "Test Preset\n" +
+                    "MONTH_OFFSET = $MONTH_OFFSET\n" +
+                    "SIZE_OF_GROUP_MEMBER = $SIZE_OF_GROUP_MEMBER\n" +
+                    "SIZE_OF_TAKE_PILL_RANGE = $SIZE_OF_TAKE_PILL_RANGE\n" +
+                    "SIZE_OF_DISEASE = $SIZE_OF_DISEASE" +
+                    "SIZE_OF_PILL = $SIZE_OF_PILL"
+        )
+
+        /**
+         * USET INFO
+         */
         Logger.d("User Information: $_userInfo")
 
+        /**
+         * GROUP MEMBER LIST
+         */
+        _groupMemberList.value?.forEach {
+            stringBuilder.append("GroupMember Index: ${it.groupMemberIndex}, Name: ${it.groupMemberName}}\n")
+        }
+        logString = stringBuilder.toString()
+        Logger.d("GroupMember Information\n$logString")
+        stringBuilder.clear()
+
+        /**
+         * GROUP MEMBER CALENDAR
+         */
         _groupMemberCalendar.value?.forEach { (groupMemberIndex, dateMap) ->
             dateMap.keys.forEach { date ->
                 stringBuilder.append("Group Member Index: $groupMemberIndex, Date: $date\n")
@@ -435,17 +510,35 @@ class MainViewModel(
         Logger.d("Value of GroupMemberCalendar\n$logString")
         stringBuilder.clear()
 
-        Logger.d("Value of takePillData\n${_takePillData.value}")
-
-        _groupMemberList.value?.forEach {
-            stringBuilder.append("GroupMember Index: ${it.groupMemberIndex}, Name: ${it.groupMemberName}}\n")
+        /**
+         * TAKE PILL DATA INFO
+         */
+        takePillData.value?.forEach { (date, groupMemberMap) ->
+            groupMemberMap.forEach { (groupMemberName, diseaseMap) ->
+                diseaseMap.forEach { (diseaseName, pillMap) ->
+                    pillMap.forEach { (pillName, medicationInfo) ->
+                        stringBuilder.append("Date: $date\n")
+                        stringBuilder.append("Group Member Name: $groupMemberName\n")
+                        stringBuilder.append("Disease Name: $diseaseName\n")
+                        stringBuilder.append("Pill Name: $pillName\n")
+                        stringBuilder.append("Medication Info: $medicationInfo\n\n")
+                    }
+                }
+            }
         }
+
         logString = stringBuilder.toString()
-        Logger.d("GroupMember Information\n$logString")
+        Logger.d("takePillData Information\n$logString")
         stringBuilder.clear()
 
+        /**
+         * LOADED DATE LIST
+         */
         Logger.d("loadedDateList Information\n${_loadedDateList.value}")
 
+        /**
+         * NOT LOADED DATE LIST
+         */
         notLoadedInitialData.forEach { data ->
             data.takePillAndTakePillCheckDTOs.forEach { takePillData ->
                 stringBuilder.append("Group Member Index: ${data.groupMemberIndex}, ")
@@ -455,9 +548,12 @@ class MainViewModel(
 
         logString = stringBuilder.toString()
         Logger.d("notLoadedInitialData Information\n$logString")
+        stringBuilder.clear()
+
+
     }
 
-    private fun createMockData(
+    private fun createCalendarMockData(
         OFFSET: Long, SIZE_OF_GROUP_MEMBER: Int, SIZE_OF_TAKE_PILL_RANGE: Int
     ): MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> {
         val initialCalendarData = mutableListOf<TakePillAndTakePillCheckAndGroupMemberIndexDTO>()
@@ -511,6 +607,71 @@ class MainViewModel(
         return initialCalendarData
     }
 
+    private fun createTakePillMockData(
+        SIZE_OF_DISEASE: Int, SIZE_OF_PILL: Int
+    ): MutableMap<LocalDate, MutableList<MedicationInfoDTO>> {
+        val takePillData =
+            mutableMapOf<LocalDate, MutableList<MedicationInfoDTO>>()
+
+        var map = mutableMapOf<Long, MutableList<LocalDate>>()
+
+        val random = Random()
+
+        var groupMemberIndexList = mutableListOf<Long>()
+
+        _groupMemberCalendar.value?.forEach {
+            it.value.forEach { it1 ->
+                map.getOrPut(it.key) { mutableListOf() }.add(it1.key)
+                groupMemberIndexList.add(it.key)
+            }
+        }
+
+        var dateList = map.flatMap { it.value }
+
+        for (i in dateList.indices) {
+            var medicationInfoDTO: MedicationInfoDTO
+            val medicationInfoList = mutableListOf<MedicationInfoDTO>()
+
+            val targetGroupMember =
+                _groupMemberList.value?.find { it.groupMemberIndex == groupMemberIndexList[i] }
+            val targetTakePillData =
+                _groupMemberCalendar.value?.get(targetGroupMember?.groupMemberIndex)
+
+            val groupMemberName = targetGroupMember?.groupMemberName
+
+            val diseaseCount = random.nextInt(SIZE_OF_DISEASE) + 1
+
+            for (j in 0 until diseaseCount) {
+                val diseaseName = "Disease ${j + 1}"
+
+                val pillCount = random.nextInt(SIZE_OF_PILL) + 1
+
+                val takeCheck = random.nextBoolean()
+
+                for (k in 0 until pillCount) {
+                    val takePillTime = random.nextInt(5) + 1
+
+                    medicationInfoDTO = MedicationInfoDTO(
+                        groupMemberIndex = groupMemberIndexList[i],
+                        groupMemberName = groupMemberName,
+                        pillIndex = k.toLong() + 1,
+                        pillName = "Pill ${k + 1}",
+                        diseaseIndex = j.toLong() + 1,
+                        diseaseName = diseaseName,
+                        takePillCheckIndex = "${j + 1}${k + 1}".toLong(),
+                        takeCheck = takeCheck,
+                        takePillTime = takePillTime
+                    )
+                    medicationInfoList.add(medicationInfoDTO)
+                }
+            }
+            takePillData[dateList[i]]?.addAll(medicationInfoList) ?: medicationInfoList
+            takePillData.getOrPut(dateList[i]) { mutableListOf() }.addAll(medicationInfoList)
+        }
+
+        return takePillData
+    }
+
     private fun createNotLoadedMockData(
         OFFSET: Long, SIZE_OF_GROUP_MEMBER: Int, SIZE_OF_TAKE_PILL_RANGE: Int, MULTIPLIED: Int = 2
     ): MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> {
@@ -523,12 +684,19 @@ class MainViewModel(
                 OFFSET
             ).lengthOfMonth()
         )
-        val notLoadedStartDate = currentDate.minusMonths(OFFSET * MULTIPLIED).withDayOfMonth(1)
-        val notLoadedEndDate = currentDate.plusMonths(OFFSET * MULTIPLIED).withDayOfMonth(
-            currentDate.plusMonths(
-                OFFSET
-            ).lengthOfMonth()
-        )
+        val monthToSubtractAndAdd =
+            if (OFFSET == 0L) MULTIPLIED
+            else OFFSET * MULTIPLIED
+
+
+        val notLoadedStartDate =
+            currentDate.minusMonths(monthToSubtractAndAdd.toLong()).withDayOfMonth(1)
+        val notLoadedEndDate =
+            currentDate.plusMonths(monthToSubtractAndAdd.toLong()).withDayOfMonth(
+                currentDate.plusMonths(
+                    OFFSET
+                ).lengthOfMonth()
+            )
 
         val random = Random()
 
@@ -553,7 +721,7 @@ class MainViewModel(
                             notLoadedEndDate.month < randomDate.plusDays(j.toLong()).month
                         val isInside =
                             startDate.month <= randomDate.plusDays(j.toLong()).month &&
-                            randomDate.plusDays(j.toLong()).month <= endDate.month
+                                    randomDate.plusDays(j.toLong()).month <= endDate.month
 
                         if (isOver || isInside) break
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="40dp">
+
+    <TextView
+        android:id="@+id/text_view9"
+        android:layout_width="match_parent"
+        android:layout_height="393dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/pt_sans_regular"
+        android:gravity="center"
+        android:text="복용 현황이 존재하지 않습니다."
+        android:textColor="#555555"
+        android:textSize="20dp" />
+
+</FrameLayout>
