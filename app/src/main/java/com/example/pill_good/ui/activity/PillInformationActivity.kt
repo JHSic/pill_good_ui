@@ -11,7 +11,7 @@ import com.example.pill_good.R
 import com.example.pill_good.data.dto.PillDTO
 import com.google.firebase.storage.FirebaseStorage
 
-class pillInformationActivity : AppCompatActivity(){
+class PillInformationActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,26 +1,16 @@
 package com.example.pill_good.ui.activity
 
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.*
-import androidx.cardview.widget.CardView
-import androidx.core.view.marginTop
 import com.bumptech.glide.Glide
-import com.bumptech.glide.module.AppGlideModule
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.PillDTO
 import com.example.pill_good.data.dto.SearchingConditionDTO
 import com.example.pill_good.ui.viewmodel.PillViewModel
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchPillResultActivity : CustomActionBarActivity() {
@@ -83,7 +73,7 @@ class SearchPillResultActivity : CustomActionBarActivity() {
             }
 
             pillContent.setOnClickListener {
-                val intent = Intent(this,pillInformationActivity::class.java)
+                val intent = Intent(this,PillInformationActivity::class.java)
                 intent.putExtra("pillInformationData", pillData[i])
                 startActivity(intent)
                 overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
