@@ -268,7 +268,7 @@ class MainActivity : CustomActionBarActivity() {
     }
 
     /**
-     * TODO 캘린더의 데코레이터를 설정해주는 메소드
+     * TODO - 캘린더의 데코레이터를 설정해주는 메소드
      * Boolean값을 이용해 Decorator의 상태 및 전체 or 그룹원 캘린더에 대한 데코레이터를 설정할 수 있게끔 구현하였음
      *
      * @param curMonth Decorator를 적용하는 기준이 되는 month. View에 표현되는 해당 month의 day와 그 외 day를 구분하기 위해 사용

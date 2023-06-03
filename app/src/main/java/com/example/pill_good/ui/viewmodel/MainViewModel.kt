@@ -21,30 +21,69 @@ import java.util.Date
 import java.util.Random
 
 /**
- * TODO
  *
  * @property takePillRepositoryImpl
  * @property groupMemberRepositoryImpl
  *
+ *
  * @property userInfo
+ *
  * 현재 로그인 된 유저의 정보에 대한 LiveData
  *
+ *
+ *
  * @property groupMemberCalendar
+ *
  * MainActivity의 캘린더 정보에 대한 LiveData
+ *
  * 서버에게 받는 데이터는 달력 형식에 맞게 mappingCalendarDataToGroupMemberCalendar()를 사용하여 변환할 필요가 있다.
  *
- * @property loadedMonthList
+ *
+ *
+ * @property loadedDateList
+ *
+ * MainActivity의 캘린더 정보를 받을 때, 로딩된 month에 대한 정보 리스트
+ *
+ * 해당 리스트를 통해 이미 로드된 month인지 판별 이후
+ *
+ * 로드되지 않은 month일 경우 calendar 데이터를 서버에 요청하게 됨
+ *
+ *
+ *
+ * @property notLoadedInitialData
+ *
+ * 테스트를 위한 데이터
+ *
+ * 테스트 시, 현재 월 +- MONTH_OFFSET 만큼의 초기 MockData를 생성한다.
+ *
+ * 이후 초기 MockData +- MONTH_OFFSET * MULTIPLIED(오프셋의 몇 배수 만큼 로드할건지)만큼의 테스트 데이터를 미리 생성해둔다.
+ *
+ * 생성된 데이터가 서버에 있다고 가정한 뒤, onMonthChanged 이벤트 발생에 따른 데이터 로드에 대한 테스트를 진행한다.
+ *
+ *
  *
  * @property takePillData
+ *
  * 화면 하단을 스크롤 업 시 보이는 복용 현황 정보에 대한 LiveData
+ *
  * 최초 데이터 로드 시 오늘 날짜에 대한 정보만 가져온다.
+ *
  * 특정 날짜를 선택하면 List에 해당 날짜의 복용 현황 정보 유무를 파악 후,
+ *
  * 존재하지 않으면 서버와 통신하여 List에 추가하고 View에 띄우게 된다.
  *
+ *
+ *
  * @property groupMemberList
+ *
  * GroupMember에 대한 LiveData
+ *
  * 그룹원 조회 화면에 Intent로 넘겨주는 데이터이며,
+ *
  * 그룹원에 대한 CRUD는 groupMemberCalendar가 의존하므로 함께 수정되어야 한다.
+ *
+ *
+ *
  */
 class MainViewModel(
     private val takePillRepositoryImpl: TakePillRepositoryImpl,
@@ -77,14 +116,20 @@ class MainViewModel(
 
         // For Test
         private const val SIZE_OF_GROUP_MEMBER = 3
-        private const val SIZE_OF_TAKE_PILL_RANGE = 14
+        private const val RANGE_OF_TAKE_PILL = 14
 
         private const val SIZE_OF_DISEASE = 5
         private const val SIZE_OF_PILL = 10
 
-        const val IS_TEST = true
+        private const val IS_TEST = true
     }
 
+    /**
+     * TODO - Activity에서 전체적인 데이터를 초기화하는 메소드.
+     *
+     * MainActivity의 onCreate에서 호출되는 메소드. IS_TEST 변수의 값에 따라 초기화 값이 달라진다.
+     *
+     */
     fun getInitialData() {
         // OFFSET 만큼의 data를 가져옴
         val startDate = LocalDate.now().minusMonths(MONTH_OFFSET).withDayOfMonth(1)
@@ -97,7 +142,7 @@ class MainViewModel(
                 if (IS_TEST) createCalendarMockData(
                     MONTH_OFFSET,
                     SIZE_OF_GROUP_MEMBER,
-                    SIZE_OF_TAKE_PILL_RANGE
+                    RANGE_OF_TAKE_PILL
                 )
                 else loadCalendarData(startDate, endDate)
 
@@ -106,7 +151,7 @@ class MainViewModel(
                 notLoadedInitialData = createNotLoadedMockData(
                     MONTH_OFFSET,
                     SIZE_OF_GROUP_MEMBER,
-                    SIZE_OF_TAKE_PILL_RANGE
+                    RANGE_OF_TAKE_PILL
                 )
                 notLoadedInitialData.forEach { data ->
                     data.takePillAndTakePillCheckDTOs.sortedBy { it.takeDate }
@@ -117,7 +162,7 @@ class MainViewModel(
             _groupMemberCalendar.value =
                 mappingCalendarDataToGroupMemberCalendar(initialCalendarData)
 
-            // LiveData: loadedMonthList 할당
+            // LiveData: _loadedDateList 할당
             _loadedDateList.value = setLoadedDateList(startDate, endDate)
 
             // groupMemberIdList 생성
@@ -142,6 +187,15 @@ class MainViewModel(
         }
     }
 
+
+    /**
+     * TODO - Activity에서 해당하는 Month의 캘린더 데이터를 가져오는 메소드
+     *
+     * @param date 선택된 월 정보
+     * @param isAfterMonth monthChange의 방향이 증가인지 감소인지에 대한 판별값
+     *
+     * MONTH_OFFSET 만큼의 캘린더 데이터를 로드한다.
+     */
     fun getCalendarDataFromSelectedMonth(date: Date, isAfterMonth: Boolean) {
         if (_loadedDateList.value?.size ?: 0 <= 0)
             return
@@ -213,6 +267,9 @@ class MainViewModel(
                 )
             }
 
+            // loadedDateList 새롭게 갱신
+            _loadedDateList.postValue(setLoadedDateList(targetStartDate, targetEndDate))
+
             // 날짜를 기준으로 정렬 후 LiveData 업데이트
             _groupMemberCalendar.postValue(mergedNewGroupMemberCalendar?.mapValues { entry ->
                 entry.value.toSortedMap()
@@ -220,11 +277,21 @@ class MainViewModel(
         }
     }
 
+
+    /**
+     * TODO - Activity에서 특정 날짜의 복용 현황을 로드하는 메소드
+     *
+     * @param targetDate 선택된 날짜
+     *
+     */
     fun getTakePillInfo(targetDate: Date) {
+        // 이미 존재하는 데이터의 경우
         if (_takePillData.value?.containsKey(convertDateToLocalDate(targetDate)) == true)
             return
+
+        // 존재하지 않는 데이터는 로드해온다.
         else {
-            if (IS_TEST) {
+            if (IS_TEST) {  // 테스트의 경우 이미 모든 데이터를 로드해왔다 가정
                 return
             } else {
                 val loadTakePill = loadTakePillInfo(convertDateToLocalDate(targetDate))
@@ -245,6 +312,13 @@ class MainViewModel(
         _groupMemberCalendar.postValue(_groupMemberCalendar.value)
     }
 
+    /**
+     * TODO - LoadedDateList를 설정하는 메소드
+     *
+     * @param startDate 시작 날짜
+     * @param endDate 끝 날짜
+     * @return 새로 생성된 loadedDateList
+     */
     private fun setLoadedDateList(
         startDate: LocalDate,
         endDate: LocalDate? = null
@@ -259,7 +333,6 @@ class MainViewModel(
         for (i in 0..gap) {
             val tempDate = startDate.plusMonths(i.toLong()).withDayOfMonth(1)
             if (!isLoadedDate(tempDate)) newLoadedDateList.add(tempDate)
-
         }
 
         newLoadedDateList.sortBy { it }
@@ -267,9 +340,24 @@ class MainViewModel(
         return newLoadedDateList
     }
 
+
+    /**
+     * TODO - 이미 로드된 날짜인지 검사하는 메소드
+     *
+     * @param date 선택 날짜
+     * @return 판별값
+     */
     private fun isLoadedDate(date: LocalDate): Boolean {
         return loadedDateList.value?.contains(date) ?: false
     }
+
+    /**
+     * TODO - 시작 날짜와 끝 날짜 간의 Month의 차이값을 계산하는 메소드
+     *
+     * @param startDate 시작 날짜
+     * @param endDate 끝 날짜
+     * @return 시작 날짜와 끝 날짜 간의 차이
+     */
 
     private fun getMonthGap(startDate: LocalDate, endDate: LocalDate?): Int {
         val startYear = startDate.year
@@ -285,7 +373,7 @@ class MainViewModel(
     }
 
     /**
-     * TODO Converter for LocalDate to Date
+     * TODO - Converter for LocalDate to Date
      * CalendarDay.from의 인자에 값을 대입하기 위해 사용
      *
      * @param localDate
@@ -297,11 +385,24 @@ class MainViewModel(
         return Date.from(zonedDateTime?.toInstant())
     }
 
+    /**
+     * TODO - Converter for Date to LocalDate
+     *
+     * @param date
+     * @return 변환된 LocalDate
+     */
     private fun convertDateToLocalDate(date: Date?): LocalDate {
         return date?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
             ?: throw IllegalArgumentException("Date cannot be null")
     }
 
+    /**
+     * TODO - 특정 기간 내의 캘린더 데이터를 로드하는 메소드
+     *
+     * @param startDate 시작 날짜
+     * @param endDate 끝 날짜
+     * @return List<TakePillAndTakePillCheckAndGroupMemberIndexDTO>로 이루어진 캘린더 데이터 (매핑 이전 값)
+     */
     private fun loadCalendarData(
         startDate: LocalDate,
         endDate: LocalDate? = null
@@ -328,6 +429,12 @@ class MainViewModel(
         return result
     }
 
+    /**
+     * TODO - 특정 날짜의 복용 현황 정보를 가져오는 메소드
+     *
+     * @param targetDate 선택 날짜
+     * @return MutableMap<LocalDate, MutableList<MedicationInfoDTO>>? 선택 날짜와 복용 정보를 매핑한 값
+     */
     private fun loadTakePillInfo(targetDate: LocalDate): MutableMap<LocalDate, MutableList<MedicationInfoDTO>>? {
         var targetCalendarData: MutableList<MedicationInfoDTO> =
             emptyList<MedicationInfoDTO>().toMutableList()
@@ -348,6 +455,12 @@ class MainViewModel(
         return mutableMapOf(targetDate to targetCalendarData)
     }
 
+    /**
+     * TODO - 초기 캘린더 데이터를 Live데이터인 groupMemberCalendar의 타입에 맞게 매핑해주는 메소드
+     *
+     * @param data 초기 캘린더 데이터
+     * @return groupMemberCalendar에 할당할 값
+     */
     private fun mappingCalendarDataToGroupMemberCalendar(data: MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO>): MutableMap<Long, MutableMap<LocalDate, MutableList<CalendarData>>> {
         // 전체 캘린더 및 그룹 멤버 캘린더 리스트 선언
         val calendarDataList: MutableList<CalendarData> = mutableListOf()
@@ -397,6 +510,12 @@ class MainViewModel(
         return result
     }
 
+    /**
+     * TODO - 초기 복용 현황 정보를 라이브 데이터인 takePillData의 형식에 맞게 매핑하는 메소드
+     *
+     * @param medicationInfo 초기 복용 현황 값
+     * @return takePillData에 할당할 값
+     */
     private fun mappingMedicationInfoToTakePillInfo(medicationInfo: MutableMap<LocalDate, MutableList<MedicationInfoDTO>>): MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>> {
         val takePillInfo: MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>> =
             mutableMapOf()
@@ -467,6 +586,9 @@ class MainViewModel(
      * ====================== Below is for the TEST case ======================
      */
 
+    /**
+     * TODO - 초기 데이터 값을 로그로 남기는 메소드
+     */
     private fun getLog() {
         var stringBuilder = StringBuilder()
         var logString: String
@@ -478,7 +600,7 @@ class MainViewModel(
             "Test Preset\n" +
                     "MONTH_OFFSET = $MONTH_OFFSET\n" +
                     "SIZE_OF_GROUP_MEMBER = $SIZE_OF_GROUP_MEMBER\n" +
-                    "SIZE_OF_TAKE_PILL_RANGE = $SIZE_OF_TAKE_PILL_RANGE\n" +
+                    "RANGE_OF_TAKE_PILL = $RANGE_OF_TAKE_PILL\n" +
                     "SIZE_OF_DISEASE = $SIZE_OF_DISEASE" +
                     "SIZE_OF_PILL = $SIZE_OF_PILL"
         )
@@ -553,8 +675,16 @@ class MainViewModel(
 
     }
 
+    /**
+     * TODO - 테스트 진행 시 groupMemberCalendar 라이브 데이터의 초기 값을 생성해주는 메소드
+     *
+     * @param OFFSET 현재 Month를 기준 어느 정도의 OFFSET으로 +-값을 가져올 것인지에 대한 값
+     * @param SIZE_OF_GROUP_MEMBER 생성되는 Group member의 수
+     * @param RANGE_OF_TAKE_PILL 랜덤으로 생성되는 복용 기간의 최대 범위
+     * @return 초기 groupMemberCalendar(매핑 이전)의 MockData
+     */
     private fun createCalendarMockData(
-        OFFSET: Long, SIZE_OF_GROUP_MEMBER: Int, SIZE_OF_TAKE_PILL_RANGE: Int
+        OFFSET: Long, SIZE_OF_GROUP_MEMBER: Int, RANGE_OF_TAKE_PILL: Int
     ): MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> {
         val initialCalendarData = mutableListOf<TakePillAndTakePillCheckAndGroupMemberIndexDTO>()
 
@@ -577,7 +707,7 @@ class MainViewModel(
 
             val takePillAndTakePillCheckDTOs = mutableListOf<TakePillAndTakePillCheckDTO>()
 
-            for (j in 1..Random().nextInt(SIZE_OF_TAKE_PILL_RANGE) + 1) {
+            for (j in 1..Random().nextInt(RANGE_OF_TAKE_PILL) + 1) {
                 val isOver = endDate.month < randomDate.plusDays(j.toLong()).month
                 if (isOver) break
 
@@ -607,6 +737,13 @@ class MainViewModel(
         return initialCalendarData
     }
 
+    /**
+     * TODO - 테스트 진행 시 takePillData 라이브 데이터의 초기 값을 생성해주는 메소드
+     *
+     * @param SIZE_OF_DISEASE 랜덤으로 생성되는 질병의 최대 수
+     * @param SIZE_OF_PILL 랜덤으로 생성되는 약의 최대 수
+     * @return 초기 takePillData의(매핑 이전) MockData
+     */
     private fun createTakePillMockData(
         SIZE_OF_DISEASE: Int, SIZE_OF_PILL: Int
     ): MutableMap<LocalDate, MutableList<MedicationInfoDTO>> {
@@ -672,8 +809,17 @@ class MainViewModel(
         return takePillData
     }
 
+    /**
+     * TODO - 테스트 진행시 생성되는 아직 로드되지 않은 groupMemberCalandar 데이터를 생성해주는 메소드
+     *
+     * @param OFFSET 현재 Month를 기준 어느 정도의 OFFSET으로 +-값을 가져올 것인지에 대한 값
+     * @param SIZE_OF_GROUP_MEMBER 생성되는 Group member의 수
+     * @param RANGE_OF_TAKE_PILL 랜덤으로 생성되는 복용 기간의 최대 범위
+     * @param MULTIPLIED OFFSET을 기준으로 MockData의 생성 범위 증가 배수 (최소 1)
+     * @return 아직 로드되지 않은 초기 groupMemberCalendar(매핑 이전)의 MockData
+     */
     private fun createNotLoadedMockData(
-        OFFSET: Long, SIZE_OF_GROUP_MEMBER: Int, SIZE_OF_TAKE_PILL_RANGE: Int, MULTIPLIED: Int = 2
+        OFFSET: Long, SIZE_OF_GROUP_MEMBER: Int, RANGE_OF_TAKE_PILL: Int, MULTIPLIED: Int = 2
     ): MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> {
         val initialCalendarData = mutableListOf<TakePillAndTakePillCheckAndGroupMemberIndexDTO>()
 
@@ -700,7 +846,7 @@ class MainViewModel(
 
         val random = Random()
 
-        if (MULTIPLIED != 1) {
+        if (MULTIPLIED != 0) {
             for (i in 1..MULTIPLIED) {
                 for (i in 1..SIZE_OF_GROUP_MEMBER) {
                     var randomDate: LocalDate
@@ -716,7 +862,7 @@ class MainViewModel(
                     } while (startDate.month.value <= randomDate.month.value && randomDate.month.value <= endDate.month.value)
                     val takePillAndTakePillCheckDTOs = mutableListOf<TakePillAndTakePillCheckDTO>()
 
-                    for (j in 1..Random().nextInt(SIZE_OF_TAKE_PILL_RANGE) + 1) {
+                    for (j in 1..Random().nextInt(RANGE_OF_TAKE_PILL) + 1) {
                         val isOver =
                             notLoadedEndDate.month < randomDate.plusDays(j.toLong()).month
                         val isInside =
@@ -753,6 +899,13 @@ class MainViewModel(
         return initialCalendarData
     }
 
+    /**
+     * TODO - 테스트 진행시 생성되는 그룹원의 랜덤 정보를 생성하는 메소드
+     *
+     * @param userId 유저의 id
+     * @param groupMemberIdList 그룹 멤버의 id 리스트
+     * @return 그룹 멤버 리스트의 MockData
+     */
     private fun createMockGroupMemberList(
         userId: Long, groupMemberIdList: List<Long>
     ): List<GroupMemberAndUserIndexDTO> {
@@ -779,6 +932,11 @@ class MainViewModel(
         return groupMemberList
     }
 
+    /**
+     * TODO - 테스트 진행시 랜덤으로 생성되는 그룹 멤버의 핸드폰 번호를 랜덤으로 생성하는 메소드
+     *
+     * @return 랜덤 생성된 전화번호
+     */
     private fun generateRandomPhoneNumber(): String {
         val randomDigits = (1_000..9_999).random() // 4자리 임의의 숫자 생성
         return "010-$randomDigits-${(1_000..9_999).random()}" // 예시: "010-1234-7890"
