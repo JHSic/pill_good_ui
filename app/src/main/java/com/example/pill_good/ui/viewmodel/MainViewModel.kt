@@ -91,7 +91,7 @@ class MainViewModel(
 ) : ViewModel() {
 
     private val _userInfo = MutableLiveData<UserDTO>()
-    private val userInfo: LiveData<UserDTO> get() = _userInfo
+    val userInfo: LiveData<UserDTO> get() = _userInfo
 
     private val _groupMemberCalendar =
         MutableLiveData<MutableMap<Long, MutableMap<LocalDate, MutableList<CalendarData>>>>()

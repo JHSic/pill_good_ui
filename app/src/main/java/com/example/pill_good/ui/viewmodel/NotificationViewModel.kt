@@ -13,10 +13,10 @@ class NotificationViewModel(private val notificationRepository : NotificationRep
     private val _notificationData = MutableLiveData<List<NotificationDTO>>()
     val notificationData : LiveData<List<NotificationDTO>> get() = _notificationData
 
-    fun loadNotificationData() { // user_index 받아야함
+    fun loadNotificationData(userId : Long) { // user_index 받아야함
         viewModelScope.launch {
             try {
-//            _notification.value = notificaitonRepository.readByUserId(userId)
+                _notificationData.value = notificationRepository.readByUserId(userId)
                 test()
             } catch (e: Exception) {
                 // 예외 처리
@@ -38,7 +38,6 @@ class NotificationViewModel(private val notificationRepository : NotificationRep
             )
             notificationList.add(notification)
         }
-
         _notificationData.value = notificationList
     }
 }

@@ -25,7 +25,7 @@ class NotificationActivity : CustomActionBarActivity() {
 
         var userId = intent.getLongExtra("userId", 0L)
 
-        notificationViewModel.loadNotificationData() // userId 넣어줘야함
+        notificationViewModel.loadNotificationData(userId) // userId 넣어줘야함
 
         notificationViewModel.notificationData.observe(this) { _notificationData ->
             if (_notificationData != null) {

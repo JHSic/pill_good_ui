@@ -60,6 +60,7 @@ open class CustomActionBarActivity : AppCompatActivity() {
          */
         notificationButton.setOnClickListener {
             val intent = Intent(this, NotificationActivity::class.java)
+            intent.putExtra("userId", mainViewModel.userInfo.value!!.userIndex)
             intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
             overridePendingTransition(0, 0);
