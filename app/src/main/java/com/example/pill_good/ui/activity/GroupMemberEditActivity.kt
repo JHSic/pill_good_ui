@@ -107,7 +107,7 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
         }
     }
 
-    fun convertToDate(birthdate: String): LocalDate {
+    private fun convertToDate(birthdate: String): LocalDate {
         // 날짜 형식 지정
         val formatter = DateTimeFormatter.ofPattern("yyyy-M-d")
         // birthdate 문자열을 LocalDate로 변환

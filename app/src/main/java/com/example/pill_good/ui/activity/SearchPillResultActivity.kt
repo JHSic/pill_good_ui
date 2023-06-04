@@ -31,7 +31,7 @@ class SearchPillResultActivity : CustomActionBarActivity() {
         }
     }
 
-    fun generatePillResult(pillData : List<PillDTO>){
+    private fun generatePillResult(pillData : List<PillDTO>){
         val inflater = LayoutInflater.from(this)
 
         val linearLayout = findViewById<LinearLayout>(R.id.pill_search_result_linear)
