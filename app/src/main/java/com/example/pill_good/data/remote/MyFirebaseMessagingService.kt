@@ -23,13 +23,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // 수신한 메시지 처리
         if (remoteMessage.data.isNotEmpty()) {
-            // 데이터 페이로드가 있는 경우 처리 -> 처방전에만 데이터 페이로드 존재
             val data = remoteMessage.data
-            processPrescriptionNotification(data, title!!, body!!)
-        }
-        else {
-            // 데이터 페이로드가 없는 경우 처리 -> 일반적인 복약알림
-            processMedicationNotification(title!!, body!!)
+            val firstKey = data.keys.firstOrNull()
+            val groupMemberIndexValue = data[firstKey]
+
+            if (firstKey == "그룹원 인덱스") {
+                // 처방전 처리
+                processPrescriptionNotification(data, title!!, body!!)
+            } else if (firstKey == "그룹원 전화번호") {
+                // 복약 알림 처리
+                processMedicationNotification(title!!, body!!)
+            }
         }
     }
 

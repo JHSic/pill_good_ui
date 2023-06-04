@@ -5,282 +5,288 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/search_pill_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/pt_sans_bold"
-        android:text="약 검색"
-        android:textColor="@color/black"
-        android:textSize="25dp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="40dp"/>
-
-    <EditText
-        android:id="@+id/search_pill_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:drawableStart="@drawable/pencil_icon"
-        android:fontFamily="@font/pt_sans_bold"
-        android:hint="약 이름을 입력하세요"
-        android:layout_gravity="right"/>
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:orientation="horizontal"
-        >
-
-        <ScrollView
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/radio_group_drawer"
-            android:layout_weight="1"
-            android:scrollbars="none"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="20dp">
-            <RadioGroup
-                android:id="@+id/color_radio_group"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/search_pill_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/pt_sans_bold"
+                android:text="약 검색"
+                android:textColor="@color/black"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="40dp"/>
+
+            <EditText
+                android:id="@+id/search_pill_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:drawableStart="@drawable/pencil_icon"
+                android:fontFamily="@font/pt_sans_bold"
+                android:hint="약 이름을 입력하세요"
+                android:layout_gravity="right"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:orientation="horizontal"
                 >
 
-                <RadioButton
-                    android:id="@+id/white_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="하양" />
+                <ScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/radio_group_drawer"
+                    android:layout_weight="1"
+                    android:scrollbars="none"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="20dp">
+                    <RadioGroup
+                        android:id="@+id/color_radio_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        >
 
-                <RadioButton
-                    android:id="@+id/pink_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="분홍" />
+                        <RadioButton
+                            android:id="@+id/white_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="하양" />
 
-                <RadioButton
-                    android:id="@+id/yellow_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="노랑" />
+                        <RadioButton
+                            android:id="@+id/pink_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="분홍" />
 
-                <RadioButton
-                    android:id="@+id/orange_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="주황" />
+                        <RadioButton
+                            android:id="@+id/yellow_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="노랑" />
 
-                <RadioButton
-                    android:id="@+id/brown_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="갈색" />
+                        <RadioButton
+                            android:id="@+id/orange_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="주황" />
 
-                <RadioButton
-                    android:id="@+id/blue_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="파랑" />
+                        <RadioButton
+                            android:id="@+id/brown_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="갈색" />
 
-                <RadioButton
-                    android:id="@+id/light_green_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="연두" />
+                        <RadioButton
+                            android:id="@+id/blue_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="파랑" />
 
-                <RadioButton
-                    android:id="@+id/green_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="초록" />
+                        <RadioButton
+                            android:id="@+id/light_green_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="연두" />
 
-                <RadioButton
-                    android:id="@+id/red_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="빨강" />
+                        <RadioButton
+                            android:id="@+id/green_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="초록" />
 
-                <RadioButton
-                    android:id="@+id/gray_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="회색" />
+                        <RadioButton
+                            android:id="@+id/red_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="빨강" />
 
-                <RadioButton
-                    android:id="@+id/etc_color_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="기타" />
-            </RadioGroup>
-        </ScrollView>
+                        <RadioButton
+                            android:id="@+id/gray_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="회색" />
 
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
-            android:scrollbars="none"
-            android:background="@drawable/radio_group_drawer">
-            <RadioGroup
-                android:id="@+id/shape_radio_group"
+                        <RadioButton
+                            android:id="@+id/etc_color_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="기타" />
+                    </RadioGroup>
+                </ScrollView>
+
+                <ScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="16dp"
+                    android:scrollbars="none"
+                    android:background="@drawable/radio_group_drawer">
+                    <RadioGroup
+                        android:id="@+id/shape_radio_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/circle_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="원형" />
+
+                        <RadioButton
+                            android:id="@+id/quadrangle_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="장방형" />
+
+                        <RadioButton
+                            android:id="@+id/rectangle_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="사각형" />
+
+                        <RadioButton
+                            android:id="@+id/octagon_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="팔각형" />
+
+                        <RadioButton
+                            android:id="@+id/ellipse_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="타원형" />
+
+                        <RadioButton
+                            android:id="@+id/half_circle_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="반원형" />
+
+                        <RadioButton
+                            android:id="@+id/triangle_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="삼각형" />
+
+                        <RadioButton
+                            android:id="@+id/diamond_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="마름모형" />
+
+                        <RadioButton
+                            android:id="@+id/polygon_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="오각형" />
+
+                        <RadioButton
+                            android:id="@+id/hexagon_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="육각형" />
+
+                        <RadioButton
+                            android:id="@+id/etc_shape_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pt_sans_bold"
+                            android:text="기타" />
+                    </RadioGroup>
+
+                </ScrollView>
+
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/search_pill_carve"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/pencil_icon"
+                android:fontFamily="@font/pt_sans_bold"
+                android:layout_marginTop="40dp"
+                android:hint="각인을 입력하세요"
+                android:layout_gravity="right"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
+
+            <RadioGroup
+                android:id="@+id/text_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/radio_group_drawer"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/notification_text"
+                app:layout_constraintVertical_bias="0.837">
 
                 <RadioButton
-                    android:id="@+id/circle_radio"
+                    android:id="@+id/text_front_radio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/pt_sans_bold"
-                    android:text="원형" />
+                    android:text="각인-앞" />
 
                 <RadioButton
-                    android:id="@+id/quadrangle_radio"
+                    android:id="@+id/text_back_radio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/pt_sans_bold"
-                    android:text="장방형" />
-
-                <RadioButton
-                    android:id="@+id/rectangle_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="사각형" />
-
-                <RadioButton
-                    android:id="@+id/octagon_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="팔각형" />
-
-                <RadioButton
-                    android:id="@+id/ellipse_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="타원형" />
-
-                <RadioButton
-                    android:id="@+id/half_circle_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="반원형" />
-
-                <RadioButton
-                    android:id="@+id/triangle_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="삼각형" />
-
-                <RadioButton
-                    android:id="@+id/diamond_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="마름모형" />
-
-                <RadioButton
-                    android:id="@+id/polygon_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="오각형" />
-
-                <RadioButton
-                    android:id="@+id/hexagon_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="육각형" />
-
-                <RadioButton
-                    android:id="@+id/etc_shape_radio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans_bold"
-                    android:text="기타" />
+                    android:text="각인-뒤" />
             </RadioGroup>
+            <Button
+                android:id="@+id/search_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/white"
+                android:fontFamily="@font/pt_sans_bold"
+                android:text="검색"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_action_search" />
 
-        </ScrollView>
-
-
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/search_pill_carve"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableStart="@drawable/pencil_icon"
-        android:fontFamily="@font/pt_sans_bold"
-        android:layout_marginTop="40dp"
-        android:hint="각인을 입력하세요"
-        android:layout_gravity="right"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
-
-
-
-    <RadioGroup
-        android:id="@+id/text_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/radio_group_drawer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notification_text"
-        app:layout_constraintVertical_bias="0.837">
-
-        <RadioButton
-            android:id="@+id/text_front_radio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/pt_sans_bold"
-            android:text="각인-앞" />
-
-        <RadioButton
-            android:id="@+id/text_back_radio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/pt_sans_bold"
-            android:text="각인-뒤" />
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/search_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/white"
-        android:fontFamily="@font/pt_sans_bold"
-        android:text="검색"
-        android:textColor="@color/black"
-        app:icon="@drawable/ic_action_search" />
-
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

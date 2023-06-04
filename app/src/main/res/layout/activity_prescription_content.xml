@@ -25,17 +25,26 @@
             android:layout_gravity="left"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/prescription_registration_date"
+            <ImageButton
+                android:id="@+id/prescription_delete_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="10dp"
-                android:fontFamily="@font/pt_sans_bold"
-                android:text="처방전 등록 일자 : "
-                android:textColor="@color/black"
-                android:textSize="12dp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/group_member_delete"
+                android:background="@color/white"/>
+
+                <TextView
+                    android:id="@+id/prescription_registration_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/pt_sans_bold"
+                    android:text="처방전 등록 일자 : "
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
 
 <!--            <TextView-->
 <!--                android:id="@+id/prescription_registration_name"-->
