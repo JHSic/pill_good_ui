@@ -16,6 +16,6 @@ class DotDecorator(
 
     override fun decorate(view: DayViewFacade) {
         // 해당 날짜를 꾸밀 데코레이션을 설정
-        view?.addSpan(DotSpan(7F, Color.parseColor( "#9DD84B")))
+        view?.addSpan(DotSpan(6.5F, Color.parseColor( "#38B63C")))
     }
 }

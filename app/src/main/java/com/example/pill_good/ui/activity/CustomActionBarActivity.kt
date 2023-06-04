@@ -41,6 +41,7 @@ open class CustomActionBarActivity : AppCompatActivity() {
         logoText.setOnClickListener {
             // 로고 클릭 시 동작하는 코드 작성 -> 사실상 메인
             val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
             overridePendingTransition(0, 0)
         }

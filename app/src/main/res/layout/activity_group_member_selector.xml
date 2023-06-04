@@ -15,9 +15,8 @@
 
         <Spinner
             android:id="@+id/group_member_spinner"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            />
+            android:layout_width="173dp"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </FrameLayout>

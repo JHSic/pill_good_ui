@@ -68,6 +68,9 @@ dependencies {
     // 커스텀 카드뷰
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
 
+    // Logger
+    implementation 'com.orhanobut:logger:2.2.0'
+
     // CameraX
     def camerax_version = "1.1.0-beta01"
     implementation "androidx.camera:camera-core:${camerax_version}"
@@ -81,6 +84,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     // ViewModel
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    // Activity
+    implementation "androidx.activity:activity-ktx:1.6.1"
+    // Fragment
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
     // Retrofit2
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     // Retrofit2 - converter

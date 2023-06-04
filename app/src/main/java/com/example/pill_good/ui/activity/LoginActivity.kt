@@ -1,34 +1,31 @@
 package com.example.pill_good.ui.activity
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.databinding.DataBindingUtil
 import com.example.pill_good.R
+import com.example.pill_good.data.dto.LoginDTO
+import com.example.pill_good.data.dto.UserDTO
 import com.example.pill_good.databinding.ActivityLoginBinding
+import com.example.pill_good.repository.LoginRepositoryImpl
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class LoginActivity : AppCompatActivity() {
 
+    private val loginRepositoryImpl: LoginRepositoryImpl by inject()
+
     //firebase Auth
     private lateinit var firebaseAuth: FirebaseAuth
+
     //google client
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -44,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.googleLoginButton.setOnClickListener {signIn()}
+        binding.googleLoginButton.setOnClickListener { signIn() }
 
         //Google 로그인 옵션 구성. requestIdToken 및 Email 요청
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -108,8 +105,34 @@ class LoginActivity : AppCompatActivity() {
 
     // toMainActivity
     fun toMainActivity(user: FirebaseUser?) {
-        if(user !=null) { // MainActivity 로 이동
-            startActivity(Intent(this, MainActivity::class.java))
+        if (user != null) { // MainActivity 로 이동
+            val intent = Intent(this, MainActivity::class.java)
+            val loginDTO = LoginDTO(
+                userEmail = user.email,
+                userToken = null
+            )
+
+            /*runBlocking {
+                val loginUserInfo = loginRepositoryImpl.login(loginDTO)
+                intent.putExtra("userId", loginUserInfo?.userIndex)
+                intent.putExtra("userEmail", loginUserInfo?.userIndex)
+                intent.putExtra("userFcmToken", loginUserInfo?.userFcmToken)
+                startActivity(intent)
+                finish()
+                overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+            }*/
+
+            // For Test
+            val loginUserInfo = UserDTO(
+                userIndex = 1L,
+                userEmail = user.email,
+                userFcmToken = "FCMTOKEN"
+            )
+
+            intent.putExtra("userId", loginUserInfo?.userIndex)
+            intent.putExtra("userEmail", loginUserInfo?.userEmail)
+            intent.putExtra("userFcmToken", loginUserInfo?.userFcmToken)
+            startActivity(intent)
             finish()
             overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
         }
