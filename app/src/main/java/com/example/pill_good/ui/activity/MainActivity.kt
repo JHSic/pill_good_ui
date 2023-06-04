@@ -2,13 +2,18 @@ package com.example.pill_good.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.MedicationInfoDTO
+import com.example.pill_good.data.dto.PillDTO
 import com.example.pill_good.data.model.SpinnerData
 import com.example.pill_good.ui.viewmodel.MainViewModel
+import com.google.firebase.storage.FirebaseStorage
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -37,6 +42,8 @@ class MainActivity : CustomActionBarActivity() {
     private var selectedDate = LocalDate.now()
     private var selectedTimeBtn: Int = 0
     private var isTotalCalendarMode: Boolean = true
+
+    private val storageRef = FirebaseStorage.getInstance().reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -456,11 +463,50 @@ class MainActivity : CustomActionBarActivity() {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     )
+
+                    val pillImage: ImageView =
+                        prescriptionPillContent.findViewById(R.id.pill_item_image)
+
+                    // 이미지 경로 지정
+                    val imageRef = storageRef.child(medicationDTO.pillNum + ".jpg")
+                    // 이미지 다운로드 URL 가져오기
+                    imageRef.downloadUrl.addOnSuccessListener { uri ->
+                        // 다운로드 URL을 사용하여 이미지 설정
+                        Glide.with(pillImage)
+                            .load(uri)
+                            .placeholder(R.drawable.a201412020003201)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(pillImage)
+                    }.addOnFailureListener { exception ->
+                        // 다운로드 실패 시 처리할 작업
+                        Log.e("TAG", "이미지 다운로드 실패: ${exception.message}")
+                    }
+
+                    prescriptionPillContent.findViewById<TextView>(R.id.pill_item_feature_shape).text =
+                        medicationDTO.pillShape
+                    prescriptionPillContent.findViewById<TextView>(R.id.pill_item_feature_color).text =
+                        medicationDTO.pillColor
+
                     pillLayoutParams.setMargins(32, 0, 32, 32)
                     prescriptionPillContent.layoutParams = pillLayoutParams
 
+                    val pillDTO = PillDTO(
+                        pillIndex = medicationDTO.pillIndex,
+                        pillNum = medicationDTO.pillNum,
+                        pillName = medicationDTO.pillName,
+                        pillFrontWord = medicationDTO.pillFrontWord,
+                        pillBackWord = medicationDTO.pillBackWord,
+                        pillShape = medicationDTO.pillPrecaution,
+                        pillColor = medicationDTO.pillEffect,
+                        pillCategoryName = medicationDTO.pillCategoryName,
+                        pillFormulation = medicationDTO.pillFormulation,
+                        pillEffect = medicationDTO.pillPrecaution,
+                        pillPrecaution = medicationDTO.pillPrecaution
+                    )
+
                     prescriptionPillContent.setOnClickListener {
                         val intent = Intent(this, PillInformationActivity::class.java)
+                        intent.putExtra("pillInformationData", pillDTO)
                         startActivity(intent)
                         overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
                     }

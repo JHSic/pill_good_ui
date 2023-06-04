@@ -761,6 +761,22 @@ class MainViewModel(
     private fun createTakePillMockData(
         SIZE_OF_DISEASE: Int, SIZE_OF_PILL: Int
     ): MutableMap<LocalDate, MutableList<MedicationInfoDTO>> {
+        val randomPillImgUrlList = arrayListOf(
+            "196000001",
+            "195900043",
+            "196000008",
+            "196000011",
+            "196400099",
+            "196700060",
+            "197000050",
+            "197700525",
+            "197800147",
+            "197800391",
+            "197900574",
+            "198200049",
+            "198300092"
+        )
+
         val takePillData =
             mutableMapOf<LocalDate, MutableList<MedicationInfoDTO>>()
 
@@ -806,7 +822,16 @@ class MainViewModel(
                         groupMemberIndex = groupMemberIndexList[i],
                         groupMemberName = groupMemberName,
                         pillIndex = k.toLong() + 1,
+                        pillNum = randomPillImgUrlList[random.nextInt(randomPillImgUrlList.size)],
                         pillName = "Pill ${k + 1}",
+                        pillFrontWord = "Pill front word ${k + 1}",
+                        pillBackWord = "Pill back word ${k + 1}",
+                        pillShape = "Pill shape ${k + 1}",
+                        pillColor = "Pill color ${k + 1}",
+                        pillCategoryName = "Pill categoryName ${k + 1}",
+                        pillFormulation = "Pill formulation ${k + 1}",
+                        pillEffect = "Pill effect ${k + 1}",
+                        pillPrecaution = "Pill precaution ${k + 1}",
                         diseaseIndex = j.toLong() + 1,
                         diseaseName = diseaseName,
                         takePillCheckIndex = "${j + 1}${k + 1}".toLong(),
