@@ -16,28 +16,30 @@ class NotificationViewModel(private val notificationRepository : NotificationRep
     fun loadNotificationData(userId : Long) { // user_index 받아야함
         viewModelScope.launch {
             try {
-                _notificationData.value = notificationRepository.readByUserId(userId)
-                test()
+                val loadNotificationData = notificationRepository.readByUserId(userId)
+                loadNotificationData?.let {
+                    _notificationData.value = loadNotificationData!!
+                }
             } catch (e: Exception) {
                 // 예외 처리
             }
         }
     }
 
-    private fun test(){
-        val notificationList = mutableListOf<NotificationDTO>()
-
-        for (i in 1..10) {
-            val notificationTime = LocalDateTime.now().minusMinutes(10 * i.toLong())
-
-            val notification = NotificationDTO(
-                notificationIndex = i.toLong(),
-                notificationContent = "Notification $i",
-                notificationTime = notificationTime,
-                notificationCheck = false
-            )
-            notificationList.add(notification)
-        }
-        _notificationData.value = notificationList
-    }
+//    private fun test(){
+//        val notificationList = mutableListOf<NotificationDTO>()
+//
+//        for (i in 1..10) {
+//            val notificationTime = LocalDateTime.now().minusMinutes(10 * i.toLong())
+//
+//            val notification = NotificationDTO(
+//                notificationIndex = i.toLong(),
+//                notificationContent = "Notification $i",
+//                notificationTime = notificationTime,
+//                notificationCheck = false
+//            )
+//            notificationList.add(notification)
+//        }
+//        _notificationData.value = notificationList
+//    }
 }

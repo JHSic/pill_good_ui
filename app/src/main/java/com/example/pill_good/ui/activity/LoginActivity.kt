@@ -4,11 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.LoginDTO
 import com.example.pill_good.data.dto.UserDTO
 import com.example.pill_good.databinding.ActivityLoginBinding
 import com.example.pill_good.repository.LoginRepositoryImpl
+import com.example.pill_good.repository.UserRepositoryImpl
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -17,6 +19,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.messaging.FirebaseMessaging
+import com.orhanobut.logger.Logger
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 class LoginActivity : AppCompatActivity() {
@@ -30,9 +35,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private lateinit var binding: ActivityLoginBinding
-
-    private var email: String = ""
-    private var googleSignInToken: String? = null
 
     //private const val TAG = "GoogleActivity"
     private val RC_SIGN_IN = 99
@@ -60,8 +62,20 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
-            // 이미 로그인 되어있을시 바로 메인 액티비티로 이동
-            toMainActivity(currentUser)
+            var fcmToken: String = ""
+            FirebaseMessaging.getInstance().token
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // 토큰을 얻어옵니다.
+                        fcmToken = task.result
+                        Log.d("FCM Token 1", fcmToken)
+                        // 이미 로그인 되어있을시 바로 메인 액티비티로 이동
+                        toMainActivity(currentUser, fcmToken)
+                    } else {
+                        Log.w("FCM Token", "Fetching token failed", task.exception)
+                    }
+                }
+
         }
     } // onStart End
 
@@ -83,7 +97,8 @@ class LoginActivity : AppCompatActivity() {
                 Log.e("LoginActivity", "Google sign in failed: ${e.statusCode}", e)
             }
         }
-    } // onActivityResult End
+    }
+
 
     // firebaseAuthWithGoogle
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
@@ -95,48 +110,73 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Log.w("LoginActivity", "firebaseAuthWithGoogle 성공", task.exception)
-                    toMainActivity(firebaseAuth?.currentUser)
+                    FirebaseMessaging.getInstance().token
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val fcmToken = task.result
+                                Log.d("FCM Token", fcmToken)
+                                toMainActivity(firebaseAuth?.currentUser, fcmToken)
+                            } else {
+                                Log.w("FCM Token 2", "Fetching token failed", task.exception)
+                            }
+                        }
                 } else {
                     Log.w("LoginActivity", "firebaseAuthWithGoogle 실패", task.exception)
                 }
             }
-    }// firebaseAuthWithGoogle END
+    }
+
 
 
     // toMainActivity
-    fun toMainActivity(user: FirebaseUser?) {
+    fun toMainActivity(user: FirebaseUser?, fcmToken : String) {
         if (user != null) { // MainActivity 로 이동
-            val intent = Intent(this, MainActivity::class.java)
             val loginDTO = LoginDTO(
                 userEmail = user.email,
-                userToken = null
+                userToken = fcmToken
             )
+            runBlocking {
+                try {
+                    val loginUserInfo = loginRepositoryImpl.login(loginDTO)
+                    intent.putExtra("userId", loginUserInfo?.userIndex)
+                    intent.putExtra("userEmail", loginUserInfo?.userIndex)
+                    intent.putExtra("userFcmToken", loginUserInfo?.userFcmToken)
+                    startActivity(intent)
+                    finish()
+                    overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+                } catch (e: Exception) {
+                    // 예외 처리 로직 추가
+                    Log.e("Login Error", "Failed to login", e)
+                    // 예외 발생 시 사용자에게 알림 등의 동작 수행
 
-            /*runBlocking {
-                val loginUserInfo = loginRepositoryImpl.login(loginDTO)
-                intent.putExtra("userId", loginUserInfo?.userIndex)
-                intent.putExtra("userEmail", loginUserInfo?.userIndex)
-                intent.putExtra("userFcmToken", loginUserInfo?.userFcmToken)
-                startActivity(intent)
-                finish()
-                overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
-            }*/
-
-            // For Test
-            val loginUserInfo = UserDTO(
-                userIndex = 1L,
-                userEmail = user.email,
-                userFcmToken = "FCMTOKEN"
-            )
-
-            intent.putExtra("userId", loginUserInfo?.userIndex)
-            intent.putExtra("userEmail", loginUserInfo?.userEmail)
-            intent.putExtra("userFcmToken", loginUserInfo?.userFcmToken)
-            startActivity(intent)
-            finish()
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+                    // 다이얼로그 띄우기
+                    val alertDialog = AlertDialog.Builder(this@LoginActivity)
+                        .setTitle("앱 종료")
+                        .setMessage("로그인에 실패했습니다. 네트워크 연결을 확인 후 다시 실행해주세요.")
+                        .setPositiveButton("확인") { dialog, which ->
+                            finishAffinity() // 앱 종료
+                        }
+                        .setCancelable(false) // 취소 버튼 비활성화
+                        .create()
+                    alertDialog.show()
+                }
+            }
         }
-    } // toMainActivity End
+    }
+//            // For Test
+//            val loginUserInfo = UserDTO(
+//                userIndex = 1L,
+//                userEmail = user.email,
+//                userFcmToken = fcmToken
+//            )
+//
+//            intent.putExtra("userId", loginUserInfo?.userIndex)
+//            intent.putExtra("userEmail", loginUserInfo?.userEmail)
+//            intent.putExtra("userFcmToken", loginUserInfo?.userFcmToken)
+//            startActivity(intent)
+//            finish()
+//            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+    // toMainActivity End
 
     // signIn
     private fun signIn() {

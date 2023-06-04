@@ -47,9 +47,8 @@ class PrescriptionActivity : CustomActionBarActivity() {
         val prescriptionRegistrationDisease : TextView = prescriptionContent.findViewById(R.id.prescription_registration_disease)
         val prescriptionDate : TextView = prescriptionContent.findViewById(R.id.prescription_date)
         val prescriptionDeleteBtn : ImageButton = prescriptionContent.findViewById(R.id.prescription_delete_btn)
-        //        val prescriptionPillFrame : LinearLayout = prescriptionContent.findViewById(R.id.prescription_pill_data) // 약정보 기입
-        //        var prescriptionRegistrationName : TextView = findViewById(R.id.prescription_registration_name)
-//        var prescriptionRegistrationBirth : TextView = findViewById(R.id.prescription_registration_birth)
+        val prescriptionPillFrame : LinearLayout = prescriptionContent.findViewById(R.id.prescription_pill_data) // 약정보 기입
+
 
         // 추가할 prescriptionContent 개수 - 처방전 개수
         for (i in prescriptionData.indices) {
@@ -76,16 +75,22 @@ class PrescriptionActivity : CustomActionBarActivity() {
                 val dialog = builder.create()
                 dialog.show()
             }
-            //            prescriptionRegistrationName.text = prescriptionData.get(i).gr // 현재 그룹원 이름 필드가 없음
-//            prescriptionRegistrationBirth.text = prescriptionData.get(i).date // 생일 필드도 없음
 
-//            val numPillContents = 3 // prescriptionPillContent 개수 - 약 개수
-//            for (j in 1..numPillContents) {
-//                val prescriptionPillContent : FrameLayout = inflater.inflate(R.layout.activity_prescription_pill_content, null) as FrameLayout
-//                prescriptionPillFrame.addView(prescriptionPillContent)
-//                layoutParams.setMargins(0, 0, 0, 32) // 아래쪽에 16dp의 마진
-//                prescriptionPillContent.layoutParams = layoutParams
-//            }
+            val pillContents = prescriptionData[i].partiallyTakePillDTOList!!
+            for (j in pillContents.indices) {
+                val prescriptionPillContent : FrameLayout = inflater.inflate(R.layout.activity_prescription_pill_content, null) as FrameLayout
+                val pillName : TextView = prescriptionPillContent.findViewById(R.id.prescription_pill_name)
+                val pillEatDay : TextView = prescriptionPillContent.findViewById(R.id.prescription_dose_date)
+                val pillEatCount : TextView = prescriptionPillContent.findViewById(R.id.prescription_dose_num)
+
+                pillName.text = pillContents[j].pillName
+                pillEatDay.text = pillContents[j].takeDay.toString()
+                pillEatCount.text = pillContents[j].takeCount.toString()
+
+                prescriptionPillFrame.addView(prescriptionPillContent)
+                layoutParams.setMargins(0, 0, 0, 8) // 아래쪽에 8dp의 마진
+                prescriptionPillContent.layoutParams = layoutParams
+            }
             prescriptionContainer.addView(prescriptionContent)
         }
     }

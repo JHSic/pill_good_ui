@@ -23,7 +23,7 @@ class EditOCRViewModel(private val ocrRepository: OCRRepositoryImpl) : ViewModel
             try {
                 // 대치 작업 수행
                 _editOCRData.value = updatedEditOCRData
-                ocrRepository.createUpdatedOCR(updatedEditOCRData)
+                ocrRepository.createUpdatedOCR(editOCRData.value!!)
             } catch(e : Exception){
                 // 에러 처리
             }

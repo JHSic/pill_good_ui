@@ -32,11 +32,13 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
     fun addGroupMember(groupMember : GroupMemberAndUserIndexDTO) {
         viewModelScope.launch {
             try{
-//                val addGroupMember = groupMemberRepository.create(groupMember)
-                val currentList = groupData.value?.toMutableList()
-                currentList!!.add(groupMember)
-                println(currentList.size)
-                _groupData.value = currentList!!
+                val addGroupMember = groupMemberRepository.create(groupMember)
+                addGroupMember?.let { addGroupMember ->
+                    val currentList = groupData.value?.toMutableList()
+                    currentList!!.add(addGroupMember!!)
+                    println(currentList.size)
+                    _groupData.value = currentList!!
+                }
             } catch (e : Exception){
                 // 에러 처리
             }
@@ -47,17 +49,16 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
     fun editGroupMember(groupMember: GroupMemberAndUserIndexDTO) {
         viewModelScope.launch {
             try {
-//                val updatedGroupMember = groupMemberRepository.updateById(groupMember.groupMemberIndex!!, groupMember)
-//                // 응답이 성공적으로 받아왔을 경우
-//                updatedGroupMember?.let {
-                    // 대치 작업 수행
+                val updatedGroupMember = groupMemberRepository.updateById(groupMember.groupMemberIndex!!, groupMember)
+            // 응답이 성공적으로 받아왔을 경우
+                updatedGroupMember?.let { updateGroupMember ->
                     val currentList = groupData.value?.toMutableList()
-
-                    val index = currentList?.indexOfFirst { it.groupMemberIndex == groupMember.groupMemberIndex }
+                    val index = currentList?.indexOfFirst { it.groupMemberIndex == updateGroupMember.groupMemberIndex }
                     if (index != null && index != -1) {
-                        currentList[index] = groupMember // updateGroupMember로 변경해야함
+                        currentList[index] = updateGroupMember
                         _groupData.value = currentList!!
                     }
+                }
             } catch (e: Exception) {
                 // 에러 처리
             }
@@ -70,12 +71,12 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
         viewModelScope.launch {
             try {
                 if (groupMember.groupMemberIndex != null) {
-//                    val deletedData = groupMemberRepository.deleteById(groupMember.groupMemberIndex)
-//                    if (deletedData == null) {
+                    val deletedData = groupMemberRepository.deleteById(groupMember.groupMemberIndex)
+                    if (deletedData == null) {
                         val currentList = _groupData.value?.toMutableList()
                         currentList?.remove(groupMember)
                         _groupData.value = currentList!!
-//                    }
+                    }
                 }
             } catch (e: Exception) {
                 // 에러 처리

@@ -18,9 +18,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-object  NetworkModule {
+object NetworkModule {
 
-    private val BASE_URL = "https://api.example.com/" // 여기에 사용하는 API의 기본 URL을 입력하세요.
+    private val BASE_URL = "http://202.31.202.172:443/" // 여기에 사용하는 API의 기본 URL을 입력하세요.
 
     val gson = GsonBuilder()
         .registerTypeAdapter(LocalDate::class.java, LocalDateSerializer())

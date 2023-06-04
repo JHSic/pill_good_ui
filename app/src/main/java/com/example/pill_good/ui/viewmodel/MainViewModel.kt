@@ -12,6 +12,7 @@ import com.example.pill_good.data.dto.UserDTO
 import com.example.pill_good.data.model.CalendarData
 import com.example.pill_good.repository.GroupMemberRepositoryImpl
 import com.example.pill_good.repository.TakePillRepositoryImpl
+import com.example.pill_good.repository.UserRepositoryImpl
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.launch
 
@@ -87,7 +88,8 @@ import java.util.Random
  */
 class MainViewModel(
     private val takePillRepositoryImpl: TakePillRepositoryImpl,
-    private val groupMemberRepositoryImpl: GroupMemberRepositoryImpl
+    private val groupMemberRepositoryImpl: GroupMemberRepositoryImpl,
+    private val userRepositoryImpl: UserRepositoryImpl
 ) : ViewModel() {
 
     private val _userInfo = MutableLiveData<UserDTO>()
@@ -306,6 +308,18 @@ class MainViewModel(
 
     fun setUserInfo(userId: Long, userEmail: String, userFcmToken: String) {
         _userInfo.value = UserDTO(userId, userEmail, userFcmToken)
+        editUserToken(userId, userInfo.value!!)
+    }
+
+    // 유저 fcm 토큰 수정
+    private fun editUserToken(id: Long, userDTO: UserDTO){
+        viewModelScope.launch{
+            try{
+                userRepositoryImpl.updateUserToken(id, userDTO)
+            } catch (e : Exception){
+                // 에러 처리
+            }
+        }
     }
 
     fun updateGroupMemberCalendar() {
