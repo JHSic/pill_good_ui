@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pill_good.data.dto.PrescriptionAndDiseaseNameDTO
+import com.example.pill_good.data.dto.PrescriptionDTO
 import com.example.pill_good.repository.PrescriptionRepositoryImpl
 import kotlinx.coroutines.launch
 
@@ -21,6 +22,23 @@ class PrescriptionViewModel(private val prescriptionRepository : PrescriptionRep
                     _prescriptionData.value = prescriptionList!!
                 }
 
+            } catch (e : Exception){
+                // 에러 처리
+            }
+        }
+    }
+
+    fun removePrescription(prescriptionDTO : PrescriptionAndDiseaseNameDTO){
+        viewModelScope.launch {
+            try{
+                if (prescriptionDTO.prescriptionIndex != null) {
+//                    val deletedData = prescriptionRepository.deleteById(prescriptionDTO.prescriptionIndex)
+//                    if (deletedData == null) {
+                    val currentList = _prescriptionData.value?.toMutableList()
+                    currentList?.remove(prescriptionDTO)
+                    _prescriptionData.value = currentList!!
+//                    }
+                }
             } catch (e : Exception){
                 // 에러 처리
             }

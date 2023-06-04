@@ -1,8 +1,10 @@
 package com.example.pill_good.ui.activity
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.marginTop
@@ -44,7 +46,7 @@ class PrescriptionActivity : CustomActionBarActivity() {
         val prescriptionRegistrationHospitalPhone : TextView = prescriptionContent.findViewById(R.id.prescription_registration_hospital_phone)
         val prescriptionRegistrationDisease : TextView = prescriptionContent.findViewById(R.id.prescription_registration_disease)
         val prescriptionDate : TextView = prescriptionContent.findViewById(R.id.prescription_date)
-
+        val prescriptionDeleteBtn : ImageButton = prescriptionContent.findViewById(R.id.prescription_delete_btn)
         //        val prescriptionPillFrame : LinearLayout = prescriptionContent.findViewById(R.id.prescription_pill_data) // 약정보 기입
         //        var prescriptionRegistrationName : TextView = findViewById(R.id.prescription_registration_name)
 //        var prescriptionRegistrationBirth : TextView = findViewById(R.id.prescription_registration_birth)
@@ -60,6 +62,20 @@ class PrescriptionActivity : CustomActionBarActivity() {
             prescriptionRegistrationDisease.text = "${prescriptionRegistrationDisease.text} ${prescriptionData[i].diseaseName}"
             prescriptionDate.text = "${prescriptionDate.text} ${prescriptionData.get(i).prescriptionDate.toString()}"
 
+            // 삭제 버튼
+            prescriptionDeleteBtn.setOnClickListener {
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("정말 삭제하시겠습니까?")
+                builder.setPositiveButton("예") { dialog, which ->
+                    // 삭제 작업 수행
+                    prescriptionViewModel.removePrescription(prescriptionData[i])
+                }
+                builder.setNegativeButton("아니오") { dialog, which ->
+                    // 취소 작업 수행
+                }
+                val dialog = builder.create()
+                dialog.show()
+            }
             //            prescriptionRegistrationName.text = prescriptionData.get(i).gr // 현재 그룹원 이름 필드가 없음
 //            prescriptionRegistrationBirth.text = prescriptionData.get(i).date // 생일 필드도 없음
 
