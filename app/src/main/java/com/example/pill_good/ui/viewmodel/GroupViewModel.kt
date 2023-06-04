@@ -1,4 +1,4 @@
-package com.example.pill_good.ui.viewModel
+package com.example.pill_good.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData

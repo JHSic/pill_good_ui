@@ -6,15 +6,13 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.pill_good.R
-import com.example.pill_good.data.model.PillData
-import com.example.pill_good.data.model.PrescriptionData
+import com.example.pill_good.data.dto.EditOCRDTO
+import com.example.pill_good.data.dto.PillScheduleDTO
 import com.example.pill_good.ui.activity.NotificationActivity
-import com.example.pill_good.ui.activity.PrescriptionEditActivity
+import com.example.pill_good.ui.activity.EditOCRActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import kotlinx.serialization.json.JsonNull.content
 import org.json.JSONArray
-import org.json.JSONObject
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -51,14 +49,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val pillListJson = data["약 정보"]
         val pillList = JSONArray(pillListJson)
 
-        val pillDataList = ArrayList<PillData>()
+        val pillDataList = ArrayList<PillScheduleDTO>()
 
         for (i in 0 until pillList.length()) {
             val pillObject = pillList.getJSONObject(i)
 
             val pillName = pillObject.getString("pillName")
-            val takeCount = pillObject.getString("takeCount")
-            val takeDay = pillObject.getString("takeDay")
+            val takeCount = pillObject.getInt("takeCount")
+            val takeDay = pillObject.getInt("takeDay")
             val takePillTimeList = pillObject.getJSONArray("takePillTimeList")
 
             // JSONArray를 List<Int>로 변환
@@ -68,20 +66,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
 
             // PillData 객체 생성
-            val pillData = PillData(pillName, takeCount, takeDay, pillTimeList)
+            val pillData = PillScheduleDTO(pillName, takeCount, takeDay, pillTimeList)
 
             // PillData 객체를 리스트에 추가
             pillDataList.add(pillData)
         }
 
         // prescriptionEditActivity
-        var intent = Intent(this, PrescriptionEditActivity::class.java)
-        val prescriptionData = PrescriptionData(
+        var intent = Intent(this, EditOCRActivity::class.java)
+        val prescriptionData = EditOCRDTO(
             groupMemberName = groupMemberName,
             hospitalName = hospitalName,
-            hospitalPhone = hospitalPhone,
+            phoneNumber = hospitalPhone,
             diseaseCode = diseaseCode,
-            pillDataList = pillDataList
+            pillList = pillDataList
         )
         intent.putExtra("prescriptionData", prescriptionData)
         val pendingIntent = PendingIntent.getActivity(applicationContext, PendingIntent.FLAG_ONE_SHOT, intent, PendingIntent.FLAG_UPDATE_CURRENT)

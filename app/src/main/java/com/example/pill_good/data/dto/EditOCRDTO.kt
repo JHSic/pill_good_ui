@@ -1,5 +1,6 @@
 package com.example.pill_good.data.dto
 
+import java.io.Serializable
 import java.time.LocalDate
 
 data class EditOCRDTO(
@@ -10,4 +11,4 @@ data class EditOCRDTO(
     var phoneNumber: String? = null,
     var diseaseCode: String? = null,
     var pillList: List<PillScheduleDTO> = ArrayList()
-)
+) : Serializable

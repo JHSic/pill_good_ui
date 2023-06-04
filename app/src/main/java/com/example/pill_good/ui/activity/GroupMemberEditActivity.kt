@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.widget.*
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
-import com.example.pill_good.ui.viewModel.GroupViewModel
+import com.example.pill_good.ui.viewmodel.GroupViewModel
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker

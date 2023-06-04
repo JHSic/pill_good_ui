@@ -4,24 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.*
 import com.example.pill_good.R
-import com.example.pill_good.data.model.PillData
-import com.example.pill_good.data.model.PrescriptionData
-import com.example.pill_good.ui.viewmodel.PrescriptionEditViewModel
+import com.example.pill_good.data.dto.EditOCRDTO
+import com.example.pill_good.data.dto.PillScheduleDTO
+import com.example.pill_good.ui.viewmodel.EditOCRViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PrescriptionEditActivity : CustomActionBarActivity() {
-    private val prescriptionEditViewModel : PrescriptionEditViewModel by viewModel()
+class EditOCRActivity : CustomActionBarActivity() {
+    private val ocrEditViewModel : EditOCRViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addCustomView(R.layout.activity_prescription_edit)
+        addCustomView(R.layout.activity_edit_ocr)
 
-        val prescriptionEditData = intent.getSerializableExtra("prescriptionData") as? PrescriptionData
+        val prescriptionEditData = intent.getSerializableExtra("prescriptionData") as? EditOCRDTO
 
-        prescriptionEditViewModel.setPrescriptionEditData(prescriptionEditData!!)
+        ocrEditViewModel.setPrescriptionEditData(prescriptionEditData!!)
 
-        prescriptionEditViewModel.prescriptionEditData.observe(this) { _prescriptionEditData ->
-            if (_prescriptionEditData != null) {
-                populatePrescription(_prescriptionEditData)
+        ocrEditViewModel.editOCRData.observe(this) { _editOCRData ->
+            if (_editOCRData != null) {
+                populatePrescription(_editOCRData)
             }
         }
 
@@ -31,7 +31,7 @@ class PrescriptionEditActivity : CustomActionBarActivity() {
     }
 
     // 처방전 수정 데이터 생성
-    private fun populatePrescription(prescriptionEditData: PrescriptionData){
+    private fun populatePrescription(prescriptionEditData: EditOCRDTO){
         val editName : EditText = findViewById(R.id.prescription_edit_edittext_name)
         val editHospital : EditText = findViewById(R.id.prescription_edit_edittext_hospital)
         val editHospitalPhone : EditText = findViewById(R.id.prescription_edit_edittext_hospital_phone)
@@ -39,21 +39,21 @@ class PrescriptionEditActivity : CustomActionBarActivity() {
 
         editName.setText(prescriptionEditData.groupMemberName)
         editHospital.setText(prescriptionEditData.hospitalName)
-        editHospitalPhone.setText(prescriptionEditData.hospitalPhone)
+        editHospitalPhone.setText(prescriptionEditData.phoneNumber)
         editDiseasCode.setText(prescriptionEditData.diseaseCode)
 
-        generatePillItem(prescriptionEditData.pillDataList)
+        generatePillItem(prescriptionEditData.pillList)
     }
 
     // 처방전 수정 데이터 내 약 정보 데이터 생성
-    private fun generatePillItem(pillDataList : List<PillData>){
+    private fun generatePillItem(pillDataList : List<PillScheduleDTO>){
         val inflater = LayoutInflater.from(this)
 
         val pillContainer: LinearLayout = findViewById(R.id.prescription_edit_pill_container)
 
 //        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-        val pillContent : FrameLayout = inflater.inflate(R.layout.activity_prescription_edit_pill_item, null) as FrameLayout
+        val pillContent : FrameLayout = inflater.inflate(R.layout.activity_prescription_edit_ocr_pill_item, null) as FrameLayout
         val pillName : TextView = pillContent.findViewById(R.id.prescription_edit_pill_item_name)
         val pillDay : TextView = pillContent.findViewById(R.id.prescription_edit_pill_item_day)
         val pillEatNum : TextView = pillContent.findViewById(R.id.prescription_edit_pill_item_num)
@@ -67,8 +67,8 @@ class PrescriptionEditActivity : CustomActionBarActivity() {
             val pillData = pillDataList[i]
 
             pillName.text = pillData.pillName
-            pillDay.text = pillData.takeDay
-            pillEatNum.text = pillData.takeCount
+            pillDay.text = pillData.takeDay.toString()
+            pillEatNum.text = pillData.takeCount.toString()
 
             for (j: Int in pillData.takePillTimeList.indices) {
                 val pillTime = pillData.takePillTimeList[j]
@@ -100,11 +100,11 @@ class PrescriptionEditActivity : CustomActionBarActivity() {
     private fun onEditButtonClicked() {
         // 수정된 데이터를 읽어와서 ViewModel에 전달
         val editedPrescriptionData = readEditedDataFromUI()
-        prescriptionEditViewModel.editPillData(editedPrescriptionData)
+        ocrEditViewModel.editPillData(editedPrescriptionData)
     }
 
     // UI에서 변경된 데이터를 읽어오는 함수
-    private fun readEditedDataFromUI(): PrescriptionData {
+    private fun readEditedDataFromUI(): EditOCRDTO {
         val editName: EditText = findViewById(R.id.prescription_edit_edittext_name)
         val editHospital: EditText = findViewById(R.id.prescription_edit_edittext_hospital)
         val editHospitalPhone: EditText = findViewById(R.id.prescription_edit_edittext_hospital_phone)
@@ -116,19 +116,19 @@ class PrescriptionEditActivity : CustomActionBarActivity() {
         val editedDiseaseCode = editDiseaseCode.text.toString()
 
         // 수정된 데이터로 PrescriptionData 객체 생성
-        val editedPrescriptionData = PrescriptionData(
+        val editedPrescriptionData = EditOCRDTO(
             groupMemberName = editedName,
             hospitalName = editedHospital,
-            hospitalPhone = editedHospitalPhone,
+            phoneNumber = editedHospitalPhone,
             diseaseCode = editedDiseaseCode,
-            pillDataList = getEditedPillDataList()
+            pillList = getEditedPillDataList()
         )
         return editedPrescriptionData
     }
 
     // UI에서 변경된 PillData 리스트를 읽어오는 함수
-    private fun getEditedPillDataList(): List<PillData> {
-        val editedPillDataList = mutableListOf<PillData>()
+    private fun getEditedPillDataList(): List<PillScheduleDTO> {
+        val editedPillDataList = mutableListOf<PillScheduleDTO>()
 
         // UI에서 변경된 PillData를 읽어와서 리스트에 추가
         val pillContainer: LinearLayout = findViewById(R.id.prescription_edit_pill_container)
@@ -144,10 +144,10 @@ class PrescriptionEditActivity : CustomActionBarActivity() {
 
             val takePillTimeList =  getSelectedPillTimeList(eatWake, eatMorning, eatLunch, eatDinner, eatSleep)
 
-            val pillData = PillData(
+            val pillData = PillScheduleDTO(
                 pillName = pillName.text.toString(),
-                takeDay = pillDay.text.toString(),
-                takeCount = takePillTimeList.size.toString(),
+                takeDay = Integer.parseInt(pillDay.text.toString()),
+                takeCount = Integer.parseInt(takePillTimeList.size.toString()),
                 takePillTimeList = takePillTimeList
             )
 

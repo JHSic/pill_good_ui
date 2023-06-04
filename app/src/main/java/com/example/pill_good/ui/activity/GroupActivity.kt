@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
 import com.example.pill_good.data.dto.GroupMemberDTO
-import com.example.pill_good.ui.viewModel.GroupViewModel
+import com.example.pill_good.ui.viewmodel.GroupViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GroupActivity : CustomActionBarActivity() {
