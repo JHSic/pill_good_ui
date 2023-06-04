@@ -459,7 +459,7 @@ class MainActivity : CustomActionBarActivity() {
                     prescriptionPillContent.layoutParams = pillLayoutParams
 
                     prescriptionPillContent.setOnClickListener {
-                        val intent = Intent(this, pillInformationActivity::class.java)
+                        val intent = Intent(this, PillInformationActivity::class.java)
                         startActivity(intent)
                         overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
                     }

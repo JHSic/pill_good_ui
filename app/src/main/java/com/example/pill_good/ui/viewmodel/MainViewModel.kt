@@ -139,44 +139,6 @@ class MainViewModel(
         viewModelScope.launch {
             // 캘린더를 위한 최초 데이터 로딩
             val initialCalendarData: MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> =
-                if (isTest)
-                    createMockData(1L, 10, 14)
-                else
-                    takePillRepositoryImpl.readCalendarDataByUserIdBetweenDate(
-                        userId,
-                        startDate,
-                        endDate
-                    ) as MutableList
-
-
-            // 그룹 멤버를 위한 Id List 선언
-            val groupMemberIdList = mutableListOf<Long>()
-
-            // initialData를 CalendarData로 가공
-            initialCalendarData.forEach {
-                val groupMemberId = it.groupMemberIndex
-                groupMemberIdList.add(groupMemberId)
-
-                it.takePillAndTakePillCheckDTOs.forEach { takePillAndTakePillCheckDTO ->
-                    val calendarData = CalendarData(
-                        groupMemberId,
-                        takePillAndTakePillCheckDTO.takePillIndex,
-                        takePillAndTakePillCheckDTO.prescriptionIndex,
-                        takePillAndTakePillCheckDTO.pillIndex,
-                        takePillAndTakePillCheckDTO.takeDay,
-                        takePillAndTakePillCheckDTO.takeCount,
-                        takePillAndTakePillCheckDTO.takePillCheckIndex,
-                        takePillAndTakePillCheckDTO.takeDate,
-                        takePillAndTakePillCheckDTO.takePillTime,
-                        takePillAndTakePillCheckDTO.takeCheck
-                    )
-
-                    // 전체 캘린더 리스트 생성
-                    calendarDataList.add(calendarData)
-
-                    // 그룹 멤버 캘린더 맵 생성
-                    groupMemberCalendarDataMap.getOrPut(groupMemberId) { mutableListOf() }
-                        .add(calendarData)
                 if (IS_TEST) createCalendarMockData(
                     MONTH_OFFSET,
                     SIZE_OF_GROUP_MEMBER,
@@ -951,8 +913,8 @@ class MainViewModel(
 
         for (groupMemberId in groupMemberIdList) {
             val randomBirthYear = kotlin.random.Random.nextInt(1970, 2000) // 1970부터 2000 사이의 임의의 연도
-            val randomBirthMonth = kotlin.random.Random.nextInt(10, 13) // 1부터 12 사이의 임의의 월
-            val randomBirthDay = kotlin.random.Random.nextInt(10, 29) // 1부터 28 사이의 임의의 일자
+            val randomBirthMonth = kotlin.random.Random.nextInt(1, 13) // 1부터 12 사이의 임의의 월
+            val randomBirthDay = kotlin.random.Random.nextInt(1, 29) // 1부터 28 사이의 임의의 일자
 
             val groupMemberData = GroupMemberAndUserIndexDTO(
                 groupMemberIndex = groupMemberId, userIndex = userId, // 사용자 인덱스를 설정하세요.

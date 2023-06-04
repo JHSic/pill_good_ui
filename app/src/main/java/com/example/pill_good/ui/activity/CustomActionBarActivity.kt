@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
@@ -16,6 +17,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import com.example.pill_good.R
 import com.example.pill_good.ui.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseUser
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class CustomActionBarActivity : AppCompatActivity() {
@@ -88,10 +90,6 @@ open class CustomActionBarActivity : AppCompatActivity() {
             startActivity(intent)
             overridePendingTransition(0, 0)
         }
-
-
-
-
     }
 
     override fun onNewIntent(intent: Intent?) {
