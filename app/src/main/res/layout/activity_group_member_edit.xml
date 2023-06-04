@@ -109,6 +109,7 @@
         android:background="@drawable/group_member_edit_text_style"
         android:fontFamily="@font/pt_sans_bold"
         android:hint="별칭을 입력하세요"
+        android:maxLength="9"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
