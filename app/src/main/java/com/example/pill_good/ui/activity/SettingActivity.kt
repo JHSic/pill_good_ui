@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseAuth
 class SettingActivity : CustomActionBarActivity() {
     private val SMS_PERMISSION_REQUEST_CODE = 1001
     private val CAMERA_PERMISSION_REQUEST_CODE = 1002
-    private val APP_SETTINGS_REQUEST_CODE = 2001
 
     private lateinit var messageSwitch: Switch
     private lateinit var cameraSwitch: Switch
