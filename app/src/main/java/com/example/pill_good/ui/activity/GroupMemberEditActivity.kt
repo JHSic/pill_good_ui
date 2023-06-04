@@ -1,53 +1,45 @@
 package com.example.pill_good.ui.activity
 
 import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import com.example.pill_good.R
+import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
+import com.example.pill_good.ui.viewModel.GroupViewModel
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class GroupMemberEditActivity : CustomActionBarActivity() {
-
-    private var datePickerDialog: DatePickerDialog? = null
+    private val groupViewModel: GroupViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         addCustomView(R.layout.activity_group_member_edit)
+
+        val groupMemberInformation = intent.getSerializableExtra("groupMemberInformation") as GroupMemberAndUserIndexDTO
 
         val editAliasText: EditText = findViewById(R.id.edittext_alias)
         val editPhoneText: EditText = findViewById(R.id.edittext_phone)
-        val editCalenderButton: ImageButton = findViewById(R.id.edit_birth_Button)
         val birthDate: TextView = findViewById(R.id.text_birth)
+
+        editAliasText.setText(groupMemberInformation?.groupMemberName)
+        editPhoneText.setText(groupMemberInformation?.groupMemberPhone)
+        birthDate.text = groupMemberInformation?.groupMemberBirth.toString()
+
+        val editCalenderButton: ImageButton = findViewById(R.id.edit_birth_Button)
         val editButton: Button = findViewById(R.id.edit_button)
         //sharedPreference를 이용한 기기에 선택한 날짜 데이터 저장
         val sharedPreference = getSharedPreferences("CreateProfile", Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPreference.edit()
-
-        // 수정 버튼 클릭
-        editButton.setOnClickListener() {
-            if(editAliasText.text.toString().trim().isEmpty()){
-                val builder = AlertDialog.Builder(this)
-                builder.setMessage("별칭은 필수입니다.")
-                builder.setPositiveButton("확인") { dialog, which ->
-                    // 그냥 팝업만 닫음
-                }
-                val dialog = builder.create()
-                dialog.show()
-            }
-            else{
-                // 수정 완료 되고 뷰 종료 or 이동하는 로직
-            }
-
-        }
 
         // 달력 버튼 클릭
         editCalenderButton.setOnClickListener() {
@@ -62,8 +54,7 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
             val builder = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Calendar")
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-
-                //위에서 만든 calendarConstraint을 builder에 설정해줍니다.
+                //위에서 만든 calendarConstraint을 builder에 설정
                 .setCalendarConstraints(calendarConstraintBuilder.build());
 
             val datePicker = builder.build()
@@ -80,6 +71,47 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
             }
             datePicker.show(supportFragmentManager, datePicker.toString())
         }
+
+        // 수정 버튼 클릭
+        editButton.setOnClickListener() {
+            val updateAlias = editAliasText.text.toString().trim()
+
+            if(updateAlias.isEmpty()){
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("별칭은 필수입니다.")
+                builder.setPositiveButton("확인") { dialog, which ->
+                    // 그냥 팝업만 닫음
+                }
+                val dialog = builder.create()
+                dialog.show()
+            }
+            else{
+                val updatePhone = editPhoneText.text.toString().trim()
+                val updateBirth = convertToDate(birthDate.text.toString())
+
+                // 모두 일치하면 view만 종료
+                if(groupMemberInformation?.groupMemberName != updateAlias
+                    || groupMemberInformation.groupMemberPhone != updatePhone
+                    || groupMemberInformation.groupMemberBirth != updateBirth){
+                    val updatedGroupMember = groupMemberInformation?.copy(
+                        groupMemberName = updateAlias,
+                        groupMemberPhone = updatePhone,
+                        groupMemberBirth = updateBirth
+                    )
+                    println("업데이트된 유저의 이름 " + updateAlias)
+                    groupViewModel.editGroupMember(updatedGroupMember!!)
+                    Toast.makeText(applicationContext, "수정이 완료되었습니다.", Toast.LENGTH_LONG).show();
+                }
+                finish()
+            }
+        }
+    }
+
+    fun convertToDate(birthdate: String): LocalDate {
+        // 날짜 형식 지정
+        val formatter = DateTimeFormatter.ofPattern("yyyy-M-d")
+        // birthdate 문자열을 LocalDate로 변환
+        return LocalDate.parse(birthdate.trim(), formatter)
     }
 
 }

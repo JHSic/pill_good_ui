@@ -25,7 +25,6 @@
                 android:id="@+id/pill_information_close_btn"
                 android:layout_width="39dp"
                 android:layout_height="38dp"
-
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:background="@color/white"
@@ -50,7 +49,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/pt_sans_bold"
                 android:maxLines="1"
-                android:text="약 이름(Pill_nameㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇ)"
+                android:text="약 이름"
                 android:textColor="@color/black"
                 android:textSize="35dp" />
 
@@ -96,7 +95,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="50dp"
@@ -135,7 +133,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/pill_information_shape"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -151,7 +149,7 @@
                     android:textSize="12dp" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/pill_information_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -167,7 +165,7 @@
                     android:textSize="12dp" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/pill_information_formulation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"

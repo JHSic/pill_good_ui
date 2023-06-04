@@ -3,6 +3,7 @@ package com.example.pill_good
 import android.app.Application
 import com.example.pill_good.di.NetworkModule.networkModule
 import com.example.pill_good.di.appModule
+import com.google.firebase.FirebaseApp
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import org.koin.android.ext.koin.androidContext
@@ -18,6 +19,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // 파이어베이스 앱 초기화
+        FirebaseApp.initializeApp(this)
         Logger.addLogAdapter(AndroidLogAdapter())
         Logger.d("START APPLICATION")
 

@@ -67,7 +67,8 @@
                 android:id="@+id/group_member_selector_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"></FrameLayout>
+                android:layout_gravity="right">
+            </FrameLayout>
 
             <ScrollView
                 android:layout_width="wrap_content"

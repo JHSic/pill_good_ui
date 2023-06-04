@@ -9,23 +9,52 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.LinearLayout.LayoutParams
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.pill_good.R
+import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
+import com.example.pill_good.data.dto.GroupMemberDTO
+import com.example.pill_good.ui.viewModel.GroupViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GroupActivity : CustomActionBarActivity() {
+    private val groupViewModel: GroupViewModel by viewModel()
+    private var userId : Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addCustomView(R.layout.activity_group)
-        val linearLayout = findViewById<LinearLayout>(R.id.group_linear)
 
-        // 캘린더 버튼, 버튼 미지정 설정 및 캘린더 버튼 alpha 변경
+        val groupMemberList = intent.getSerializableExtra("groupMemberList") as? ArrayList<GroupMemberAndUserIndexDTO>
+        groupViewModel.setGroupDataByMainData(groupMemberList!!)
+        userId = groupMemberList.get(0).userIndex
         val groupButton: ImageButton = findViewById(R.id.group_button)
         groupButton.alpha = 1f
         groupButton.isEnabled = false
 
-        var n = 10 // 그룹원 수
+//        groupViewModel.groupData.observe(this) { _groupData ->
+//            if (_groupData != null) {
+//                populateViews(_groupData)
+//            }
+//        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        groupViewModel.groupData.observe(this) { _groupData ->
+            if (_groupData != null) {
+                populateViews(_groupData)
+            }
+        }
+    }
+
+
+    private fun populateViews(groupData : List<GroupMemberAndUserIndexDTO>) {
+        val linearLayout = findViewById<LinearLayout>(R.id.group_linear)
+        linearLayout.removeAllViews()
+
+        var n = groupViewModel.groupData.value!!.size
         val rows = (n + 2) / 2 // 카드를 출력할 줄 수
         var lastRowNumOfCards = n % 2 // 마지막 줄의 카드 수
         if (lastRowNumOfCards == 0 && n > 0) { // 그룹원 수가 짝수인 경우
@@ -50,18 +79,25 @@ class GroupActivity : CustomActionBarActivity() {
             layoutParams2.marginEnd = 64
 
             // 왼쪽 카드
-            createCard(layoutParams1, cardRow, i, if (i * 2 - 1 <= n) 0 else 1)
+            if(i * 2 - 1 <= n){
+                createCard(layoutParams1, cardRow, i, 0, groupData.get(i * 2 - 2))
+            }
+            else{
+                createCard(layoutParams1, cardRow, i, 1, null)
+            }
+
             // 오른쪽 카드
             if (i * 2 <= n) {
-                createCard(layoutParams2, cardRow, i, if (i * 2 == n && lastRowNumOfCards == 1) 1 else 0)
+                createCard(layoutParams2, cardRow, i, 0, groupData.get(i * 2 - 1))
             } else if (lastRowNumOfCards == 1) { // 마지막 줄이 1개 카드인 경우
-                createCard(layoutParams2, cardRow, i, 1) // 그룹원 추가 버튼 생성
+                createCard(layoutParams2, cardRow, i, 1, null) // 그룹원 추가 버튼 생성
             }
             linearLayout.addView(cardRow)
         }
+
     }
 
-    private fun createCard(layoutParams : LinearLayout.LayoutParams, cardRow : LinearLayout, cardNum : Int, createType : Int){
+    private fun createCard(layoutParams: LayoutParams, cardRow: LinearLayout, cardNum: Int, createType: Int, groupMemberData: GroupMemberAndUserIndexDTO?){
         val card = CardView(this)
         card.layoutParams = layoutParams
         card.radius = 36F // 둥근 정도
@@ -71,11 +107,8 @@ class GroupActivity : CustomActionBarActivity() {
         card.cardElevation = 12F  // 그림자
         card.maxCardElevation = 20F  // 눌렀을 때 그림자
         card.clipToPadding = false  // 패딩 영역 밖까지 그림자 표시
-        card.setOnClickListener {
-            // 그룹원 클릭 시 개인 처방전 목록 화면이동 구현
-        }
         if(createType == 0){
-            card.addView(generateCardView(cardNum, layoutParams)) // 그룹원 이름을 주는 메소드로 변경
+            card.addView(generateCardView(cardNum, layoutParams, groupMemberData!!)) // 그룹원 이름을 주는 메소드로 변경
         }
         else if(createType == 1){
             if(layoutParams.rightMargin == 32){
@@ -119,15 +152,14 @@ class GroupActivity : CustomActionBarActivity() {
         groupMemberAddIcon.setOnClickListener{
             // 그룹원 추가 페이지로 이동
             val intent = Intent(this,GroupMemberAddActivity::class.java)
+            intent.putExtra("userId", userId)
             startActivity(intent)
         }
-
-
         return cardLinearLayout
     }
 
     // 카드뷰 내용 생성하는 메소드
-    private fun generateCardView(cardNum: Int, layoutParams: LayoutParams): LinearLayout {
+    private fun generateCardView(cardNum: Int, layoutParams: LayoutParams, groupMemberData: GroupMemberAndUserIndexDTO): LinearLayout {
         val font = ResourcesCompat.getFont(this, R.font.pt_sans_regular) // 폰트를 가져옴
         val cardLinearLayout = LinearLayout(this)
         cardLinearLayout.orientation = LinearLayout.VERTICAL
@@ -141,7 +173,11 @@ class GroupActivity : CustomActionBarActivity() {
         iconLayoutParams.gravity = Gravity.CENTER_HORIZONTAL
 
         val groupMemberName = TextView(this)
-        groupMemberName.text = "그룹원"
+        // 내부에서 처리 했으므로 상관 없을 예정
+        // 그러나 위에 메소드 분해하면 중복 코드가 생겨서 nullable하게 받기에 null체크
+        if (groupMemberData != null) {
+            groupMemberName.text = groupMemberData.groupMemberName
+        }
         groupMemberName.textSize = 17f
         groupMemberName.typeface = font
         groupMemberName.gravity = Gravity.CENTER_HORIZONTAL
@@ -170,6 +206,7 @@ class GroupActivity : CustomActionBarActivity() {
         groupMemberEditButton.setOnClickListener {
             // 수정 페이지로 이동
             val intent = Intent(this,GroupMemberEditActivity::class.java)
+            intent.putExtra("groupMemberInformation", groupMemberData)
             startActivity(intent)
         }
 
@@ -184,6 +221,7 @@ class GroupActivity : CustomActionBarActivity() {
             builder.setMessage("정말 삭제하시겠습니까?")
             builder.setPositiveButton("예") { dialog, which ->
                 // 삭제 작업 수행
+                groupViewModel.removeGroupMember(groupMemberData)
             }
             builder.setNegativeButton("아니오") { dialog, which ->
                 // 취소 작업 수행
@@ -197,20 +235,40 @@ class GroupActivity : CustomActionBarActivity() {
         imageButton.setImageResource(R.drawable.group_member_message) // 기본 아이콘 설정
         imageButton.setBackgroundColor(Color.WHITE)
 
+        // 생성 시 메시지 전송여부 설정
+        if(groupMemberData.messageCheck == true){
+            imageButton.setImageResource(R.drawable.group_member_message)
+        }
+        else{
+            imageButton.setImageResource(R.drawable.group_member_no_message)
+        }
+
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         imageButton.layoutParams = layoutParams
 
-        // 토글 상태 변경 시 이벤트 처리
+        // 토글 상태 변경 시 메시지 전송여부 변경
         imageButton.setOnClickListener {
-            if (imageButton.isSelected) {
+            if (groupMemberData.messageCheck == false) {
                 imageButton.setImageResource(R.drawable.group_member_message)
-            } else {
+                val updateGroupMember = groupMemberData.copy(
+                    messageCheck = true
+                )
+                println(groupMemberData.groupMemberName + "의 메시지 전송여부 변경 기존 : " + groupMemberData.messageCheck + "변경" + updateGroupMember.messageCheck )
+                groupViewModel.editGroupMember(updateGroupMember)
+            } else if(groupMemberData.messageCheck == true) {
                 imageButton.setImageResource(R.drawable.group_member_no_message)
+                val updateGroupMember = groupMemberData.copy(
+                    messageCheck = false
+                )
+                groupViewModel.editGroupMember(updateGroupMember)
+                println(groupMemberData.groupMemberName + "의 메시지 전송여부 변경 기존 : " + groupMemberData.messageCheck + "변경" + updateGroupMember.messageCheck )
             }
+
             imageButton.isSelected = !imageButton.isSelected
+
         }
         buttonLayout.addView(imageButton)
 
@@ -220,9 +278,11 @@ class GroupActivity : CustomActionBarActivity() {
 
         cardLinearLayout.setOnClickListener {
             val intent = Intent(this,PrescriptionActivity::class.java)
+            intent.putExtra("groupMemberId", groupMemberData.groupMemberIndex)
             startActivity(intent)
         }
 
         return cardLinearLayout
     }
 }
+

@@ -24,7 +24,17 @@
         android:label=""
         android:supportsRtl="true"
         android:theme="@style/Theme.PillGood"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
+
+        <!-- Firebase 메시징 서비스 설정 -->
+        <service
+            android:name=".data.remote.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".ui.activity.StartActivity"
@@ -58,9 +68,10 @@
         <activity
             android:name=".ui.activity.GroupMemberAddActivity"
             android:theme="@style/GroupMemberEditTheme"></activity>
-        <activity android:name=".ui.activity.pillInformationActivity"></activity>
+        <activity android:name=".ui.activity.PillInformationActivity"></activity>
         <activity android:name=".ui.activity.PrescriptionActivity"></activity>
         <activity android:name=".ui.activity.CameraActivity"></activity>
         <activity android:name=".ui.activity.CameraResultActivity"></activity>
+        <activity android:name=".ui.activity.PrescriptionEditActivity"></activity>
     </application>
 </manifest>

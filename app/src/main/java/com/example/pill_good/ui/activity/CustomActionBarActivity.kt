@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
@@ -16,10 +15,11 @@ import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import com.example.pill_good.R
-import com.google.firebase.auth.FirebaseUser
+import com.example.pill_good.ui.viewmodel.MainViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class CustomActionBarActivity : AppCompatActivity() {
-
+    private val mainViewModel: MainViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.custom_action_bar)
@@ -81,11 +81,17 @@ open class CustomActionBarActivity : AppCompatActivity() {
 
         // 그룹 버튼 설정
         groupButton.setOnClickListener {
+            val groupMemberList = mainViewModel.groupMemberList.value?.toMutableList()
             val intent = Intent(this, GroupActivity::class.java)
+            intent.putExtra("groupMemberList", ArrayList(groupMemberList))
             intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
-            overridePendingTransition(0, 0);
+            overridePendingTransition(0, 0)
         }
+
+
+
+
     }
 
     override fun onNewIntent(intent: Intent?) {
