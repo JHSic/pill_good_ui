@@ -12,4 +12,13 @@ class NotificationRepositoryImpl(private val apiService: ApiService) {
             throw Exception()
         }
     }
+
+    suspend fun updateNotificationCheckToTrue(id: Long): NotificationDTO? {
+        val response = apiService.updateNotificationCheckToTrue(id)
+        if (response.statusCode == 200) {
+            return response.data
+        } else {
+            throw Exception()
+        }
+    }
 }
