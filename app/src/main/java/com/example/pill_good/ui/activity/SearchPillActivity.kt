@@ -1,5 +1,6 @@
 package com.example.pill_good.ui.activity
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore.Audio.Radio
@@ -49,10 +50,21 @@ class SearchPillActivity : CustomActionBarActivity() {
 
         val searchButton: Button = findViewById(R.id.search_button)
         searchButton.setOnClickListener {
-            var searchPillResultIntent = Intent(this, SearchPillResultActivity::class.java)
-            searchPillResultIntent.putExtra("pillData", searchPillData)
-            startActivity(searchPillResultIntent)
-            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+            if(searchPillData == null){
+                // 삭제
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("정말 삭제하시겠습니까?")
+                builder.setPositiveButton("확인") { dialog, which ->
+                }
+                val dialog = builder.create()
+                dialog.show()
+            }
+            else{
+                var searchPillResultIntent = Intent(this, SearchPillResultActivity::class.java)
+                searchPillResultIntent.putExtra("pillData", searchPillData)
+                startActivity(searchPillResultIntent)
+                overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+            }
         }
     }
 

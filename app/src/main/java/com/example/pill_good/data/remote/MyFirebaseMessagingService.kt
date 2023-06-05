@@ -1,10 +1,14 @@
 package com.example.pill_good.data.remote
 
+import android.Manifest
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.telephony.SmsManager
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.EditOCRDTO
 import com.example.pill_good.data.dto.PillScheduleDTO
@@ -32,18 +36,27 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 processPrescriptionNotification(data, title!!, body!!)
             } else if (firstKey == "그룹원 전화번호") {
                 // 복약 알림 처리
-                processMedicationNotification(title!!, body!!)
+                processMedicationNotification(data, title!!, body!!)
             }
         }
     }
 
-    private fun processMedicationNotification(title: String, content: String) {
+    private fun processMedicationNotification(data : Map<String, String>, title : String, content : String) {
+        // 전화번호 010-xxxx-xxxx 형식에서 010xxxxxxxx 형식으로 변환
+        val phoneNumber = data["그룹원 전화번호"]?.replace("-", "")
+
+        // SMS 발송을 권한에 따라 처리
+        if (checkSmsPermission()) {
+            val smsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(phoneNumber, null, content, null, null)
+        }
+        // 화면 이동 설정
         var intent = Intent(this, NotificationActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(applicationContext, PendingIntent.FLAG_ONE_SHOT, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         generateNotificationToDevice(title, content, pendingIntent)
     }
 
-    private fun processPrescriptionNotification(data: Map<String, String>, title: String, content: String) {
+    private fun processPrescriptionNotification(data : Map<String, String>, title : String, content : String) {
         // 처방전 수정 알림 처리 로직 구현
 
         val groupMemberName = data["그룹원 이름"] // "김현태"
@@ -104,5 +117,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = System.currentTimeMillis().toInt() // 현재 시간 기준 고유한 notificationId 설정
         notificationManager.notify(notificationId, notificationBuilder.build())
+    }
+
+    private fun checkSmsPermission(): Boolean {
+        val result = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+        return result == PackageManager.PERMISSION_GRANTED
     }
 }

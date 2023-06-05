@@ -56,7 +56,6 @@ class PillInformationActivity : AppCompatActivity(){
             // 다운로드 URL을 사용하여 이미지 설정
             Glide.with(this)
                 .load(uri)
-                .placeholder(R.drawable.a201412020003201)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
         }.addOnFailureListener { exception ->

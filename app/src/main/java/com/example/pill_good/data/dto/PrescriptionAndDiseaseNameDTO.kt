@@ -10,5 +10,6 @@ data class PrescriptionAndDiseaseNameDTO(
     val prescriptionDate: LocalDate? = null,
     val hospitalPhone: String? = null,
     val hospitalName: String? = null,
-    val diseaseName: String? = null
+    val diseaseName: String? = null,
+    val partiallyTakePillDTOList: List<PartiallyTakePillDTO>? = null
 )

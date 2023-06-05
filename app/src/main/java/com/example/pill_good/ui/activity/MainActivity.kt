@@ -57,6 +57,7 @@ class MainActivity : CustomActionBarActivity() {
             intent.getStringExtra("userFcmToken")!!
         )
 
+
         // Load InitialData
         mainViewModel.getInitialData()
 

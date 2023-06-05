@@ -10,11 +10,8 @@ import android.widget.*
 import android.widget.LinearLayout.LayoutParams
 import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
-import com.example.pill_good.data.dto.GroupMemberDTO
 import com.example.pill_good.ui.viewmodel.GroupViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -33,21 +30,21 @@ class GroupActivity : CustomActionBarActivity() {
         groupButton.alpha = 1f
         groupButton.isEnabled = false
 
-//        groupViewModel.groupData.observe(this) { _groupData ->
-//            if (_groupData != null) {
-//                populateViews(_groupData)
-//            }
-//        }
-    }
-
-    override fun onResume() {
-        super.onResume()
         groupViewModel.groupData.observe(this) { _groupData ->
             if (_groupData != null) {
                 populateViews(_groupData)
             }
         }
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        groupViewModel.groupData.observe(this) { _groupData ->
+//            if (_groupData != null) {
+//                populateViews(_groupData)
+//            }
+//        }
+//    }
 
 
     private fun populateViews(groupData : List<GroupMemberAndUserIndexDTO>) {

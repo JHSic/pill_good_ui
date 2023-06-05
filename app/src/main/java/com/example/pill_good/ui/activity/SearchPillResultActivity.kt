@@ -22,7 +22,13 @@ class SearchPillResultActivity : CustomActionBarActivity() {
 
         val searchPillData = intent.getSerializableExtra("pillData") as SearchingConditionDTO
 
-        pillViewModel.loadPillData(searchPillData)
+        if(searchPillData.pillColor == null && searchPillData.pillShape == null
+            && searchPillData.pillBackWord == null && searchPillData.pillFrontWord == null){
+            pillViewModel.loadPillData(searchPillData)
+        }
+        else{
+            pillViewModel.loadOnlyPillName(searchPillData.pillName!!)
+        }
 
         pillViewModel.pillData.observe(this) { _pillData ->
             if (_pillData != null) {

@@ -28,7 +28,7 @@ val appModule = module {
     /**
      * ViewModel
      */
-    single { MainViewModel(get(), get()) }
+    single { MainViewModel(get(), get(), get()) }
     single { GroupViewModel(get()) }
     single { PrescriptionViewModel(get()) }
     single { PillViewModel(get()) }

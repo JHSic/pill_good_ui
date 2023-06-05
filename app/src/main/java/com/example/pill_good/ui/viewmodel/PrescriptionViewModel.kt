@@ -32,12 +32,12 @@ class PrescriptionViewModel(private val prescriptionRepository : PrescriptionRep
         viewModelScope.launch {
             try{
                 if (prescriptionDTO.prescriptionIndex != null) {
-//                    val deletedData = prescriptionRepository.deleteById(prescriptionDTO.prescriptionIndex)
-//                    if (deletedData == null) {
-                    val currentList = _prescriptionData.value?.toMutableList()
-                    currentList?.remove(prescriptionDTO)
-                    _prescriptionData.value = currentList!!
-//                    }
+                    val deletedData = prescriptionRepository.deleteById(prescriptionDTO.prescriptionIndex)
+                    if (deletedData == null) {
+                        val currentList = _prescriptionData.value?.toMutableList()
+                        currentList?.remove(prescriptionDTO)
+                        _prescriptionData.value = currentList!!
+                    }
                 }
             } catch (e : Exception){
                 // 에러 처리
