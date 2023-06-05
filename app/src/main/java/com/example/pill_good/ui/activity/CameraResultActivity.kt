@@ -14,15 +14,31 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.pill_good.R
+import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
+import com.example.pill_good.data.dto.UserDTO
 import com.example.pill_good.data.model.CarouselItem
 import com.example.pill_good.databinding.ActivityResultCameraBinding
+import com.example.pill_good.ui.viewmodel.CameraResultViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 import java.io.OutputStream
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CameraResultActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityResultCameraBinding
+    private lateinit var carouselAdapter: CarouselAdapter
+
+    private val cameraResultViewModel: CameraResultViewModel by viewModel()
 
     private val RESULT_WIDTH_WEIGHT = 400
+
+    private var groupMemberList: ArrayList<GroupMemberAndUserIndexDTO> = arrayListOf()
+
+    private var userInfo: UserDTO = UserDTO()
+
+    private var imgFile: File? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +53,9 @@ class CameraResultActivity : AppCompatActivity() {
         val rectangleTop = intent.getIntExtra("rectangleTop", 0)
         val rectangleRight = intent.getIntExtra("rectangleRight", 0)
         val rectangleBottom = intent.getIntExtra("rectangleBottom", 0)
+
+        groupMemberList = intent.getSerializableExtra("groupMemberList") as ArrayList<GroupMemberAndUserIndexDTO>
+        userInfo = intent.getSerializableExtra("userInfo") as UserDTO
 
         // 이미지 회전하기
         val rotatedBitmap = rotateBitmap(bitmap, 90f)
@@ -55,6 +74,7 @@ class CameraResultActivity : AppCompatActivity() {
 
         // 기존 사진 덮어쓰기
         val outputStream: OutputStream? = contentResolver.openOutputStream(imageUri)
+        imgFile = File(imageUri.path)
 
         val compressionThread = Thread {
             croppedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
@@ -81,8 +101,25 @@ class CameraResultActivity : AppCompatActivity() {
         sendButton.setOnClickListener {
             /**
              * 서버로 데이터 전송 로직
-             *
              */
+            val birthDate = carouselAdapter.resultBirthEditText
+            val groupMember = carouselAdapter.resultGroupMember
+
+            if(birthDate == "" || birthDate == null || groupMember == "" || groupMember == null) {
+                val builder = android.app.AlertDialog.Builder(this)
+
+                builder.setMessage("값을 입력해주세요.")
+                builder.setPositiveButton("확인") { dialog, which ->
+                    // 그냥 팝업만 닫음.
+                }
+                val dialog = builder.create()
+                dialog.show()
+                return@setOnClickListener
+            }
+
+            val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+            val localDate = LocalDate.parse(birthDate, formatter)
+            cameraResultViewModel.sendOcrImage(groupMemberList.find { it.groupMemberName == groupMember }?.groupMemberIndex!!, groupMember, localDate, userInfo.userFcmToken!!, imgFile!!)
 
             val builder = AlertDialog.Builder(this, R.style.CustomDialogTheme)
             builder.setTitle("처방전 데이터 전송 완료!")
@@ -96,7 +133,6 @@ class CameraResultActivity : AppCompatActivity() {
             }
             val dialog = builder.create()
             dialog.show()
-
         }
     }
 
@@ -144,12 +180,13 @@ class CameraResultActivity : AppCompatActivity() {
     private fun setupCarousel(carouselItems: List<CarouselItem>) {
         val indicatorLayout = viewBinding.indicatorLayout
         val viewPager = viewBinding.carouselViewPager
-        val carouselAdapter = CarouselAdapter(carouselItems)
+        carouselAdapter = CarouselAdapter(carouselItems, this)
         viewPager.adapter = carouselAdapter
 
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewPager.offscreenPageLimit = carouselItems.size
         viewPager.setCurrentItem(0, false)
+
 
         // ViewPager2의 슬라이드 이벤트 리스너를 등록합니다
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

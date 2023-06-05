@@ -24,6 +24,8 @@ import android.util.Log
 import android.widget.FrameLayout
 import androidx.camera.core.ImageCaptureException
 import com.example.pill_good.R
+import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
+import com.example.pill_good.data.dto.UserDTO
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -37,10 +39,17 @@ class CameraActivity : AppCompatActivity() {
 
     private lateinit var frameLayout: FrameLayout
 
+    private var groupMemberList: ArrayList<GroupMemberAndUserIndexDTO> = arrayListOf()
+
+    private var userInfo: UserDTO = UserDTO()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityCameraBinding.inflate(layoutInflater)
         frameLayout = viewBinding.frameLayout
+
+        groupMemberList = intent.getSerializableExtra("groupMemberList") as ArrayList<GroupMemberAndUserIndexDTO>
+        userInfo = intent.getSerializableExtra("userInfo") as UserDTO
 
         setContentView(viewBinding.root)
 
@@ -186,6 +195,9 @@ class CameraActivity : AppCompatActivity() {
                     intent.putExtra("rectangleBottom", viewBinding.rectangleView.bottom)
                     intent.putExtra("frameWidth", viewBinding.frameLayout.width)
                     intent.putExtra("frameHeight", viewBinding.frameLayout.height)
+
+                    intent.putExtra("groupMemberList", groupMemberList)
+                    intent.putExtra("userInfo", userInfo)
                     startActivity(intent)
                 }
             }
