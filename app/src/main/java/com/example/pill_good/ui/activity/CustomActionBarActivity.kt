@@ -70,6 +70,10 @@ open class CustomActionBarActivity : AppCompatActivity() {
         cameraButton.setOnClickListener {
             val intent = Intent(this, CameraActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            val groupMemberList = mainViewModel.groupMemberList.value?.toMutableList() as ArrayList
+            val userInfo = mainViewModel.userInfo.value
+            intent.putExtra("groupMemberList", groupMemberList)
+            intent.putExtra("userInfo", userInfo)
             startActivity(intent)
             overridePendingTransition(0, 0);
         }
