@@ -81,7 +81,6 @@ class GroupMemberAddActivity : CustomActionBarActivity() {
             else{
                 // 수정 완료 되고 뷰 종료 or 이동하는 로직
                 val newGroupMember = GroupMemberAndUserIndexDTO(
-                    groupMemberIndex = 70, // 테스트용 실제로 안넣음
                     userIndex = userId,
                     groupMemberName = addAliasText.text.toString().trim(),
                     groupMemberBirth = convertToDate(birthDate.text.toString()),
@@ -101,4 +100,7 @@ class GroupMemberAddActivity : CustomActionBarActivity() {
         // birthdate 문자열을 LocalDate로 변환
         return LocalDate.parse(birthdate.trim(), formatter)
     }
+
+
+
 }

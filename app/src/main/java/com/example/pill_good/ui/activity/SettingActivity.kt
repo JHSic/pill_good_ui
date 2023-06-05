@@ -33,20 +33,25 @@ class SettingActivity : CustomActionBarActivity() {
         messageSwitch = findViewById(R.id.message_Authorization)
         cameraSwitch = findViewById(R.id.camera_Authorization)
 
-        messageSwitch.isEnabled = checkSmsPermission()
-        cameraSwitch.isEnabled = checkCameraPermission()
+        messageSwitch.isEnabled = true // 권한 여부와 상관없이 스위치 사용 가능
+        cameraSwitch.isEnabled = true // 권한 여부와 상관없이 스위치 사용 가능
+
+        messageSwitch.isChecked = checkSmsPermission()
+        cameraSwitch.isChecked = checkCameraPermission()
 
         messageSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // 스위치가 켜진 경우
                 if (!checkSmsPermission()) {
-                    // 카메라 권한을 요청
+                    // SMS 권한을 요청
                     requestSmsPermission()
                 }
             } else {
                 // 스위치가 꺼진 경우
-                // 권한 해제 또는 필요한 처리 수행
-                openAppSettings() // 앱 설정 화면으로 이동
+                if (checkSmsPermission()) {
+                    // SMS 권한이 있는 경우에만 권한 해제 또는 필요한 처리 수행
+                    openAppSettings() // 앱 설정 화면으로 이동
+                }
             }
         }
 
@@ -59,8 +64,10 @@ class SettingActivity : CustomActionBarActivity() {
                 }
             } else {
                 // 스위치가 꺼진 경우
-                // 권한 해제 또는 필요한 처리 수행
-                openAppSettings() // 앱 설정 화면으로 이동
+                if (checkCameraPermission()) {
+                    // 카메라 권한이 있는 경우에만 권한 해제 또는 필요한 처리 수행
+                    openAppSettings() // 앱 설정 화면으로 이동
+                }
             }
         }
 

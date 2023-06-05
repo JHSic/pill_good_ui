@@ -30,10 +30,13 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
         val editAliasText: EditText = findViewById(R.id.edittext_alias)
         val editPhoneText: EditText = findViewById(R.id.edittext_phone)
         val birthDate: TextView = findViewById(R.id.text_birth)
+        val calendar = Calendar.getInstance()
 
         editAliasText.setText(groupMemberInformation?.groupMemberName)
         editPhoneText.setText(groupMemberInformation?.groupMemberPhone)
-        birthDate.text = groupMemberInformation?.groupMemberBirth.toString()
+        val birthDateString = "${groupMemberInformation?.groupMemberBirth?.year}/${groupMemberInformation?.groupMemberBirth?.monthValue}/${groupMemberInformation?.groupMemberBirth?.dayOfMonth}"
+        birthDate.text = birthDateString
+
 
         val editCalenderButton: ImageButton = findViewById(R.id.edit_birth_Button)
         val editButton: Button = findViewById(R.id.edit_button)
@@ -50,7 +53,6 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
             //오늘 이전만 선택가능하게 하는 코드
             calendarConstraintBuilder.setValidator(DateValidatorPointBackward.now())
 
-
             val builder = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Calendar")
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -59,9 +61,9 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
 
             val datePicker = builder.build()
             datePicker.addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance()
                 calendar.time = Date(it)
                 val calendarMilli = calendar.timeInMillis
+                // 수정된 날짜 textView에 미반영 -> 수정 필요
                 birthDate.text =
                     "${calendar.get(Calendar.YEAR)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.DAY_OF_MONTH)}"
 
@@ -75,7 +77,7 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
         // 수정 버튼 클릭
         editButton.setOnClickListener() {
             val updateAlias = editAliasText.text.toString().trim()
-
+            val updateBirth = convertToDate(birthDate.text.toString())
             if(updateAlias.isEmpty()){
                 val builder = AlertDialog.Builder(this)
                 builder.setMessage("별칭은 필수입니다.")
@@ -87,7 +89,6 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
             }
             else{
                 val updatePhone = editPhoneText.text.toString().trim()
-                val updateBirth = convertToDate(birthDate.text.toString())
 
                 // 모두 일치하면 view만 종료
                 if(groupMemberInformation?.groupMemberName != updateAlias
@@ -98,7 +99,6 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
                         groupMemberPhone = updatePhone,
                         groupMemberBirth = updateBirth
                     )
-                    println("업데이트된 유저의 이름 " + updateAlias)
                     groupViewModel.editGroupMember(updatedGroupMember!!)
                     Toast.makeText(applicationContext, "수정이 완료되었습니다.", Toast.LENGTH_LONG).show();
                 }
@@ -108,10 +108,10 @@ class GroupMemberEditActivity : CustomActionBarActivity() {
     }
 
     private fun convertToDate(birthdate: String): LocalDate {
+//        val cleanedBirthdate = birthdate.replace("-0", "-")
         // 날짜 형식 지정
-        val formatter = DateTimeFormatter.ofPattern("yyyy-M-d")
+        val formatter = DateTimeFormatter.ofPattern("yyyy/M/d")
         // birthdate 문자열을 LocalDate로 변환
         return LocalDate.parse(birthdate.trim(), formatter)
     }
-
 }

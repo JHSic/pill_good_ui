@@ -11,21 +11,36 @@ import androidx.core.content.res.ResourcesCompat
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.NotificationDTO
 import com.example.pill_good.ui.viewmodel.NotificationViewModel
+import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Duration
 import java.time.LocalDateTime
+import kotlin.math.abs
 
 class NotificationActivity : CustomActionBarActivity() {
     private val notificationViewModel : NotificationViewModel by viewModel()
+
+    private var userId : Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         addCustomView(R.layout.activity_notification)
 
-        var userId = intent.getLongExtra("userId", 0L)
+        userId = intent.getLongExtra("userId", 0L)
 
-        notificationViewModel.loadNotificationData(userId) // userId 넣어줘야함
+//        notificationViewModel.loadNotificationData(userId!!) // userId 넣어줘야함
+
+//        notificationViewModel.notificationData.observe(this) { _notificationData ->
+//            if (_notificationData != null) {
+//                populateNotification(_notificationData)
+//            }
+//        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        notificationViewModel.loadNotificationData(userId!!) // userId 넣어줘야함
 
         notificationViewModel.notificationData.observe(this) { _notificationData ->
             if (_notificationData != null) {
@@ -36,6 +51,8 @@ class NotificationActivity : CustomActionBarActivity() {
 
     private fun populateNotification(notificationData : List<NotificationDTO>){
         val linearLayout = findViewById<LinearLayout>(R.id.notification_linear)
+        linearLayout.removeAllViews()
+
         // 알림 개수 만큼 생성되게 설정
         for(i: Int in notificationData.indices) {
             // Initialize a new LayoutParams instance, CardView width and height
@@ -92,12 +109,14 @@ class NotificationActivity : CustomActionBarActivity() {
         val timeDifference = Duration.between(notificationDTO.notificationTime, LocalDateTime.now())
 
         val timeText = when {
-            timeDifference.toMinutes() < 60 -> "${timeDifference.toMinutes()}분전"
-            timeDifference.toHours() < 24 -> "${timeDifference.toHours()}시간전"
-            timeDifference.toDays() == 1L -> "1일전"
-            timeDifference.toDays() < 30 -> "${timeDifference.toDays()}일전"
-            else -> "30일 이상 전"
+            abs(timeDifference.toMinutes()) < 60 -> "${abs(timeDifference.toMinutes())}분 전"
+            abs(timeDifference.toHours()) < 24 -> "${abs(timeDifference.toHours())}시간 전"
+            abs(timeDifference.toDays()) == 1L -> "1일 전"
+            abs(timeDifference.toDays()) == 2L -> "2일 전"
+            abs(timeDifference.toDays()) == 3L -> "3일 전"
+            else -> "방금 전"
         }
+
         notificationTime.text = timeText
         notificationTime.textSize = 15f
         notificationTime.setTextColor(Color.BLACK)

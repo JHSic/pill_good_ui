@@ -24,10 +24,10 @@ class SearchPillResultActivity : CustomActionBarActivity() {
 
         if(searchPillData.pillColor == null && searchPillData.pillShape == null
             && searchPillData.pillBackWord == null && searchPillData.pillFrontWord == null){
-            pillViewModel.loadPillData(searchPillData)
+            pillViewModel.loadOnlyPillName(searchPillData.pillName!!)
         }
         else{
-            pillViewModel.loadOnlyPillName(searchPillData.pillName!!)
+            pillViewModel.loadPillData(searchPillData)
         }
 
         pillViewModel.pillData.observe(this) { _pillData ->

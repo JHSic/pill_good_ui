@@ -12,10 +12,11 @@ import androidx.core.content.ContextCompat
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.EditOCRDTO
 import com.example.pill_good.data.dto.PillScheduleDTO
-import com.example.pill_good.ui.activity.NotificationActivity
 import com.example.pill_good.ui.activity.EditOCRActivity
+import com.example.pill_good.ui.activity.NotificationActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.orhanobut.logger.Logger
 import org.json.JSONArray
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -24,6 +25,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val title = remoteMessage.notification?.title
         val body = remoteMessage.notification?.body
+
+        Logger.d("test", title, body)
 
         // 수신한 메시지 처리
         if (remoteMessage.data.isNotEmpty()) {
@@ -52,7 +55,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
         // 화면 이동 설정
         var intent = Intent(this, NotificationActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(applicationContext, PendingIntent.FLAG_ONE_SHOT, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 3002, intent, flags)
         generateNotificationToDevice(title, content, pendingIntent)
     }
 
@@ -99,15 +103,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             pillList = pillDataList
         )
         intent.putExtra("prescriptionData", prescriptionData)
-        val pendingIntent = PendingIntent.getActivity(applicationContext, PendingIntent.FLAG_ONE_SHOT, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            3001,
+            intent,
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         // 알림을 표시하거나 필요한 작업 수행
         generateNotificationToDevice(title, content, pendingIntent)
     }
 
     private fun generateNotificationToDevice(title : String, content : String, pendingIntent : PendingIntent){
-        val channelId = "default"
+        val channelId: String? = getString(R.string.default_notification_channel_id)
 
-        val notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
+        val notificationBuilder = NotificationCompat.Builder(applicationContext, channelId!!)
             .setSmallIcon(R.drawable.ic_logo_test)
             .setContentTitle(title)
             .setContentText(content)

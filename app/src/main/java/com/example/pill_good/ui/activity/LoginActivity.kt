@@ -131,6 +131,7 @@ class LoginActivity : AppCompatActivity() {
     // toMainActivity
     fun toMainActivity(user: FirebaseUser?, fcmToken : String) {
         if (user != null) { // MainActivity 로 이동
+            val intent = Intent(this, MainActivity::class.java)
             val loginDTO = LoginDTO(
                 userEmail = user.email,
                 userToken = fcmToken
@@ -139,7 +140,7 @@ class LoginActivity : AppCompatActivity() {
                 try {
                     val loginUserInfo = loginRepositoryImpl.login(loginDTO)
                     intent.putExtra("userId", loginUserInfo?.userIndex)
-                    intent.putExtra("userEmail", loginUserInfo?.userIndex)
+                    intent.putExtra("userEmail", loginUserInfo?.userEmail)
                     intent.putExtra("userFcmToken", loginUserInfo?.userFcmToken)
                     startActivity(intent)
                     finish()
