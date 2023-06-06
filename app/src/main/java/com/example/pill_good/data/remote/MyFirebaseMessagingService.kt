@@ -21,6 +21,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.orhanobut.logger.Logger
 import org.json.JSONArray
+import java.time.LocalDate
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -35,7 +36,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val channelId = getString(R.string.default_notification_channel_id)
         val channelName = getString(R.string.default_notification_channel_id)
         val channelDescription = getString(R.string.default_notification_channel_id)
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val importance = NotificationManager.IMPORTANCE_HIGH
 
         val channel = NotificationChannel(channelId, channelName, importance).apply {
             description = channelDescription
@@ -51,23 +52,34 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val title = remoteMessage.notification?.title
         val body = remoteMessage.notification?.body
 
+        println("processPrescriptionNotification - data: ${remoteMessage.notification}")
         Logger.d("test", title, body)
 
         Logger.d("processPrescriptionNotification - data: ${remoteMessage.data}")
 
-        // 수신한 메시지 처리
-        if (remoteMessage.data.isNotEmpty()) {
-            val data = remoteMessage.data
-            val firstKey = data.keys.firstOrNull()
+        val data = remoteMessage.data
 
-            if (firstKey == "병원 이름") {
-                // 처방전 처리
-                processPrescriptionNotification(data, title!!, body!!)
-            } else if (firstKey == "유저 인덱스") {
-                // 복약 알림 처리
-                processMedicationNotification(data, title!!, body!!)
-            }
+
+        // 수신한 메시지 처리
+        if (title == "OCR 알림") {
+            // 처방전 처리
+            processPrescriptionNotification(data, title!!, body!!)
+        } else if (title == "복용 알림") {
+            // 복약 알림 처리
+            processMedicationNotification(data, title!!, body!!)
         }
+//        if (remoteMessage.data.isNotEmpty()) {
+//            val data = remoteMessage.data
+//            val firstKey = data.keys.firstOrNull()
+//
+//            if (firstKey == "병원 이름") {
+//                // 처방전 처리
+//                processPrescriptionNotification(data, title!!, body!!)
+//            } else if (firstKey == "유저 인덱스") {
+//                // 복약 알림 처리
+//                processMedicationNotification(data, title!!, body!!)
+//            }
+//        }
     }
 
     private fun processMedicationNotification(data : Map<String, String>, title : String, content : String) {
@@ -92,9 +104,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun processPrescriptionNotification(data : Map<String, String>, title : String, content : String) {
         // 처방전 수정 알림 처리 로직 구현
 
+        val groupMemberIndex = data["그룹원 인덱스"]!!.toLong()
         val groupMemberName = data["그룹원 이름"] // "김현태"
         val hospitalName = data["병원 이름"] // "구미병원"
         val hospitalPhone = data["병원 전화번호"] // "(054)-123-4567"
+        val eatStartDay = LocalDate.parse(data["복용 시작 날짜"])
         val diseaseCode = data["질병 코드"] // "R05"
         val pillListJson = data["약 정보"]
         val pillList = JSONArray(pillListJson)
@@ -123,7 +137,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // prescriptionEditActivity
         var intent = Intent(applicationContext, EditOCRActivity::class.java)
         val prescriptionData = EditOCRDTO(
+            groupMemberIndex = groupMemberIndex,
             groupMemberName = groupMemberName,
+            startDate = eatStartDay,
             hospitalName = hospitalName,
             phoneNumber = hospitalPhone,
             diseaseCode = diseaseCode,
@@ -146,6 +162,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setContentTitle(title)
             .setContentText(content)
             .setContentIntent(pendingIntent)
+            .addAction(R.drawable.ic_logo_test, "열기", pendingIntent)
             .setAutoCancel(true)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

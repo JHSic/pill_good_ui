@@ -120,7 +120,9 @@ class EditOCRActivity : CustomActionBarActivity() {
 
         // 수정된 데이터로 PrescriptionData 객체 생성
         val editedPrescriptionData = EditOCRDTO(
+            groupMemberIndex = ocrEditViewModel.editOCRData.value!!.groupMemberIndex,
             groupMemberName = editedName,
+            startDate = ocrEditViewModel.editOCRData.value!!.startDate,
             hospitalName = editedHospital,
             phoneNumber = editedHospitalPhone,
             diseaseCode = editedDiseaseCode,
