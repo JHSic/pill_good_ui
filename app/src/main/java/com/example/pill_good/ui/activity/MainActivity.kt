@@ -76,13 +76,13 @@ class MainActivity : CustomActionBarActivity() {
             }
         }
 
-        mainViewModel.groupMemberList.observe(this) {
-            // TODO - 그룹 멤버 리스트를 다른 액티비티에 넘겨준 후 다시 돌아왔을 때 변경점 감지에 대한 구현 필요
-        }
-
-        mainViewModel.takePillData.observe(this) {
-            // TODO - 그룹 멤버 리스트를 다른 액티비티에 넘겨준 후 다시 돌아왔을 때 변경점 감지에 대한 구현 필요 (그룹원 삭제나 별칭 수정 등)
-        }
+//        mainViewModel.groupMemberList.observe(this) {
+//            // TODO - 그룹 멤버 리스트를 다른 액티비티에 넘겨준 후 다시 돌아왔을 때 변경점 감지에 대한 구현 필요
+//        }
+//
+//        mainViewModel.takePillData.observe(this) {
+//            // TODO - 그룹 멤버 리스트를 다른 액티비티에 넘겨준 후 다시 돌아왔을 때 변경점 감지에 대한 구현 필요 (그룹원 삭제나 별칭 수정 등)
+//        }
 
 
         // 캘린더 버튼, 버튼 미지정 설정 및 캘린더 버튼 alpha 변경

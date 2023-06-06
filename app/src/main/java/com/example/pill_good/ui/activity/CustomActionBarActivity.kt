@@ -18,10 +18,11 @@ import androidx.appcompat.widget.Toolbar
 import com.example.pill_good.R
 import com.example.pill_good.ui.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseUser
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class CustomActionBarActivity : AppCompatActivity() {
-    private val mainViewModel: MainViewModel by viewModel()
+    private val mainViewModel: MainViewModel by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.custom_action_bar)

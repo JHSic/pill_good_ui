@@ -36,8 +36,7 @@
                 android:layout_height="199dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                app:srcCompat="@drawable/a201412020003201" />
+                android:layout_marginRight="20dp" />
 
             <TextView
                 android:id="@+id/pill_information_name"

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <EditText
             android:id="@+id/prescription_edit_pill_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:textColor="@color/black"
             />
 
-        <TextView
+        <EditText
             android:id="@+id/prescription_edit_pill_item_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             android:textColor="@color/black"
             android:textSize="10dp" />
 
-        <TextView
+        <EditText
             android:id="@+id/prescription_edit_pill_item_num"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

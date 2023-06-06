@@ -206,19 +206,18 @@
                 android:orientation="vertical">
 
             </LinearLayout>
-
+            <Button
+                android:id="@+id/prescription_edit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pt_sans_bold"
+                android:text="수정"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="center"
+                android:textColor="@color/black" />
         </LinearLayout>
-    </ScrollView>
 
-    <Button
-        android:id="@+id/prescription_edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/pt_sans_bold"
-        android:text="수정"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        android:layout_gravity="center"
-        android:textColor="@color/black" />
+    </ScrollView>
 
 </LinearLayout>

@@ -1,13 +1,6 @@
 package com.example.pill_good.di
 
-import com.example.pill_good.repository.GroupMemberRepositoryImpl
-import com.example.pill_good.repository.LoginRepositoryImpl
-import com.example.pill_good.repository.NotificationRepositoryImpl
-import com.example.pill_good.repository.PillRepositoryImpl
-import com.example.pill_good.repository.PrescriptionRepositoryImpl
-import com.example.pill_good.repository.SendAutoMessageRepositoryImpl
-import com.example.pill_good.repository.TakePillRepositoryImpl
-import com.example.pill_good.repository.UserRepositoryImpl
+import com.example.pill_good.repository.*
 import com.example.pill_good.ui.viewmodel.*
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -25,6 +18,7 @@ val appModule = module {
     factory { TakePillRepositoryImpl(get()) }
     factory { NotificationRepositoryImpl(get()) }
     factory { SendAutoMessageRepositoryImpl(get()) }
+    factory { OCRRepositoryImpl(get()) }
 
     /**
      * ViewModel
@@ -33,7 +27,7 @@ val appModule = module {
     single { GroupViewModel(get()) }
     single { PrescriptionViewModel(get()) }
     viewModel { PillViewModel(get()) }
-    single { NotificationViewModel(get()) }
-    single { EditOCRViewModel(get()) }
+    viewModel { NotificationViewModel(get()) }
+    viewModel { EditOCRViewModel(get()) }
 }
 

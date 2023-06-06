@@ -185,7 +185,7 @@ class MainViewModel(
             _takePillData.value = mappingMedicationInfoToTakePillInfo(initialMedicationInfo)
 
             // fot Tset: Log
-            if (IS_TEST) getLog()
+//            if (IS_TEST) getLog()
         }
     }
 
@@ -603,91 +603,91 @@ class MainViewModel(
     /**
      * TODO - 초기 데이터 값을 로그로 남기는 메소드
      */
-    private fun getLog() {
-        var stringBuilder = StringBuilder()
-        var logString: String
-
-        /**
-         * TEST PRESET
-         */
-        Logger.d(
-            "Test Preset\n" +
-                    "MONTH_OFFSET = $MONTH_OFFSET\n" +
-                    "SIZE_OF_GROUP_MEMBER = $SIZE_OF_GROUP_MEMBER\n" +
-                    "RANGE_OF_TAKE_PILL = $RANGE_OF_TAKE_PILL\n" +
-                    "SIZE_OF_DISEASE = $SIZE_OF_DISEASE" +
-                    "SIZE_OF_PILL = $SIZE_OF_PILL"
-        )
-
-        /**
-         * USET INFO
-         */
-        Logger.d("User Information: $_userInfo")
-
-        /**
-         * GROUP MEMBER LIST
-         */
-        _groupMemberList.value?.forEach {
-            stringBuilder.append("GroupMember Index: ${it.groupMemberIndex}, Name: ${it.groupMemberName}}\n")
-        }
-        logString = stringBuilder.toString()
-        Logger.d("GroupMember Information\n$logString")
-        stringBuilder.clear()
-
-        /**
-         * GROUP MEMBER CALENDAR
-         */
-        _groupMemberCalendar.value?.forEach { (groupMemberIndex, dateMap) ->
-            dateMap.keys.forEach { date ->
-                stringBuilder.append("Group Member Index: $groupMemberIndex, Date: $date\n")
-            }
-        }
-        logString = stringBuilder.toString()
-        Logger.d("Value of GroupMemberCalendar\n$logString")
-        stringBuilder.clear()
-
-        /**
-         * TAKE PILL DATA INFO
-         */
-        takePillData.value?.forEach { (date, groupMemberMap) ->
-            groupMemberMap.forEach { (groupMemberName, diseaseMap) ->
-                diseaseMap.forEach { (diseaseName, pillMap) ->
-                    pillMap.forEach { (pillName, medicationInfo) ->
-                        stringBuilder.append("Date: $date\n")
-                        stringBuilder.append("Group Member Name: $groupMemberName\n")
-                        stringBuilder.append("Disease Name: $diseaseName\n")
-                        stringBuilder.append("Pill Name: $pillName\n")
-                        stringBuilder.append("Medication Info: $medicationInfo\n\n")
-                    }
-                }
-            }
-        }
-
-        logString = stringBuilder.toString()
-        Logger.d("takePillData Information\n$logString")
-        stringBuilder.clear()
-
-        /**
-         * LOADED DATE LIST
-         */
-        Logger.d("loadedDateList Information\n${_loadedDateList.value}")
-
-        /**
-         * NOT LOADED DATE LIST
-         */
-        notLoadedInitialData.forEach { data ->
-            data.takePillAndTakePillCheckDTOs.forEach { takePillData ->
-                stringBuilder.append("Group Member Index: ${data.groupMemberIndex}, ")
-                stringBuilder.append("Take Date: ${takePillData.takeDate}\n")
-            }
-        }
-
-        logString = stringBuilder.toString()
-        Logger.d("notLoadedInitialData Information\n$logString")
-        stringBuilder.clear()
-
-
-    }
+//    private fun getLog() {
+//        var stringBuilder = StringBuilder()
+//        var logString: String
+//
+//        /**
+//         * TEST PRESET
+//         */
+//        Logger.d(
+//            "Test Preset\n" +
+//                    "MONTH_OFFSET = $MONTH_OFFSET\n" +
+//                    "SIZE_OF_GROUP_MEMBER = $SIZE_OF_GROUP_MEMBER\n" +
+//                    "RANGE_OF_TAKE_PILL = $RANGE_OF_TAKE_PILL\n" +
+//                    "SIZE_OF_DISEASE = $SIZE_OF_DISEASE" +
+//                    "SIZE_OF_PILL = $SIZE_OF_PILL"
+//        )
+//
+//        /**
+//         * USET INFO
+//         */
+//        Logger.d("User Information: $_userInfo")
+//
+//        /**
+//         * GROUP MEMBER LIST
+//         */
+//        _groupMemberList.value?.forEach {
+//            stringBuilder.append("GroupMember Index: ${it.groupMemberIndex}, Name: ${it.groupMemberName}}\n")
+//        }
+//        logString = stringBuilder.toString()
+//        Logger.d("GroupMember Information\n$logString")
+//        stringBuilder.clear()
+//
+//        /**
+//         * GROUP MEMBER CALENDAR
+//         */
+//        _groupMemberCalendar.value?.forEach { (groupMemberIndex, dateMap) ->
+//            dateMap.keys.forEach { date ->
+//                stringBuilder.append("Group Member Index: $groupMemberIndex, Date: $date\n")
+//            }
+//        }
+//        logString = stringBuilder.toString()
+//        Logger.d("Value of GroupMemberCalendar\n$logString")
+//        stringBuilder.clear()
+//
+//        /**
+//         * TAKE PILL DATA INFO
+//         */
+//        takePillData.value?.forEach { (date, groupMemberMap) ->
+//            groupMemberMap.forEach { (groupMemberName, diseaseMap) ->
+//                diseaseMap.forEach { (diseaseName, pillMap) ->
+//                    pillMap.forEach { (pillName, medicationInfo) ->
+//                        stringBuilder.append("Date: $date\n")
+//                        stringBuilder.append("Group Member Name: $groupMemberName\n")
+//                        stringBuilder.append("Disease Name: $diseaseName\n")
+//                        stringBuilder.append("Pill Name: $pillName\n")
+//                        stringBuilder.append("Medication Info: $medicationInfo\n\n")
+//                    }
+//                }
+//            }
+//        }
+//
+//        logString = stringBuilder.toString()
+//        Logger.d("takePillData Information\n$logString")
+//        stringBuilder.clear()
+//
+//        /**
+//         * LOADED DATE LIST
+//         */
+//        Logger.d("loadedDateList Information\n${_loadedDateList.value}")
+//
+//        /**
+//         * NOT LOADED DATE LIST
+//         */
+//        notLoadedInitialData.forEach { data ->
+//            data.takePillAndTakePillCheckDTOs.forEach { takePillData ->
+//                stringBuilder.append("Group Member Index: ${data.groupMemberIndex}, ")
+//                stringBuilder.append("Take Date: ${takePillData.takeDate}\n")
+//            }
+//        }
+//
+//        logString = stringBuilder.toString()
+//        Logger.d("notLoadedInitialData Information\n$logString")
+//        stringBuilder.clear()
+//
+//
+//    }
 
     /**
      * TODO - 테스트 진행 시 groupMemberCalendar 라이브 데이터의 초기 값을 생성해주는 메소드
