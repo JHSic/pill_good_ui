@@ -1,9 +1,10 @@
-package com.example.pill_good.ui.activity
+package com.example.pill_good.ui.adapter
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pill_good.R
+import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
 import com.example.pill_good.data.model.CarouselItem
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
@@ -25,7 +27,9 @@ class CarouselAdapter(private val carouselItems: List<CarouselItem>, private val
     RecyclerView.Adapter<CarouselAdapter.CarouselViewHolder>() {
 
     var resultBirthEditText: String = ""
-    var resultGroupMember: String = ""
+    var resultGroupMember: GroupMemberAndUserIndexDTO = GroupMemberAndUserIndexDTO()
+
+    private var groupMemberList: ArrayList<GroupMemberAndUserIndexDTO> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarouselViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -54,10 +58,11 @@ class CarouselAdapter(private val carouselItems: List<CarouselItem>, private val
                 // 필요한 로직 작성
                 val birthEditText = holder.itemView.findViewById<TextView>(R.id.add_text_take_pill_date)
                 birthEditText.isFocusableInTouchMode = false
-                birthEditText.hint = "달력을 눌러주세요."
+                birthEditText.hint = "달력 버튼을 눌러주세요."
 
                 val groupEditText = holder.itemView.findViewById<EditText>(R.id.add_text_groupmember)
-                groupEditText.hint = "그룹원 별칭을 입력해주세요."
+                birthEditText.isFocusableInTouchMode = false
+                groupEditText.hint = "그룹원 버튼을 눌러주세요."
 
                 //sharedPreference를 이용한 기기에 선택한 날짜 데이터 저장
                 val sharedPreference = activity.getSharedPreferences("CreateProfile", Context.MODE_PRIVATE)
@@ -95,27 +100,22 @@ class CarouselAdapter(private val carouselItems: List<CarouselItem>, private val
                     datePicker.show(activity.supportFragmentManager, datePicker.toString())
                 }
 
-                // TextWatcher 객체 생성
-                val textWatcher = object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                        // 텍스트 변경 전에 호출되는 메서드
-                    }
+                val addGroupMemberButton = holder.itemView.findViewById<ImageButton>(R.id.add_group_button4)
+                addGroupMemberButton.setOnClickListener {
+                    val alertBuilder = AlertDialog.Builder(activity)
+                    alertBuilder.setTitle("그룹원 선택")
+                    alertBuilder.setItems(groupMemberList.map { it -> it.groupMemberName }.toTypedArray()) { dialog: DialogInterface, which: Int ->
+                        resultGroupMember = groupMemberList[which]
+                        groupEditText.text = Editable.Factory.getInstance().newEditable(groupMemberList[which].groupMemberName)
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        // 텍스트가 변경될 때 호출되는 메서드
-                        val newText = s.toString()
-                        // 변경된 텍스트를 이용하여 원하는 동작 수행
-                        // 예: 데이터 변경 등
+                        dialog.dismiss()
                     }
-
-                    override fun afterTextChanged(s: Editable?) {
-                        // 텍스트 변경 후에 호출되는 메서드
-                        resultGroupMember = s.toString()
+                    alertBuilder.setNegativeButton("Cancel") { dialog: DialogInterface, _ ->
+                        dialog.dismiss()
                     }
+                    val dialog = alertBuilder.create()
+                    dialog.show()
                 }
-
-                // EditText에 TextWatcher 등록
-                groupEditText.addTextChangedListener(textWatcher)
             }
         }
     }
@@ -124,7 +124,9 @@ class CarouselAdapter(private val carouselItems: List<CarouselItem>, private val
 
     override fun getItemViewType(position: Int): Int = carouselItems[position].layoutResId
 
-
+    fun setGroupMemberList(groupMemberList: ArrayList<GroupMemberAndUserIndexDTO>) {
+        this.groupMemberList = groupMemberList
+    }
 
     class CarouselViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
