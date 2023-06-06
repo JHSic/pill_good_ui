@@ -105,7 +105,7 @@ class CameraResultActivity : AppCompatActivity() {
             val birthDate = carouselAdapter.resultBirthEditText
             val groupMember = carouselAdapter.resultGroupMember
 
-            if(birthDate == "" || birthDate == null || groupMember == "" || groupMember == null) {
+            if(birthDate == "" || birthDate == null ||  groupMember == null) {
                 val builder = android.app.AlertDialog.Builder(this)
 
                 builder.setMessage("값을 입력해주세요.")
@@ -119,11 +119,11 @@ class CameraResultActivity : AppCompatActivity() {
 
             val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
             val localDate = LocalDate.parse(birthDate, formatter)
-            cameraResultViewModel.sendOcrImage(groupMemberList.find { it.groupMemberName == groupMember }?.groupMemberIndex!!, groupMember, localDate, userInfo.userFcmToken!!, imgFile!!)
+            cameraResultViewModel.sendOcrImage(groupMember.groupMemberIndex!!, groupMember.groupMemberName!!, localDate, userInfo.userFcmToken!!, imgFile!!)
 
             val builder = AlertDialog.Builder(this, R.style.CustomDialogTheme)
             builder.setTitle("처방전 데이터 전송 완료!")
-            builder.setMessage("처방전 이미지에 대한 분석이 완료되면\n해당 그룹원의 처방전으로 등록이 됩니다.")
+            builder.setMessage("처방전 이미지에 대한 분석이 완료되면\n해당 그룹원의 처방전으로 등록이 됩니다.\n그룹원명: ${groupMember.groupMemberName}\n복용시작일: $localDate")
             builder.setPositiveButton("확인") { _, _ ->
                 // 확인 버튼 클릭 시 동작할 내용
                 val intent = Intent(this, MainActivity::class.java)
@@ -181,6 +181,7 @@ class CameraResultActivity : AppCompatActivity() {
         val indicatorLayout = viewBinding.indicatorLayout
         val viewPager = viewBinding.carouselViewPager
         carouselAdapter = CarouselAdapter(carouselItems, this)
+        carouselAdapter.setGroupMemberList(groupMemberList)
         viewPager.adapter = carouselAdapter
 
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
