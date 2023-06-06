@@ -11,7 +11,7 @@ val appModule = module {
      * Repository
      */
     factory { UserRepositoryImpl(get()) }
-    factory { LoginRepositoryImpl(get())}
+    factory { LoginRepositoryImpl(get()) }
     factory { GroupMemberRepositoryImpl(get()) }
     factory { PrescriptionRepositoryImpl(get()) }
     factory { PillRepositoryImpl(get()) }
@@ -29,5 +29,5 @@ val appModule = module {
     viewModel { PillViewModel(get()) }
     viewModel { NotificationViewModel(get()) }
     viewModel { EditOCRViewModel(get()) }
+    viewModel { CameraResultViewModel(get()) }
 }
-

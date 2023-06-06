@@ -105,7 +105,7 @@ interface ApiService {
         @Query("groupMemberIndex") groupMemberId: Long,
         @Query("groupMemberName") groupMemberName: String,
         @Query("dateStart") dateStart: LocalDate,
-        @Query("userFcmToken") userFcmToken: String,
+        @Query("userFCMToken") userFcmToken: String,
         @Part image: MultipartBody.Part): ApiResponse<Unit>
 
     @POST("/ocr/create")

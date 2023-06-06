@@ -18,7 +18,7 @@ class OCRRepositoryImpl(private val apiService: ApiService) {
     ): Boolean {
         val requestFile = prescriptionImage.asRequestBody("image/*".toMediaTypeOrNull())
         val imagePart = MultipartBody.Part.createFormData(
-            "prescriptionImage",
+            "image",
             prescriptionImage.name,
             requestFile
         )

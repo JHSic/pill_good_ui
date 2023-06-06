@@ -90,8 +90,10 @@ open class CustomActionBarActivity : AppCompatActivity() {
         // 그룹 버튼 설정
         groupButton.setOnClickListener {
             val groupMemberList = mainViewModel.groupMemberList.value?.toMutableList()
+            val userInfo = mainViewModel.userInfo.value
             val intent = Intent(this, GroupActivity::class.java)
             intent.putExtra("groupMemberList", ArrayList(groupMemberList))
+            intent.putExtra("userInfo", userInfo)
             intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
             overridePendingTransition(0, 0)

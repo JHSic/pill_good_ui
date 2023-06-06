@@ -123,7 +123,7 @@ class MainViewModel(
         private const val SIZE_OF_DISEASE = 5
         private const val SIZE_OF_PILL = 10
 
-        private const val IS_TEST = true
+        private const val IS_TEST = false
     }
 
     /**
@@ -458,12 +458,20 @@ class MainViewModel(
             return null
 
         viewModelScope.launch {
-            groupMemberList.value?.map { it.groupMemberIndex }?.let { it1 ->
+            if(groupMemberList.value?.size == 0) {
+                return@launch
+            }
+            val groupMemberIdList = groupMemberList.value?.map { it.groupMemberIndex } as List<Long>
+            val result = takePillRepositoryImpl.readTakePillsByGroupMemberIdListAndTargetDate(groupMemberIdList, targetDate)
+            if(result != null)
+                targetCalendarData = result as MutableList<MedicationInfoDTO>
+
+            /*groupMemberList.value?.map { it.groupMemberIndex }?.let { it1 ->
                 targetCalendarData =
                     takePillRepositoryImpl.readTakePillsByGroupMemberIdListAndTargetDate(
                         it1 as List<Long>, targetDate
-                    ) as MutableList<MedicationInfoDTO>
-            }
+                    ) as MutableList<MedicationInfoDTO> ?: mutableListOf()
+            }*/
         }
 
         return mutableMapOf(targetDate to targetCalendarData)

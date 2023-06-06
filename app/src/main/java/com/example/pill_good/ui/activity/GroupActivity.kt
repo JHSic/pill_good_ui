@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
 import com.example.pill_good.R
 import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
+import com.example.pill_good.data.dto.UserDTO
 import com.example.pill_good.ui.viewmodel.GroupViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -24,8 +25,9 @@ class GroupActivity : CustomActionBarActivity() {
         addCustomView(R.layout.activity_group)
 
         val groupMemberList = intent.getSerializableExtra("groupMemberList") as? ArrayList<GroupMemberAndUserIndexDTO>
+        val userInfo = intent.getSerializableExtra("userInfo") as UserDTO
         groupViewModel.setGroupDataByMainData(groupMemberList!!)
-        userId = groupMemberList.get(0).userIndex
+        userId = userInfo.userIndex
         val groupButton: ImageButton = findViewById(R.id.group_button)
         groupButton.alpha = 1f
         groupButton.isEnabled = false

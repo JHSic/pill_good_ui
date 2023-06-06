@@ -1,12 +1,14 @@
 package com.example.pill_good.ui.activity
 
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -20,6 +22,7 @@ import com.example.pill_good.data.model.CarouselItem
 import com.example.pill_good.databinding.ActivityResultCameraBinding
 import com.example.pill_good.ui.adapter.CarouselAdapter
 import com.example.pill_good.ui.viewmodel.CameraResultViewModel
+import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.OutputStream
@@ -75,7 +78,9 @@ class CameraResultActivity : AppCompatActivity() {
 
         // 기존 사진 덮어쓰기
         val outputStream: OutputStream? = contentResolver.openOutputStream(imageUri)
-        imgFile = File(imageUri.path)
+        val imagePath = imageUri.path
+        imgFile = imagePath?.let { File(it) }
+
 
         val compressionThread = Thread {
             croppedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
@@ -83,6 +88,11 @@ class CameraResultActivity : AppCompatActivity() {
         }
 
         compressionThread.start()
+        compressionThread.join()
+
+        imgFile = getRealFile(imageUri)
+
+        Logger.d("Exist???${imgFile?.exists()}")
 
         // Carousel 설정하기
         val carouselItems = listOf(
@@ -118,8 +128,10 @@ class CameraResultActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+            val formatter = DateTimeFormatter.ofPattern("yyyy/M/d")
             val localDate = LocalDate.parse(birthDate, formatter)
+
+
             cameraResultViewModel.sendOcrImage(groupMember.groupMemberIndex!!, groupMember.groupMemberName!!, localDate, userInfo.userFcmToken!!, imgFile!!)
 
             val builder = AlertDialog.Builder(this, R.style.CustomDialogTheme)
@@ -218,4 +230,33 @@ class CameraResultActivity : AppCompatActivity() {
         // 초기 상태로 첫 번째 Indicator를 활성화합니다
         updateIndicator(0, indicatorLayout)
     }
+
+    private fun getRealFile(uri: Uri?): File? {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        var cursor: Cursor? = null
+
+        var resultUri = uri
+
+        if (uri == null) {
+            resultUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        }
+
+        try {
+            cursor = contentResolver.query(resultUri!!, projection, null, null, MediaStore.Images.Media.DATE_MODIFIED + " desc")
+
+            if (cursor == null || cursor.columnCount < 1) {
+                return null
+            }
+
+            val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
+
+            val path = cursor.getString(column_index)
+
+            return File(path)
+        } finally {
+            cursor?.close()
+        }
+    }
+
 }

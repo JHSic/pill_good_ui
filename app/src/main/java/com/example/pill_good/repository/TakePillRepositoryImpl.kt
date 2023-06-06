@@ -30,6 +30,8 @@ class TakePillRepositoryImpl(private val apiService: ApiService) {
         val response = apiService.getTakePillsByGroupMemberIdListAndTargetDate(groupMemberIdDTOs, targetDate)
         if (response.statusCode == 200) {
             return response.data
+        } else if (response.statusCode == 404) {
+            return response.data
         } else {
             throw Exception()
         }

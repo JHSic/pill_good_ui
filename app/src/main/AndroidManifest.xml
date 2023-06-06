@@ -30,6 +30,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PillGood"
         android:enableOnBackInvokedCallback="true"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
 
         <meta-data
