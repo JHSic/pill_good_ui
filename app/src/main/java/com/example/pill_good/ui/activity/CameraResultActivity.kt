@@ -18,6 +18,7 @@ import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
 import com.example.pill_good.data.dto.UserDTO
 import com.example.pill_good.data.model.CarouselItem
 import com.example.pill_good.databinding.ActivityResultCameraBinding
+import com.example.pill_good.ui.adapter.CarouselAdapter
 import com.example.pill_good.ui.viewmodel.CameraResultViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
