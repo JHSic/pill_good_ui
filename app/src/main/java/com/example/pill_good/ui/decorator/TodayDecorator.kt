@@ -1,4 +1,4 @@
-package com.example.pill_good.ui.activity
+package com.example.pill_good.ui.decorator
 
 import android.graphics.Color
 import android.graphics.Typeface
