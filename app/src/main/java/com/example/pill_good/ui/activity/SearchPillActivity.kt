@@ -83,7 +83,7 @@ class SearchPillActivity : CustomActionBarActivity() {
         val colorRadioGroup: RadioGroup = findViewById(R.id.color_radio_group)
         colorRadioGroup.setOnCheckedChangeListener { _, btnId ->
             selectedPillColor = when (btnId) {
-                R.id.white_radio -> "흰색"
+                R.id.white_radio -> "하양"
                 R.id.pink_radio -> "분홍"
                 R.id.yellow_radio -> "노랑"
                 R.id.orange_radio -> "주황"

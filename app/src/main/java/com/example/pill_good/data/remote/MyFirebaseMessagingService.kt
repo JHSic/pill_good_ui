@@ -73,12 +73,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun processMedicationNotification(data : Map<String, String>, title : String, content : String) {
         // 전화번호 010-xxxx-xxxx 형식에서 010xxxxxxxx 형식으로 변환
         val phoneNumber = data["그룹원 전화번호"]?.replace("-", "")
-        Logger.d("processPrescriptionNotification - data: $data")
+        Logger.d("Notification - data: $data")
+
         // SMS 발송을 권한에 따라 처리
         if (checkSmsPermission()) {
             val smsManager = SmsManager.getDefault()
             smsManager.sendTextMessage(phoneNumber, null, content, null, null)
         }
+
         // 화면 이동 설정
         var intent = Intent(applicationContext, NotificationActivity::class.java)
         intent.putExtra("userId", data["유저 인덱스"]!!.toLong())
@@ -149,7 +151,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = System.currentTimeMillis().toInt() // 현재 시간 기준 고유한 notificationId 설정
         notificationManager.notify(notificationId, notificationBuilder.build())
-
     }
 
     private fun checkSmsPermission(): Boolean {

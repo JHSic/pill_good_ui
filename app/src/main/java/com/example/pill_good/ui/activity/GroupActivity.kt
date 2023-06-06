@@ -30,21 +30,21 @@ class GroupActivity : CustomActionBarActivity() {
         groupButton.alpha = 1f
         groupButton.isEnabled = false
 
+//        groupViewModel.groupData.observe(this) { _groupData ->
+//            if (_groupData != null) {
+//                populateViews(_groupData)
+//            }
+//        }
+    }
+
+    override fun onResume() {
+        super.onResume()
         groupViewModel.groupData.observe(this) { _groupData ->
             if (_groupData != null) {
                 populateViews(_groupData)
             }
         }
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        groupViewModel.groupData.observe(this) { _groupData ->
-//            if (_groupData != null) {
-//                populateViews(_groupData)
-//            }
-//        }
-//    }
 
 
     private fun populateViews(groupData : List<GroupMemberAndUserIndexDTO>) {

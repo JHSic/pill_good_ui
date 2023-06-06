@@ -100,7 +100,4 @@ class GroupMemberAddActivity : CustomActionBarActivity() {
         // birthdate 문자열을 LocalDate로 변환
         return LocalDate.parse(birthdate.trim(), formatter)
     }
-
-
-
 }

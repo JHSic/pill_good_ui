@@ -7,12 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
 import com.example.pill_good.repository.GroupMemberRepositoryImpl
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.launch
 
 class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryImpl) : ViewModel(){
 
     private val _groupData = MutableLiveData<List<GroupMemberAndUserIndexDTO>>()
     val groupData : LiveData<List<GroupMemberAndUserIndexDTO>> get() = _groupData
+
+    // viewModel 분리 시 필요
 //    fun loadGroupMembers() {
 //        viewModelScope.launch {
 //            try {
@@ -28,7 +31,6 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
         _groupData.value = groupMemberList
     }
 
-    // groupMemberDTO가 아닌 유저 이름, 생년월일, 전화번호 정보만 받는걸로 수정 -> 이게 모델 만드는건강
     fun addGroupMember(groupMember : GroupMemberAndUserIndexDTO) {
         viewModelScope.launch {
             try{
@@ -51,11 +53,11 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
             try {
                 val updatedGroupMember = groupMemberRepository.updateById(groupMember.groupMemberIndex!!, groupMember)
             // 응답이 성공적으로 받아왔을 경우
-                updatedGroupMember?.let { updateGroupMember ->
+                updatedGroupMember?.let { updatedGroupMember ->
                     val currentList = groupData.value?.toMutableList()
-                    val index = currentList?.indexOfFirst { it.groupMemberIndex == updateGroupMember.groupMemberIndex }
+                    val index = currentList?.indexOfFirst { it.groupMemberIndex == updatedGroupMember.groupMemberIndex }
                     if (index != null && index != -1) {
-                        currentList[index] = updateGroupMember
+                        currentList[index] = updatedGroupMember
                         _groupData.value = currentList!!
                     }
                 }
@@ -64,7 +66,6 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
             }
         }
     }
-
 
     // 그룹원 삭제
     fun removeGroupMember(groupMember: GroupMemberAndUserIndexDTO) {
@@ -83,5 +84,4 @@ class GroupViewModel(private val groupMemberRepository : GroupMemberRepositoryIm
             }
         }
     }
-
 }

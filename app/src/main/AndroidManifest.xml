@@ -99,6 +99,7 @@
         <activity android:name=".ui.activity.CameraActivity"
             android:label=""></activity>
         <activity android:name=".ui.activity.CameraResultActivity"
+            android:theme="@style/GroupMemberEditTheme"
             android:label=""></activity>
         <activity android:name=".ui.activity.EditOCRActivity"
             android:label=""></activity>
