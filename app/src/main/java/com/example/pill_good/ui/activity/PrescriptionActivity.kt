@@ -23,7 +23,12 @@ class PrescriptionActivity : CustomActionBarActivity() {
 
         addCustomView(R.layout.activity_prescription)
 
-        var groupMemberId = intent.getLongExtra("groupMemberId", 0L)
+        val groupMemberId = intent.getLongExtra("groupMemberId", 0L)
+        val groupMemberName = intent.getStringExtra("groupMemberName")
+
+        val nameText : TextView = findViewById(R.id.prescription_group_member_name)
+
+        nameText.text = groupMemberName
 
         prescriptionViewModel.loadPrescriptionData(groupMemberId)
 

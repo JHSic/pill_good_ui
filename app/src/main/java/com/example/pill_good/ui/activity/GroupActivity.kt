@@ -189,6 +189,8 @@ class GroupActivity : CustomActionBarActivity() {
         if(cardNum == 1 && layoutParams.leftMargin == 64){
             cardLinearLayout.setOnClickListener {
                 val intent = Intent(this,PrescriptionActivity::class.java)
+                intent.putExtra("groupMemberId", groupMemberData.groupMemberIndex)
+                intent.putExtra("groupMemberName", groupMemberData.groupMemberName)
                 startActivity(intent)
             }
             return cardLinearLayout
@@ -278,6 +280,7 @@ class GroupActivity : CustomActionBarActivity() {
         cardLinearLayout.setOnClickListener {
             val intent = Intent(this,PrescriptionActivity::class.java)
             intent.putExtra("groupMemberId", groupMemberData.groupMemberIndex)
+            intent.putExtra("groupMemberName", groupMemberData.groupMemberName)
             startActivity(intent)
         }
 
