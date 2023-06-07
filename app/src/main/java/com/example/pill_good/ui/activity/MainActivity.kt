@@ -447,79 +447,83 @@ class MainActivity : CustomActionBarActivity() {
 
                 val numPillContents = pillMap.size // prescriptionPillContent 개수 - 각 질병의 약 개수
                 for (k in 0 until numPillContents) {
-                    val pillName = pillMap.keys.elementAt(k)
-                    medicationDTO = pillMap[pillName]
+                    val nowPillName = pillMap.keys.elementAt(k)
+                    for(l in 0 until pillMap[nowPillName]!!.size) {
+                        val pillName = pillMap.keys.elementAt(k)
+                        medicationDTO = pillMap[pillName]?.get(l)
+                        val takeTime = medicationDTO?.takePillTime
 
-                    if (time != medicationDTO?.takePillTime)
-                        continue
+                        if (time != medicationDTO?.takePillTime)
+                            continue
 
-                    if (!isTotalCalendarMode && selectedGroupMember != medicationDTO?.groupMemberIndex)
-                        continue
+                        if (!isTotalCalendarMode && selectedGroupMember != medicationDTO?.groupMemberIndex)
+                            continue
 
-                    pillCheckButton.isChecked = medicationDTO?.takeCheck == true
+                        pillCheckButton.isChecked = medicationDTO?.takeCheck == true
 
-                    val prescriptionPillContent: FrameLayout =
-                        inflater.inflate(R.layout.activity_pill_item, null) as FrameLayout
-                    val pillItemNameView: TextView =
-                        prescriptionPillContent.findViewById(R.id.pill_item_name)
-                    pillItemNameView.text = pillName
+                        val prescriptionPillContent: FrameLayout =
+                            inflater.inflate(R.layout.activity_pill_item, null) as FrameLayout
+                        val pillItemNameView: TextView =
+                            prescriptionPillContent.findViewById(R.id.pill_item_name)
+                        pillItemNameView.text = pillName
 
-                    val pillLayoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
+                        val pillLayoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
 
-                    val pillImage: ImageView =
-                        prescriptionPillContent.findViewById(R.id.pill_item_image)
+                        val pillImage: ImageView =
+                            prescriptionPillContent.findViewById(R.id.pill_item_image)
 
-                    // 이미지 경로 지정
-                    val imageRef = storageRef.child(medicationDTO.pillNum + ".jpg")
-                    // 이미지 다운로드 URL 가져오기
-                    imageRef.downloadUrl.addOnSuccessListener { uri ->
-                        // 다운로드 URL을 사용하여 이미지 설정
-                        Glide.with(pillImage)
-                            .load(uri)
-                            .placeholder(R.drawable.a201412020003201)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(pillImage)
-                    }.addOnFailureListener { exception ->
-                        // 다운로드 실패 시 처리할 작업
-                        Log.e("TAG", "이미지 다운로드 실패: ${exception.message}")
+                        // 이미지 경로 지정
+                        val imageRef = storageRef.child(medicationDTO.pillNum + ".jpg")
+                        // 이미지 다운로드 URL 가져오기
+                        imageRef.downloadUrl.addOnSuccessListener { uri ->
+                            // 다운로드 URL을 사용하여 이미지 설정
+                            Glide.with(pillImage)
+                                .load(uri)
+                                .placeholder(R.drawable.a201412020003201)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(pillImage)
+                        }.addOnFailureListener { exception ->
+                            // 다운로드 실패 시 처리할 작업
+                            Log.e("TAG", "이미지 다운로드 실패: ${exception.message}")
+                        }
+
+                        prescriptionPillContent.findViewById<TextView>(R.id.pill_item_feature_shape).text =
+                            medicationDTO.pillShape
+                        prescriptionPillContent.findViewById<TextView>(R.id.pill_item_feature_color).text =
+                            medicationDTO.pillColor
+
+                        pillLayoutParams.setMargins(32, 0, 32, 32)
+                        prescriptionPillContent.layoutParams = pillLayoutParams
+
+                        val pillDTO = PillDTO(
+                            pillIndex = medicationDTO.pillIndex,
+                            pillNum = medicationDTO.pillNum,
+                            pillName = medicationDTO.pillName,
+                            pillFrontWord = medicationDTO.pillFrontWord,
+                            pillBackWord = medicationDTO.pillBackWord,
+                            pillShape = medicationDTO.pillPrecaution,
+                            pillColor = medicationDTO.pillEffect,
+                            pillCategoryName = medicationDTO.pillCategoryName,
+                            pillFormulation = medicationDTO.pillFormulation,
+                            pillEffect = medicationDTO.pillPrecaution,
+                            pillPrecaution = medicationDTO.pillPrecaution
+                        )
+
+                        prescriptionPillContent.setOnClickListener {
+                            val intent = Intent(this, PillInformationActivity::class.java)
+                            intent.putExtra("pillInformationData", pillDTO)
+                            startActivity(intent)
+                            overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
+                        }
+                        groupMemberDiseasePillFrame.addView(prescriptionPillContent)
                     }
-
-                    prescriptionPillContent.findViewById<TextView>(R.id.pill_item_feature_shape).text =
-                        medicationDTO.pillShape
-                    prescriptionPillContent.findViewById<TextView>(R.id.pill_item_feature_color).text =
-                        medicationDTO.pillColor
-
-                    pillLayoutParams.setMargins(32, 0, 32, 32)
-                    prescriptionPillContent.layoutParams = pillLayoutParams
-
-                    val pillDTO = PillDTO(
-                        pillIndex = medicationDTO.pillIndex,
-                        pillNum = medicationDTO.pillNum,
-                        pillName = medicationDTO.pillName,
-                        pillFrontWord = medicationDTO.pillFrontWord,
-                        pillBackWord = medicationDTO.pillBackWord,
-                        pillShape = medicationDTO.pillPrecaution,
-                        pillColor = medicationDTO.pillEffect,
-                        pillCategoryName = medicationDTO.pillCategoryName,
-                        pillFormulation = medicationDTO.pillFormulation,
-                        pillEffect = medicationDTO.pillPrecaution,
-                        pillPrecaution = medicationDTO.pillPrecaution
-                    )
-
-                    prescriptionPillContent.setOnClickListener {
-                        val intent = Intent(this, PillInformationActivity::class.java)
-                        intent.putExtra("pillInformationData", pillDTO)
-                        startActivity(intent)
-                        overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거
-                    }
-                    groupMemberDiseasePillFrame.addView(prescriptionPillContent)
                 }
 
-                if (time != medicationDTO?.takePillTime)
-                    continue
+//                if (time != medicationDTO?.takePillTime)
+//                    continue
 
                 if (!isTotalCalendarMode && selectedGroupMember != medicationDTO?.groupMemberIndex)
                     continue
@@ -527,8 +531,8 @@ class MainActivity : CustomActionBarActivity() {
                 groupMemberDiseaseContainer.addView(groupMemberDiseaseContent)
             }
 
-            if (time != medicationDTO?.takePillTime)
-                continue
+//            if (time != medicationDTO?.takePillTime)
+//                continue
 
             if (!isTotalCalendarMode && selectedGroupMember != medicationDTO?.groupMemberIndex)
                 continue

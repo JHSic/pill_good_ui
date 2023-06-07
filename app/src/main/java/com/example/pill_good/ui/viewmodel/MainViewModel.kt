@@ -14,6 +14,8 @@ import com.example.pill_good.repository.GroupMemberRepositoryImpl
 import com.example.pill_good.repository.TakePillRepositoryImpl
 import com.example.pill_good.repository.UserRepositoryImpl
 import com.orhanobut.logger.Logger
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 import java.time.LocalDate
@@ -103,8 +105,8 @@ class MainViewModel(
     val loadedDateList: LiveData<MutableList<LocalDate>> get() = _loadedDateList
 
     private val _takePillData =
-        MutableLiveData<MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>>>()
-    val takePillData: LiveData<MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>>> get() = _takePillData
+        MutableLiveData<MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MutableList<MedicationInfoDTO>>>>>>()
+    val takePillData: LiveData<MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MutableList<MedicationInfoDTO>>>>>> get() = _takePillData
 
     private val _groupMemberList = MutableLiveData<MutableList<GroupMemberAndUserIndexDTO>>()
     val groupMemberList: LiveData<MutableList<GroupMemberAndUserIndexDTO>> get() = _groupMemberList
@@ -117,7 +119,7 @@ class MainViewModel(
         private const val MONTH_OFFSET = 1L
 
         // For Test
-        private const val SIZE_OF_GROUP_MEMBER = 3
+        private const val SIZE_OF_GROUP_MEMBER = 1
         private const val RANGE_OF_TAKE_PILL = 14
 
         private const val SIZE_OF_DISEASE = 5
@@ -140,13 +142,7 @@ class MainViewModel(
 
         viewModelScope.launch {
             // 캘린더를 위한 최초 데이터 로딩
-            val initialCalendarData: MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> =
-                if (IS_TEST) createCalendarMockData(
-                    MONTH_OFFSET,
-                    SIZE_OF_GROUP_MEMBER,
-                    RANGE_OF_TAKE_PILL
-                )
-                else loadCalendarData(startDate, endDate)
+            val initialCalendarData: MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> = loadCalendarData(startDate, endDate)
 
             // For Test: 첫 로드에 포함되지 않는 데이터
             if (IS_TEST) {
@@ -185,7 +181,7 @@ class MainViewModel(
             _takePillData.value = mappingMedicationInfoToTakePillInfo(initialMedicationInfo)
 
             // fot Tset: Log
-//            if (IS_TEST) getLog()
+                getLog()
         }
     }
 
@@ -296,12 +292,14 @@ class MainViewModel(
             if (IS_TEST) {  // 테스트의 경우 이미 모든 데이터를 로드해왔다 가정
                 return
             } else {
-                val loadTakePill = loadTakePillInfo(convertDateToLocalDate(targetDate))
-                _takePillData.value?.putAll(
-                    mappingMedicationInfoToTakePillInfo(
-                        loadTakePill ?: mutableMapOf()
+                viewModelScope.launch {
+                    val loadTakePill = loadTakePillInfo(convertDateToLocalDate(targetDate))
+                    _takePillData.value?.putAll(
+                        mappingMedicationInfoToTakePillInfo(
+                            loadTakePill ?: mutableMapOf()
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -417,30 +415,27 @@ class MainViewModel(
      * @param endDate 끝 날짜
      * @return List<TakePillAndTakePillCheckAndGroupMemberIndexDTO>로 이루어진 캘린더 데이터 (매핑 이전 값)
      */
-    private fun loadCalendarData(
+    private suspend fun loadCalendarData(
         startDate: LocalDate,
         endDate: LocalDate? = null
     ): MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> {
-        var result: MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO> =
-            emptyList<TakePillAndTakePillCheckAndGroupMemberIndexDTO>().toMutableList()
+        val resultDeferred: Deferred<MutableList<TakePillAndTakePillCheckAndGroupMemberIndexDTO>> =
+            viewModelScope.async {
+                if (endDate != null)
+                    takePillRepositoryImpl.readCalendarDataByUserIdBetweenDate(
+                        userInfo.value?.userIndex!!,
+                        startDate,
+                        endDate
+                    ) as MutableList
+                else
+                    takePillRepositoryImpl.readCalendarDataByUserIdBetweenDate(
+                        userInfo.value?.userIndex!!,
+                        startDate,
+                        startDate.withDayOfMonth(startDate.lengthOfMonth())
+                    ) as MutableList
+            }
 
-        viewModelScope.launch {
-            result = if (endDate != null)
-                takePillRepositoryImpl.readCalendarDataByUserIdBetweenDate(
-                    userInfo.value?.userIndex!!,
-                    startDate,
-                    endDate
-                ) as MutableList
-            else
-                takePillRepositoryImpl.readCalendarDataByUserIdBetweenDate(
-                    userInfo.value?.userIndex!!,
-                    startDate,
-                    startDate.withDayOfMonth(startDate.lengthOfMonth())
-                ) as MutableList
-
-        }
-
-        return result
+        return resultDeferred.await()
     }
 
     /**
@@ -449,33 +444,35 @@ class MainViewModel(
      * @param targetDate 선택 날짜
      * @return MutableMap<LocalDate, MutableList<MedicationInfoDTO>>? 선택 날짜와 복용 정보를 매핑한 값
      */
-    private fun loadTakePillInfo(targetDate: LocalDate): MutableMap<LocalDate, MutableList<MedicationInfoDTO>>? {
-        var targetCalendarData: MutableList<MedicationInfoDTO> =
-            emptyList<MedicationInfoDTO>().toMutableList()
-
+    private suspend fun loadTakePillInfo(targetDate: LocalDate): MutableMap<LocalDate, MutableList<MedicationInfoDTO>>? {
         // 이미 가져온 MedicationInfo 인지 확인
-        if (_takePillData.value?.containsKey(targetDate) == true)
+        if (_takePillData.value?.containsKey(targetDate) == true) {
             return null
-
-        viewModelScope.launch {
-            if(groupMemberList.value?.size == 0) {
-                return@launch
-            }
-            val groupMemberIdList = groupMemberList.value?.map { it.groupMemberIndex } as List<Long>
-            val result = takePillRepositoryImpl.readTakePillsByGroupMemberIdListAndTargetDate(groupMemberIdList, targetDate)
-            if(result != null)
-                targetCalendarData = result as MutableList<MedicationInfoDTO>
-
-            /*groupMemberList.value?.map { it.groupMemberIndex }?.let { it1 ->
-                targetCalendarData =
-                    takePillRepositoryImpl.readTakePillsByGroupMemberIdListAndTargetDate(
-                        it1 as List<Long>, targetDate
-                    ) as MutableList<MedicationInfoDTO> ?: mutableListOf()
-            }*/
         }
 
-        return mutableMapOf(targetDate to targetCalendarData)
+        val groupMemberListValue = groupMemberList.value
+        if (groupMemberListValue?.size == 0) {
+            return null
+        }
+
+        val groupMemberIdList = groupMemberListValue?.map { it.groupMemberIndex }
+
+        val resultDeferred = viewModelScope.async {
+            takePillRepositoryImpl.readTakePillsByGroupMemberIdListAndTargetDate(groupMemberIdList as List<Long>, targetDate)
+        }
+
+        val resultDeferred2: Deferred<MutableMap<LocalDate, MutableList<MedicationInfoDTO>>> = viewModelScope.async {
+            val result = resultDeferred.await()
+            if (result != null) {
+                mutableMapOf(targetDate to result.toMutableList())
+            } else {
+                mutableMapOf() // 빈 MutableMap 반환 또는 null 반환 가능
+            }
+        }
+
+        return resultDeferred2.await()
     }
+
 
     /**
      * TODO - 초기 캘린더 데이터를 Live데이터인 groupMemberCalendar의 타입에 맞게 매핑해주는 메소드
@@ -538,8 +535,8 @@ class MainViewModel(
      * @param medicationInfo 초기 복용 현황 값
      * @return takePillData에 할당할 값
      */
-    private fun mappingMedicationInfoToTakePillInfo(medicationInfo: MutableMap<LocalDate, MutableList<MedicationInfoDTO>>): MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>> {
-        val takePillInfo: MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MedicationInfoDTO>>>> =
+    private fun mappingMedicationInfoToTakePillInfo(medicationInfo: MutableMap<LocalDate, MutableList<MedicationInfoDTO>>): MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MutableList<MedicationInfoDTO>>>>> {
+        val takePillInfo: MutableMap<LocalDate, MutableMap<String, MutableMap<String, MutableMap<String, MutableList<MedicationInfoDTO>>>>> =
             mutableMapOf()
 
         for ((date, medicationList) in medicationInfo) {
@@ -555,7 +552,7 @@ class MainViewModel(
 
                 val groupMemberMap = dateMap.getOrPut(groupMemberName) { mutableMapOf() }
                 val diseaseMap = groupMemberMap.getOrPut(diseaseName) { mutableMapOf() }
-                var pillMap = diseaseMap.getOrPut(pillName) { medication }
+                var pillMap = diseaseMap.getOrPut(pillName) { mutableListOf() }.add(medication)
             }
 
             takePillInfo[date] = dateMap
@@ -611,91 +608,91 @@ class MainViewModel(
     /**
      * TODO - 초기 데이터 값을 로그로 남기는 메소드
      */
-//    private fun getLog() {
-//        var stringBuilder = StringBuilder()
-//        var logString: String
-//
-//        /**
-//         * TEST PRESET
-//         */
-//        Logger.d(
-//            "Test Preset\n" +
-//                    "MONTH_OFFSET = $MONTH_OFFSET\n" +
-//                    "SIZE_OF_GROUP_MEMBER = $SIZE_OF_GROUP_MEMBER\n" +
-//                    "RANGE_OF_TAKE_PILL = $RANGE_OF_TAKE_PILL\n" +
-//                    "SIZE_OF_DISEASE = $SIZE_OF_DISEASE" +
-//                    "SIZE_OF_PILL = $SIZE_OF_PILL"
-//        )
-//
-//        /**
-//         * USET INFO
-//         */
-//        Logger.d("User Information: $_userInfo")
-//
-//        /**
-//         * GROUP MEMBER LIST
-//         */
-//        _groupMemberList.value?.forEach {
-//            stringBuilder.append("GroupMember Index: ${it.groupMemberIndex}, Name: ${it.groupMemberName}}\n")
-//        }
-//        logString = stringBuilder.toString()
-//        Logger.d("GroupMember Information\n$logString")
-//        stringBuilder.clear()
-//
-//        /**
-//         * GROUP MEMBER CALENDAR
-//         */
-//        _groupMemberCalendar.value?.forEach { (groupMemberIndex, dateMap) ->
-//            dateMap.keys.forEach { date ->
-//                stringBuilder.append("Group Member Index: $groupMemberIndex, Date: $date\n")
-//            }
-//        }
-//        logString = stringBuilder.toString()
-//        Logger.d("Value of GroupMemberCalendar\n$logString")
-//        stringBuilder.clear()
-//
-//        /**
-//         * TAKE PILL DATA INFO
-//         */
-//        takePillData.value?.forEach { (date, groupMemberMap) ->
-//            groupMemberMap.forEach { (groupMemberName, diseaseMap) ->
-//                diseaseMap.forEach { (diseaseName, pillMap) ->
-//                    pillMap.forEach { (pillName, medicationInfo) ->
-//                        stringBuilder.append("Date: $date\n")
-//                        stringBuilder.append("Group Member Name: $groupMemberName\n")
-//                        stringBuilder.append("Disease Name: $diseaseName\n")
-//                        stringBuilder.append("Pill Name: $pillName\n")
-//                        stringBuilder.append("Medication Info: $medicationInfo\n\n")
-//                    }
-//                }
-//            }
-//        }
-//
-//        logString = stringBuilder.toString()
-//        Logger.d("takePillData Information\n$logString")
-//        stringBuilder.clear()
-//
-//        /**
-//         * LOADED DATE LIST
-//         */
-//        Logger.d("loadedDateList Information\n${_loadedDateList.value}")
-//
-//        /**
-//         * NOT LOADED DATE LIST
-//         */
-//        notLoadedInitialData.forEach { data ->
-//            data.takePillAndTakePillCheckDTOs.forEach { takePillData ->
-//                stringBuilder.append("Group Member Index: ${data.groupMemberIndex}, ")
-//                stringBuilder.append("Take Date: ${takePillData.takeDate}\n")
-//            }
-//        }
-//
-//        logString = stringBuilder.toString()
-//        Logger.d("notLoadedInitialData Information\n$logString")
-//        stringBuilder.clear()
-//
-//
-//    }
+    private fun getLog() {
+        var stringBuilder = StringBuilder()
+        var logString: String
+
+        /**
+         * TEST PRESET
+         */
+        Logger.d(
+            "Test Preset\n" +
+                    "MONTH_OFFSET = $MONTH_OFFSET\n" +
+                    "SIZE_OF_GROUP_MEMBER = $SIZE_OF_GROUP_MEMBER\n" +
+                    "RANGE_OF_TAKE_PILL = $RANGE_OF_TAKE_PILL\n" +
+                    "SIZE_OF_DISEASE = $SIZE_OF_DISEASE" +
+                    "SIZE_OF_PILL = $SIZE_OF_PILL"
+        )
+
+        /**
+         * USET INFO
+         */
+        Logger.d("User Information: $_userInfo")
+
+        /**
+         * GROUP MEMBER LIST
+         */
+        _groupMemberList.value?.forEach {
+            stringBuilder.append("GroupMember Index: ${it.groupMemberIndex}, Name: ${it.groupMemberName}}\n")
+        }
+        logString = stringBuilder.toString()
+        Logger.d("GroupMember Information\n$logString")
+        stringBuilder.clear()
+
+        /**
+         * GROUP MEMBER CALENDAR
+         */
+        _groupMemberCalendar.value?.forEach { (groupMemberIndex, dateMap) ->
+            dateMap.keys.forEach { date ->
+                stringBuilder.append("Group Member Index: $groupMemberIndex, Date: $date\n")
+            }
+        }
+        logString = stringBuilder.toString()
+        Logger.d("Value of GroupMemberCalendar\n$logString")
+        stringBuilder.clear()
+
+        /**
+         * TAKE PILL DATA INFO
+         */
+        takePillData.value?.forEach { (date, groupMemberMap) ->
+            groupMemberMap.forEach { (groupMemberName, diseaseMap) ->
+                diseaseMap.forEach { (diseaseName, pillMap) ->
+                    pillMap.forEach { (pillName, medicationInfo) ->
+                        stringBuilder.append("Date: $date\n")
+                        stringBuilder.append("Group Member Name: $groupMemberName\n")
+                        stringBuilder.append("Disease Name: $diseaseName\n")
+                        stringBuilder.append("Pill Name: $pillName\n")
+                        stringBuilder.append("Medication Info: $medicationInfo\n\n")
+                    }
+                }
+            }
+        }
+
+        logString = stringBuilder.toString()
+        Logger.d("takePillData Information\n$logString")
+        stringBuilder.clear()
+
+        /**
+         * LOADED DATE LIST
+         */
+        Logger.d("loadedDateList Information\n${_loadedDateList.value}")
+
+        /**
+         * NOT LOADED DATE LIST
+         */
+        notLoadedInitialData.forEach { data ->
+            data.takePillAndTakePillCheckDTOs.forEach { takePillData ->
+                stringBuilder.append("Group Member Index: ${data.groupMemberIndex}, ")
+                stringBuilder.append("Take Date: ${takePillData.takeDate}\n")
+            }
+        }
+
+        logString = stringBuilder.toString()
+        Logger.d("notLoadedInitialData Information\n$logString")
+        stringBuilder.clear()
+
+
+    }
 
     /**
      * TODO - 테스트 진행 시 groupMemberCalendar 라이브 데이터의 초기 값을 생성해주는 메소드
@@ -965,7 +962,7 @@ class MainViewModel(
 
             val groupMemberData = GroupMemberAndUserIndexDTO(
                 groupMemberIndex = groupMemberId, userIndex = userId, // 사용자 인덱스를 설정하세요.
-                groupMemberName = "GMember $groupMemberId", // 그룹 멤버 이름을 설정하세요.
+                groupMemberName = "김주호", // 그룹 멤버 이름을 설정하세요.
                 groupMemberBirth = LocalDate.of(
                     randomBirthYear, randomBirthMonth, randomBirthDay
                 ), // 그룹 멤버 생년월일을 설정하세요.
