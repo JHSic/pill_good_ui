@@ -45,26 +45,27 @@ class PrescriptionActivity : CustomActionBarActivity() {
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-        val prescriptionContent : FrameLayout = inflater.inflate(R.layout.activity_prescription_content, null) as FrameLayout
-        val prescriptionRegistrationDate : TextView = prescriptionContent.findViewById(R.id.prescription_registration_date)
-        val prescriptionRegistrationHospital : TextView = prescriptionContent.findViewById(R.id.prescription_registration_hospital)
-        val prescriptionRegistrationHospitalPhone : TextView = prescriptionContent.findViewById(R.id.prescription_registration_hospital_phone)
-        val prescriptionRegistrationDisease : TextView = prescriptionContent.findViewById(R.id.prescription_registration_disease)
-        val prescriptionDate : TextView = prescriptionContent.findViewById(R.id.prescription_date)
-        val prescriptionDeleteBtn : ImageButton = prescriptionContent.findViewById(R.id.prescription_delete_btn)
-        val prescriptionPillFrame : LinearLayout = prescriptionContent.findViewById(R.id.prescription_pill_data) // 약정보 기입
+
 
 
         // 추가할 prescriptionContent 개수 - 처방전 개수
         for (i in prescriptionData.indices) {
-            layoutParams.setMargins(0, 0, 0, 16) // 아래쪽에 16dp의 마진
+            layoutParams.setMargins(0, 0, 0, 48) // 아래쪽에 48dp의 마진
+            val prescriptionContent : FrameLayout = inflater.inflate(R.layout.activity_prescription_content, null) as FrameLayout
+            val prescriptionRegistrationDate : TextView = prescriptionContent.findViewById(R.id.prescription_registration_date)
+            val prescriptionRegistrationHospital : TextView = prescriptionContent.findViewById(R.id.prescription_registration_hospital)
+            val prescriptionRegistrationHospitalPhone : TextView = prescriptionContent.findViewById(R.id.prescription_registration_hospital_phone)
+            val prescriptionRegistrationDisease : TextView = prescriptionContent.findViewById(R.id.prescription_registration_disease)
+            val prescriptionDate : TextView = prescriptionContent.findViewById(R.id.prescription_date)
+            val prescriptionDeleteBtn : ImageButton = prescriptionContent.findViewById(R.id.prescription_delete_btn)
+            val prescriptionPillFrame : LinearLayout = prescriptionContent.findViewById(R.id.prescription_pill_data) // 약정보 기입
             prescriptionContent.layoutParams = layoutParams
 
-            prescriptionRegistrationDate.text = "${prescriptionRegistrationDate.text} ${prescriptionData[i].prescriptionRegistrationDate.toString()}"
-            prescriptionRegistrationHospital.text = "${prescriptionRegistrationHospital.text} ${prescriptionData[i].hospitalName}"
-            prescriptionRegistrationHospitalPhone.text = "${prescriptionRegistrationHospitalPhone.text} ${prescriptionData[i].hospitalPhone}"
-            prescriptionRegistrationDisease.text = "${prescriptionRegistrationDisease.text} ${prescriptionData[i].diseaseName}"
-            prescriptionDate.text = "${prescriptionDate.text} ${prescriptionData.get(i).prescriptionDate.toString()}"
+            prescriptionRegistrationDate.text = "처방전 등록일자 : ${prescriptionData[i].prescriptionRegistrationDate.toString()}"
+            prescriptionRegistrationHospital.text = "의료기관 : ${prescriptionData[i].hospitalName}"
+            prescriptionRegistrationHospitalPhone.text = "전화번호 : ${prescriptionData[i].hospitalPhone}"
+            prescriptionRegistrationDisease.text = "병명 : ${prescriptionData[i].diseaseName}"
+            prescriptionDate.text = "처방 일자 : ${prescriptionData[i].prescriptionDate.toString()}"
 
             // 삭제 버튼
             prescriptionDeleteBtn.setOnClickListener {
@@ -88,12 +89,12 @@ class PrescriptionActivity : CustomActionBarActivity() {
                 val pillEatDay : TextView = prescriptionPillContent.findViewById(R.id.prescription_dose_date)
                 val pillEatCount : TextView = prescriptionPillContent.findViewById(R.id.prescription_dose_num)
 
-                pillName.text = pillContents[j].pillName
-                pillEatDay.text = pillContents[j].takeDay.toString()
-                pillEatCount.text = pillContents[j].takeCount.toString()
+                pillName.text = "약 이름 : ${pillContents[j].pillName}"
+                pillEatDay.text = "복약 기간 : ${pillContents[j].takeDay.toString()}"
+                pillEatCount.text = "일일 복약 횟수 : ${pillContents[j].takeCount.toString()}"
 
                 prescriptionPillFrame.addView(prescriptionPillContent)
-                layoutParams.setMargins(0, 0, 0, 8) // 아래쪽에 8dp의 마진
+                layoutParams.setMargins(0, 0, 0, 16) // 아래쪽에 16dp의 마진
                 prescriptionPillContent.layoutParams = layoutParams
             }
             prescriptionContainer.addView(prescriptionContent)

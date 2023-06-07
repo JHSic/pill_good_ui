@@ -74,7 +74,7 @@ class CarouselAdapter(private val carouselItems: List<CarouselItem>, private val
                     //calendar Constraint Builder 선택할수있는 날짜 구간설정
                     val calendarConstraintBuilder = CalendarConstraints.Builder()
                     //오늘 이전만 선택가능하게 하는 코드
-                    calendarConstraintBuilder.setValidator(DateValidatorPointBackward.now())
+//                    calendarConstraintBuilder.setValidator(DateValidatorPointBackward.now())
 
                     val builder = MaterialDatePicker.Builder.datePicker()
                         .setTitleText("Calendar")

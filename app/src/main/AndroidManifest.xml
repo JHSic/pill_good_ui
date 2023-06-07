@@ -97,6 +97,7 @@
         <activity android:name=".ui.activity.PillInformationActivity"
             android:label=""></activity>
         <activity android:name=".ui.activity.PrescriptionActivity"
+            android:theme="@style/GroupMemberEditTheme"
             android:label=""></activity>
         <activity android:name=".ui.activity.CameraActivity"
             android:label=""></activity>
