@@ -43,10 +43,9 @@ class PrescriptionActivity : CustomActionBarActivity() {
 
         val prescriptionContainer: LinearLayout = findViewById(R.id.prescription_linear)
 
+        prescriptionContainer.removeAllViews()
+
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-
-
-
 
         // 추가할 prescriptionContent 개수 - 처방전 개수
         for (i in prescriptionData.indices) {

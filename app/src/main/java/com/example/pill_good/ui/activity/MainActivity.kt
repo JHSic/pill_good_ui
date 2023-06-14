@@ -173,6 +173,28 @@ class MainActivity : CustomActionBarActivity() {
         initializeCalendarRadioGroup()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        mainViewModel.getInitialData()
+
+        // LiveData 구독
+        mainViewModel.groupMemberCalendar.observe(this) {
+            val calendarRadioGroup: RadioGroup = findViewById(R.id.calendar_radio_group)
+
+            if (buttonId == calendarRadioGroup.getChildAt(0).id) {
+                setDecorators(currentMonth, isReplaceDecorator = true)
+            } else {
+                setDecorators(
+                    currentMonth,
+                    isReplaceDecorator = true,
+                    isGroupMemberDecorator = true
+                )
+            }
+        }
+
+    }
+
     // 캘린더 선택 라디오 버튼 그룹 생성
     fun initializeCalendarRadioGroup() {
         val calendarRadioGroup: RadioGroup = findViewById(R.id.calendar_radio_group)

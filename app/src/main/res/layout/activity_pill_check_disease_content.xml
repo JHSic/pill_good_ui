@@ -31,7 +31,7 @@
                     android:layout_margin="10dp"
                     android:padding="5dp"
                     android:fontFamily="@font/pt_sans_bold"
-                    android:textSize="15dp"
+                    android:textSize="25dp"
                     android:textColor="@color/black"
                     android:ellipsize="end"
                     android:maxLines="1"
