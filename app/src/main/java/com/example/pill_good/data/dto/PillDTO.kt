@@ -1,5 +1,7 @@
 package com.example.pill_good.data.dto
 
+import java.io.Serializable
+
 data class PillDTO(
     val pillIndex: Long? = null,
     val pillNum: String? = null,
@@ -12,4 +14,4 @@ data class PillDTO(
     val pillFormulation: String? = null,
     val pillEffect: String? = null,
     val pillPrecaution: String? = null
-)
+) : Serializable

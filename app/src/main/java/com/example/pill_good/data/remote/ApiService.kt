@@ -1,14 +1,13 @@
 package com.example.pill_good.data.remote
 
 import com.example.pill_good.data.dto.AutoMessageDTO
+import com.example.pill_good.data.dto.EditOCRDTO
 import com.example.pill_good.data.dto.GroupMemberAndUserIndexDTO
-import com.example.pill_good.data.dto.GroupMemberDTO
-import com.example.pill_good.data.dto.InitialCalendarAndTakePillsInfoDTO
+import com.example.pill_good.data.dto.LoginDTO
 import com.example.pill_good.data.dto.MedicationInfoDTO
 import com.example.pill_good.data.dto.NotificationDTO
 import com.example.pill_good.data.dto.PillDTO
 import com.example.pill_good.data.dto.PrescriptionAndDiseaseNameDTO
-import com.example.pill_good.data.dto.PrescriptionDTO
 import com.example.pill_good.data.dto.SearchingConditionDTO
 import com.example.pill_good.data.dto.TakePillAndTakePillCheckAndGroupMemberIndexDTO
 import com.example.pill_good.data.dto.UserDTO
@@ -41,23 +40,30 @@ interface ApiService {
     /**
      * UserRepository
      */
-    @POST("/user")
-    suspend fun createUser(@Body userDTO: UserDTO): ApiResponse<UserDTO>
-
     @DELETE("/user/delete/{id}")
     suspend fun deleteUserById(@Path("id") userId: Long): ApiResponse<Unit>
 
+    @PUT("/user/update-token/{id}")
+    suspend fun updateUserToken(@Path("id") userId: Long, @Body userDTO: UserDTO): ApiResponse<UserDTO>
+
 
     /**
-     * GroupMemberRepository
+     * LoginRepository
+     */
+    @POST("/login")
+    suspend fun login(@Body loginDTO: LoginDTO): ApiResponse<UserDTO>
+
+
+    /**
+    * GroupMemberRepository
      */
     @GET("/group-member/search/group-members")
     suspend fun getGroupMembersByUserId(@Query("userIndex") userId: Long)
-    : ApiResponse<List<GroupMemberDTO>>
+    : ApiResponse<List<GroupMemberAndUserIndexDTO>>
 
     @GET("/group-member/search/{id}")
     suspend fun getGroupMemberById(@Path("id") groupMemberId: Long)
-    : ApiResponse<GroupMemberDTO>
+    : ApiResponse<GroupMemberAndUserIndexDTO>
 
     @POST("/group-member/create")
     suspend fun createGroupMember(@Body groupMemberAndUserIndexDTO: GroupMemberAndUserIndexDTO)
@@ -85,9 +91,25 @@ interface ApiService {
     suspend fun getPillByPillName(@Path("pill-name") pillName: String)
     : ApiResponse<PillDTO>
 
-    @GET("/pill/search/pills")
+    @POST("/pill/search/pills")
     suspend fun getPillBySearchingCondition(@Body searchingConditionDTO: SearchingConditionDTO)
     : ApiResponse<List<PillDTO>>
+
+
+    /**
+     * OCRRepository
+     */
+    @Multipart
+    @POST("/ocr/create/original")
+    suspend fun createInitialOCR(
+        @Query("groupMemberIndex") groupMemberId: Long,
+        @Query("groupMemberName") groupMemberName: String,
+        @Query("dateStart") dateStart: LocalDate,
+        @Query("userFCMToken") userFcmToken: String,
+        @Part image: MultipartBody.Part): ApiResponse<Unit>
+
+    @POST("/ocr/create")
+    suspend fun createUpdatedOCR(@Body editOCR: EditOCRDTO): ApiResponse<Unit>
 
 
     /**
@@ -96,14 +118,6 @@ interface ApiService {
     @GET("/prescription/search/{group-member-id}")
     suspend fun getPrescriptionByGroupMemberId(@Path("group-member-id") groupMemberId: Long)
     : ApiResponse<List<PrescriptionAndDiseaseNameDTO>>
-
-    @Multipart
-    @POST("/prescription/create/image-upload")
-    suspend fun createPrescriptionByImage(
-        @Part("userIndex") userId: Long,
-        @Part("groupMemberIndex") groupMemberId: Long,
-        @Part prescriptionImage: MultipartBody.Part)
-    : ApiResponse<PrescriptionDTO>
 
     @DELETE("/prescription/delete/{id}")
     suspend fun deletePrescriptionById(@Path("id") id: Long)
@@ -121,20 +135,18 @@ interface ApiService {
         @Query("dateEnd") dateEnd: LocalDate
     ): ApiResponse<List<TakePillAndTakePillCheckAndGroupMemberIndexDTO>>
 
-    @POST("")
+    @POST("/take-pill/search")
     suspend fun getTakePillsByGroupMemberIdListAndTargetDate(
         @Body groupMemberIndexList: List<Long>,
         @Query("targetDate") targetDate: LocalDate
     ): ApiResponse<List<MedicationInfoDTO>>
 
-    @GET("/take-pill/initial-data")
-    suspend fun getInitialCalendarAndTakePillsByUserIdBetweenDate(
-        @Query("userIndex") userId: Long,
-        @Query("dateStart") dateStart: LocalDate,
-        @Query("dateCur") dateCur: LocalDate,
-        @Query("dateEnd") dateEnd: LocalDate
-    ): ApiResponse<List<InitialCalendarAndTakePillsInfoDTO>>
 
+    /**
+     * TakePillCheckRepository
+     */
+    @GET("/take-pill-check/update/take-check")
+    suspend fun updateTakeCheck(@Query("takePillCheckIndex") id: Long, @Query("takeCheck") takeCheck: Boolean): ApiResponse<Unit>
 
     /**
      * NotificationRepository
@@ -142,8 +154,9 @@ interface ApiService {
     @GET("/notification/search/{user-id}")
     suspend fun getNotificationByUserId(@Path("user-id") userId: Long): ApiResponse<List<NotificationDTO>>
 
-    /*@PUT("/notification/update/{id}")
-    suspend fun updateNotificationById(@Path("id") id: Long, @Body notificationDTO: NotificationDTO): ApiResponse<NotificationDTO>*/
+    @PUT("/notification/update/notification-check/{id}")
+    suspend fun updateNotificationCheckToTrue(@Path("id") id: Long): ApiResponse<NotificationDTO>
+
 
     /**
      * SendAutoMessageRepository

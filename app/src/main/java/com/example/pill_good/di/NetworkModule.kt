@@ -8,6 +8,8 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,9 +18,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-object  NetworkModule {
+object NetworkModule {
 
-    private val BASE_URL = "https://api.example.com/" // 여기에 사용하는 API의 기본 URL을 입력하세요.
+    private val BASE_URL = "http://202.31.202.172:443/" // 여기에 사용하는 API의 기본 URL을 입력하세요.
 
     val gson = GsonBuilder()
         .registerTypeAdapter(LocalDate::class.java, LocalDateSerializer())
@@ -27,8 +29,15 @@ object  NetworkModule {
         .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeDeserializer())
         .create()
 
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY // 로깅 레벨을 BODY로 설정하여 요청/응답 내용을 출력
+        })
+        .build()
+
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
